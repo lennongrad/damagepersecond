@@ -3,8 +3,8 @@
 </app-skill-tooltip>
 
 <div class="header">
-    <img src="./assets/headerframe-left.png" class="left" />
-    <img src="./assets/headerframe-right.png" class="right" />
+    <img src="assets/headerframe-left.png" class="left" />
+    <img src="assets/headerframe-right.png" class="right" />
     <button (click)="processTime()">{{getCurrentTime()}}/{{getMaxTime()}}</button>
 </div>
 <div class="scroll-container">
@@ -23,7 +23,7 @@
                     <div class="select-beam"></div>
                     <div [ngStyle]="getIconStyle(slotIndex, rowIndex)" *ngIf="skill != undefined" class="icon"
                         (mouseover)="mouseoverSlot($event, skill)" (mouseout)="mouseoutSlot($event, skill)">
-                        <img src="/assets/{{skill.icon}}" />
+                        <img src="assets/{{skill.icon}}" />
                     </div>
                 </td>
             </tr>
