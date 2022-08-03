@@ -1,0 +1,33 @@
+<app-skill-tooltip [hoveredSkill]="hoveredTooltipSkill" *ngIf="initialDragIndex == undefined" [element]="hoveredElement"
+    [opacity]="hoveredOpacity">
+</app-skill-tooltip>
+
+<div class="header">
+    <img src="./assets/headerframe-left.png" class="left" />
+    <img src="./assets/headerframe-right.png" class="right" />
+    <button (click)="processTime()">{{getCurrentTime()}}/{{getMaxTime()}}</button>
+</div>
+<div class="scroll-container">
+    <div class="timeline-scroll" appHorizontalScroll>
+        <table class="timeline" [class.dragging]="initialDragIndex != undefined"
+            [class.placing]="selectedSkill != undefined" 
+            (window:keydown.delete)="deleteSelection()" (window:keydown.shift.d)="duplicateSelection()"
+            (window:keydown.arrowup)="moveSelection({x: 0, y: -1})" (window:keydown.arrowdown)="moveSelection({x: 0, y: 1})"
+            (window:keydown.arrowleft)="moveSelection({x: -1, y: 0})" (window:keydown.arrowright)="moveSelection({x: 1, y: 0})">
+            <tr *ngFor="let row of this.getSkillGrid(); index as rowIndex">
+                <td class="slot" type="button" *ngFor="let skill of row; index as slotIndex"
+                    (click)="clickSlot(slotIndex, rowIndex, $event)" draggable="true"
+                    (dragstart)="onDragStart(slotIndex, rowIndex, $event)" [ngStyle]="getSlotStyle(slotIndex, rowIndex)"
+                    (dragover)="onDragOver(slotIndex, rowIndex, $event)" (dragend)="onDragEnd($event)"
+                    [class.time]="getCurrentTime() == slotIndex" [class.selected]="selectedSlots[rowIndex][slotIndex]">
+                    <div class="select-beam"></div>
+                    <div [ngStyle]="getIconStyle(slotIndex, rowIndex)" *ngIf="skill != undefined" class="icon"
+                        (mouseover)="mouseoverSlot($event, skill)" (mouseout)="mouseoutSlot($event, skill)">
+                        <img src="/assets/{{skill.icon}}" />
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div class="scroll-border"></div>
+</div>

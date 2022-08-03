@@ -1,0 +1,18 @@
+<app-skill-tooltip [hoveredSkill]="hoveredTooltipSkill" [element]="hoveredElement" [opacity]="hoveredOpacity">
+</app-skill-tooltip>
+<div (click)="openPopup()" class="popup-button">!</div>
+<div class="skill-selector">
+    <img src="/assets/iconholder-left-back.png" class="left" />
+    <img src="/assets/iconholder-right-back.png" class="right" />
+    <div class="skill-holder" appHorizontalScroll>
+        <div *ngFor="let skill of getQuickSkills(); index as i" [class.selected]="skill === selectedSkill" 
+            (click)="onClick($event, skill)" (mouseover)="mouseoverSlot($event, skill)"
+            (mouseout)="mouseoutSlot($event, skill)" class="skill">
+            <div class="keycode" *ngIf="(i + 1) < 10">{{(i + 1)}}</div>
+            <img class="main-icon" src="/assets/{{skill!.icon}}" />
+            <img class="pin-icon" src="/assets/pinicon.png" *ngIf="i < pinnedSkills.length"/>
+        </div>
+    </div>
+    <img src="/assets/iconholder-left.png" class="left frame" />
+    <img src="/assets/iconholder-right.png" class="right frame" />
+</div>

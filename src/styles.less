@@ -1,0 +1,84 @@
+html,
+body {
+    height: 100%;
+    overflow: hidden;
+}
+
+body {
+    margin: 0;
+    font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+@keyframes float {
+    0% {
+        transform: scale(1, 1);
+    }
+
+    10% {
+        transform: scale(0.95, 1.2);
+    }
+
+    20% {
+        transform: scale(1.25, 0.5);
+    }
+
+    25% {
+        transform: scale(0.75, 1.5) translate(0px, -2px);
+    }
+
+    30% {
+        transform: scale(0.8, 1.2) translate(0px, -4px);
+    }
+
+    60% {
+        transform: scale(1, 1) translate(0px, -5px);
+    }
+
+    70% {
+        transform: scale(1.5, 0.5);
+    }
+
+    80% {
+        transform: scale(0.8, 1.2);
+    }
+
+    90% {
+        transform: scale(1, 1);
+    }
+
+    100% {
+        transform: scale(1, 1);
+    }
+}
+
+@keyframes MOVE-BG {
+    from {
+        background-position: 0% 0%, 100% 0%, 0 100%, 0% 0%;
+    }
+
+    to {
+        background-position: 100% 200%, 0% -100%, 200% -200%, -300% 200%;
+    }
+}
+
+@keyframes ROTATE-BG{
+    from{
+        transform: scale(1.7) rotate(0);
+    }
+    to{
+        transform: scale(1.7) rotate(360deg);
+    }
+}
+
+.dialog-backdrop{
+    background-color: rgba(0, 0, 0, 0.7);
+}
+
+.cosmic {
+    background: url("/assets/galaxy-3.png"), url("/assets/galaxy-4.png"), url("/assets/galaxy-2.png"), url("/assets/galaxy-1.png");
+    background-origin: content-box;
+    background-size: 12.5% 12.5%, 25% 25%, 25% 25%, 25% 25%;
+    animation: MOVE-BG 200s linear infinite, ROTATE-BG 150s linear infinite;
+    opacity: .4 !important;
+    filter: blur(1px);
+}
