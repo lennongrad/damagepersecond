@@ -23,7 +23,7 @@ export class SkillSelectorComponent implements OnInit {
   hoveredOpacity = 0;
 
   buttonClickNoise: SoundInfo = {
-    audioFilename: "../assets/buttonnoise.mp3",
+    audioFilename: "buttonnoise.mp3",
     playbackRateMin: 4,
     playbackRateMax: 8,
     volume: 1,

@@ -40,7 +40,7 @@ export class TimelineComponent implements OnInit {
   hoveredOpacity = 0;
 
   trackPingNoise: SoundInfo = {
-    audioFilename: "../../assets/tracknoise.mp3",
+    audioFilename: "tracknoise.mp3",
     playbackRateMin: 3,
     playbackRateMax: 4,
     volume: .5,
@@ -49,7 +49,7 @@ export class TimelineComponent implements OnInit {
   }
 
   trackPlacementNoise: SoundInfo = {
-    audioFilename: "../../assets/tracknoise.mp3",
+    audioFilename: "tracknoise.mp3",
     playbackRateMin: 2,
     playbackRateMax: 3,
     volume: 1,

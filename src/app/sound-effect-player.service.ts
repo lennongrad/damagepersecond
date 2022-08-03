@@ -35,7 +35,7 @@ export class SoundEffectPlayerService {
 
   _createSound(soundInfo: SoundInfo) {
     // ts wont let me do preservesPitch unless i cast it as any
-    var sound = new Audio(soundInfo.audioFilename) as any;
+    var sound = new Audio("assets/" + soundInfo.audioFilename) as any;
     sound.playbackRate = soundInfo.playbackRateMin + (soundInfo.playbackRateMax - soundInfo.playbackRateMin) * Math.random();
     sound.volume = soundInfo.volume;
     if ('preservesPitch' in sound) {
