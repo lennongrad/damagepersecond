@@ -9,6 +9,62 @@ body {
     font-family: Roboto, "Helvetica Neue", sans-serif;
 }
 
+/* Material styles (which can't be put in relative css)  */
+.timeline-header {
+    mat-select{
+        overflow-y: hidden;
+    }
+
+    .mat-select-trigger {
+        height: 100%;
+    }
+
+    .mat-select-value {
+        height: calc(100% - 2px);
+        background: linear-gradient(#43423E, #31302C);
+        margin-left: 1px;
+        margin-right: -22px;
+        padding-left: 5px;
+        box-shadow: 0 0 5px #222 inset;
+        border: 1px solid #444;
+
+        &:hover{
+            filter: brightness(0.9);
+        }
+
+        &:active{
+            transform: translateY(2px);
+            box-shadow: 0 0 4px black inset, 0 -2px 4px black inset;
+        }
+    }
+
+    .mat-select-value-text{
+        font-weight: bold;
+        color: white;
+    }
+
+    .mat-select-min-line{    
+        background-image: linear-gradient(#555555, #CCC);
+        background-size: 100%;
+        background-repeat: repeat;
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        text-transform: uppercase;
+        filter: drop-shadow(2px 2px 0 black);
+    }
+
+    .mat-select-arrow-wrapper {
+        margin-right: 5px;
+    }
+
+    .mat-select-arrow {
+        color: grey;
+        filter: drop-shadow(2px 2px 0 black);
+    }
+}
+
+
 @keyframes float {
     0% {
         transform: scale(1, 1);
@@ -61,16 +117,17 @@ body {
     }
 }
 
-@keyframes ROTATE-BG{
-    from{
+@keyframes ROTATE-BG {
+    from {
         transform: scale(1.7) rotate(0);
     }
-    to{
+
+    to {
         transform: scale(1.7) rotate(360deg);
     }
 }
 
-.dialog-backdrop{
+.dialog-backdrop {
     background-color: rgba(0, 0, 0, 0.7);
 }
 

@@ -61,6 +61,14 @@ export class TimelineComponent implements OnInit {
     this.timelineService.processTime();
   }
 
+  newGrid(): void{
+    this.timelineService.newGrid();
+  }
+
+  deleteGrid(): void{
+    this.timelineService.deleteGrid(this.timelineService.currentGridName, true);
+  }
+
   setSkillGrid(skillGrid: SkillGrid): void {
     for (var rowIndex in this.selectedSlots) {
       while (this.selectedSlots[rowIndex].length < skillGrid[0].length) {
@@ -73,12 +81,23 @@ export class TimelineComponent implements OnInit {
     return this.timelineService.getCurrentSkillGrid();
   }
 
+  getMaxTime(): number {
+    return this.timelineService.gridTimeMax;
+  }
+
   getCurrentTime(): number {
     return this.timelineService.currentTime;
   }
 
-  getMaxTime(): number {
-    return this.timelineService.gridTimeMax;
+  getGridName(){
+    return this.timelineService.currentGridName;
+  }
+
+  getGridNames(): Array<string>{
+    if(this.timelineService.savedGridNames == undefined){
+      return [];
+    }
+    return this.timelineService.savedGridNames;
   }
 
   getSlotStyle(slotIndex: number, rowIndex: number): any {
@@ -115,6 +134,10 @@ export class TimelineComponent implements OnInit {
     }
 
     return style;
+  }
+
+  changeGrid(name: string): void{
+    this.timelineService.loadGrid(name);
   }
 
   forEachSelected(callback: (rowIndex: number, slotIndex: number) => void): void {
@@ -307,6 +330,6 @@ export class TimelineComponent implements OnInit {
 
 
   ngOnInit(): void {
-    this.timelineService.setGridMax(80);
+    this.timelineService.loadGrid();
   }
 }
