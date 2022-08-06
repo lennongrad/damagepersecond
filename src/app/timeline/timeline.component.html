@@ -4,25 +4,48 @@
 
 <div class="header timeline-header">
     <img src="assets/headerframe-left.png" class="left" />
-    <div class="header-grow crusty-bg">
-        <button (click)="processTime()" class="time-progress">{{getCurrentTime() + 1}}/{{getMaxTime()}}</button>
-    </div>
     <img src="assets/headerframe-divider.png" />
     <div class="crusty-bg">
-        <mat-select (selectionChange)="changeGrid($event.value)" [ngModel]="getGridName()" class="name-select select-arrow-white ">
-            <mat-option *ngFor="let name of getGridNames()" [value]="name">{{name}}</mat-option>
-        </mat-select>
-    </div>
-    <img src="assets/headerframe-divider.png" />
-    <div class="crusty-bg">
-        <div class="divided-button">
-            <button (click)="newGrid()">N</button>
+        <div class="divided-button time-progress">
+            <button (click)="processTime(); buttonClick()">{{getTimeDisplay()}}</button>
         </div>
     </div>
     <img src="assets/headerframe-divider.png" />
     <div class="crusty-bg">
         <div class="divided-button">
-            <button (click)="deleteGrid()">D</button>
+            <button (click)="toggleAutomaticProgress(); buttonClick()">R</button>
+        </div>
+    </div>
+    <img src="assets/headerframe-divider.png" />
+    <div class="header-grow crusty-bg">
+    </div>
+    <img src="assets/headerframe-divider.png" />
+    <div class="crusty-bg">
+        <div class="divided-button">
+            <button (click)="deleteGrid(); buttonClick()">D</button>
+        </div>
+    </div>
+    <img src="assets/headerframe-divider.png" />
+    <div class="crusty-bg">
+        <div class="divided-button">
+            <button (click)="newGrid(); buttonClick()">N</button>
+        </div>
+    </div>
+    <img src="assets/headerframe-divider.png" />
+    <div class="crusty-bg">
+        <div class="displaced-input" style="z-index: 2" *ngIf="isRenaming">
+            <input type="text" placeholder="Type here..." (keydown)="trackNoise()" FocusAndSelect [value]="getGridName()"
+            (keydown.enter)="renameGrid($event); isRenaming = false; buttonClick()">
+        </div>
+        <mat-select (selectionChange)="changeGrid($event.value);" [ngModel]="getGridName()" (click)="buttonClick()"
+            class="name-select select-arrow-white " [disabled]="getGridNames().length <= 1">
+            <mat-option *ngFor="let name of getGridNames(true)" [value]="name"  (click)="buttonClick()">{{name}}</mat-option>
+        </mat-select>
+    </div>
+    <img src="assets/headerframe-divider.png" />
+    <div class="crusty-bg">
+        <div class="divided-button">
+            <button (click)="isRenaming = !isRenaming; buttonClick()">R</button>
         </div>
     </div>
     <img src="assets/headerframe-right.png" class="right" />

@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Skill } from '../skill';
 import { SelectedSkillService } from '../selected-skill.service';
+import { AnimationInformation } from '../animation-information';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-timeline-builder',
@@ -9,11 +11,11 @@ import { SelectedSkillService } from '../selected-skill.service';
 })
 export class TimelineBuilderComponent implements OnInit {
 
-  onKeydown(event: any){
+  onKeydown(event: any) {
     this.selectedSkillService.keycodeSelect.next(event.keyCode);
   }
 
-  constructor(private selectedSkillService: SelectedSkillService) {}
+  constructor(private selectedSkillService: SelectedSkillService) { }
 
   ngOnInit(): void {
   }

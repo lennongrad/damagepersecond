@@ -1,0 +1,14 @@
+<div class="battlefield">
+    <div class="sprite-container character-container">
+        <app-animated-sprite *ngFor="let characterInstance of getCharacterInstances(); let i = index"
+            [spriteURL]="'eirika-test.png'" [AnimationDetails]="characterInstance.getAnimationDetails()"
+            [AnimationSubject]="characterInstance.animationChange" (click)="characterInstance.playAnimation('Attack')"
+            [ngStyle]="getSpriteStyle(true, i)"></app-animated-sprite>
+    </div>
+    <div class="sprite-container enemy-container">
+        <app-animated-sprite *ngFor="let enemyInstance of getEnemyInstances(); let i = index"
+            [spriteURL]="'eirika-test.png'" [AnimationDetails]="enemyInstance.getAnimationDetails()"
+            [AnimationSubject]="enemyInstance.animationChange" (click)="enemyInstance.playAnimation('Attack')"
+            [ngStyle]="getSpriteStyle(false, i)"></app-animated-sprite>
+    </div>
+</div>

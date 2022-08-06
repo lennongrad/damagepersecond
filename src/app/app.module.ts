@@ -16,6 +16,9 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatInputModule } from '@angular/material/input';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SkillSelectorPopupComponent } from './skill-selector/skill-selector-popup/skill-selector-popup.component';
+import { FocusOnShowDirective } from './focus-on-show.directive';
+import { AnimatedSpriteComponent } from './animated-sprite/animated-sprite.component';
+import { BattlefieldComponent } from './battlefield/battlefield.component';
 
 @NgModule({
   declarations: [
@@ -25,7 +28,10 @@ import { SkillSelectorPopupComponent } from './skill-selector/skill-selector-pop
     TimelineBuilderComponent,
     SkillTooltipComponent,
     HorizontalScrollDirective,
-    SkillSelectorPopupComponent
+    SkillSelectorPopupComponent,
+    FocusOnShowDirective,
+    AnimatedSpriteComponent,
+    BattlefieldComponent
   ],
   imports: [
     BrowserModule,

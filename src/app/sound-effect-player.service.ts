@@ -30,7 +30,9 @@ export class SoundEffectPlayerService {
   }
 
   _removeSound(sound: any, filename: string): void {
-    this.noisesPlaying[filename] = _.without(this.noisesPlaying[filename], sound.path[0]);
+    if(sound.path != undefined){
+      this.noisesPlaying[filename] = _.without(this.noisesPlaying[filename], sound.path[0]);
+    }
   }
 
   _createSound(soundInfo: SoundInfo) {

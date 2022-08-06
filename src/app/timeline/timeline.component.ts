@@ -39,6 +39,8 @@ export class TimelineComponent implements OnInit {
   hoveredElement?: Element;
   hoveredOpacity = 0;
 
+  isRenaming = false;
+
   trackPingNoise: SoundInfo = {
     audioFilename: "tracknoise.mp3",
     playbackRateMin: 3,
@@ -57,16 +59,45 @@ export class TimelineComponent implements OnInit {
     replacePrevious: true
   }
 
+  buttonClickNoise: SoundInfo = {
+    audioFilename: "buttonnoise.mp3",
+    playbackRateMin: 4,
+    playbackRateMax: 8,
+    volume: 1,
+    concurrentMaximum: 1,
+    replacePrevious: true
+  }
+
   processTime(): void {
     this.timelineService.processTime();
   }
 
-  newGrid(): void{
+  newGrid(): void {
     this.timelineService.newGrid();
   }
 
-  deleteGrid(): void{
+  deleteGrid(): void {
     this.timelineService.deleteGrid(this.timelineService.currentGridName, true);
+  }
+
+  renameGrid(event: any): void {
+    this.timelineService.renameGrid(event.path[0].value.toUpperCase());
+  }
+
+  changeGrid(name: string): void {
+    this.timelineService.loadGrid(name);
+  }
+
+  toggleAutomaticProgress(): void {
+    this.timelineService.automaticProgress = !this.timelineService.automaticProgress;
+  }
+
+  trackNoise(): void {
+    this.soundEffectPlayer.playSound(this.trackPingNoise)
+  }
+
+  buttonClick(): void {
+    this.soundEffectPlayer.playSound(this.trackPlacementNoise);
   }
 
   setSkillGrid(skillGrid: SkillGrid): void {
@@ -81,21 +112,29 @@ export class TimelineComponent implements OnInit {
     return this.timelineService.getCurrentSkillGrid();
   }
 
-  getMaxTime(): number {
-    return this.timelineService.gridTimeMax;
+  getTimeDisplay(): string {
+    if (this.timelineService.gridTimeMax == 0) {
+      return "EMPTY";
+    }
+    return this.timelineService.currentTime + 1 + "/" + this.timelineService.gridTimeMax + "s";
   }
 
   getCurrentTime(): number {
     return this.timelineService.currentTime;
   }
 
-  getGridName(){
+  getGridName() {
     return this.timelineService.currentGridName;
   }
 
-  getGridNames(): Array<string>{
-    if(this.timelineService.savedGridNames == undefined){
+  getGridNames(sorted: boolean = false): Array<string> {
+    if (this.timelineService.savedGridNames == undefined) {
       return [];
+    }
+    if (sorted) {
+      return _.sortBy(this.timelineService.savedGridNames, (name) => {
+        return name != this.timelineService.currentGridName ? ("z" + name) : " ";
+      });
     }
     return this.timelineService.savedGridNames;
   }
@@ -136,10 +175,6 @@ export class TimelineComponent implements OnInit {
     return style;
   }
 
-  changeGrid(name: string): void{
-    this.timelineService.loadGrid(name);
-  }
-
   forEachSelected(callback: (rowIndex: number, slotIndex: number) => void): void {
     this.timelineService.forEachSlot((rowIndex, slotIndex) => {
       if (this.selectedSlots[rowIndex][slotIndex]) {
@@ -166,6 +201,8 @@ export class TimelineComponent implements OnInit {
     } else {
       this.selectSlot(slotIndex, rowIndex, event.shiftKey);
     }
+
+    this.timelineService.resetTime();
   }
 
   selectSlot(slotIndex: number, rowIndex: number, holdingSHIFT: boolean): void {
@@ -230,8 +267,7 @@ export class TimelineComponent implements OnInit {
       }
 
       var endIndex = this.timelineService.insertSkill(displacedIndex.x, displacedIndex.y, selectedItems[i]);
-      if(this.selectedSlots[displacedIndex.y][displacedIndex.x])
-      {
+      if (this.selectedSlots[displacedIndex.y][displacedIndex.x]) {
         this.selectedSlots[endIndex.y][endIndex.x] = true;
       } else {
         this.selectedSlots[displacedIndex.y][displacedIndex.x] = true
@@ -254,6 +290,8 @@ export class TimelineComponent implements OnInit {
     if (this.draggingSkill) {
       this.selectedSlots[rowIndex][slotIndex] = true;
     }
+
+    this.timelineService.resetTime();
   }
 
   onDragOver(slotIndex: number, rowIndex: number, event: any): void {
@@ -296,8 +334,7 @@ export class TimelineComponent implements OnInit {
         // select all the slots that user dragged over
         for (var x = this.dragBox.left; x <= this.dragBox.right; x++) {
           for (var y = this.dragBox.top; y <= this.dragBox.bottom; y++) {
-            if(this.getSkillGrid()[y][x] != undefined)
-            {
+            if (this.getSkillGrid()[y][x] != undefined) {
               this.selectedSlots[y][x] = true;
             }
           }

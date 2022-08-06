@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
-import { Subject } from 'rxjs';
+import { Subject, interval, Subscription } from 'rxjs';
 import * as _ from 'underscore';
 import { Skill } from './skill';
 import { SaveService } from './save.service';
 import { AvailableSkillsService } from './available-skills.service';
 import { cloneable } from './cloneable';
+import { CharacterInstancesService } from './character-instances.service';
 
 export type SkillGrid = Array<Array<Skill | undefined>>
 export interface SlotIndex { x: number, y: number };
@@ -22,6 +23,14 @@ export class TimelineService {
   currentTime = -1;
   gridTimeMax = 0;
 
+  timeSource = interval(40);
+  subscription?: Subscription;
+
+  progressTimer = 0;
+  automaticProgress = false;
+  lastDate = Date.now();
+  timelineProceedLimit = .15;
+
   getGridMax(): number {
     return this.getCurrentSkillGrid()[0].length;
   }
@@ -33,16 +42,22 @@ export class TimelineService {
   processTime() {
     if (this.gridTimeMax > 0) {
       if (isNaN(this.currentTime)) {
-        this.currentTime = -1;
+        this.resetTime();
       }
       this.currentTime = (this.currentTime + 1) % this.gridTimeMax;
 
       for (var rowIndex in this.getCurrentSkillGrid()) {
-        this.getCurrentSkillGrid()[rowIndex][this.currentTime]?.effect();
+        var actingCharacter = this.characterInstanceService.characterInstances[rowIndex];
+        this.getCurrentSkillGrid()[rowIndex][this.currentTime]?.effect(actingCharacter);
       }
     } else {
-      this.currentTime = -1;
+      this.resetTime();
     }
+  }
+
+  resetTime() {
+    this.currentTime = -1;
+    this.automaticProgress = false;
   }
 
   insertSkill(slotIndex: number, rowIndex: number, skill: Skill | undefined): SlotIndex {
@@ -83,10 +98,10 @@ export class TimelineService {
   }
 
   updateGrid(): void {
-    this.gridTimeMax = 1 + _.reduce(this.getCurrentSkillGrid(), (highest: number, arr: Array<Skill | undefined>) => {
-      return Math.max(highest, _.max(arr.map((value, index) => value == undefined ? -1 : index)));
+    this.gridTimeMax = _.reduce(this.getCurrentSkillGrid(), (highest: number, arr: Array<Skill | undefined>) => {
+      return Math.max(highest, _.max(arr.map((value, index) => value == undefined ? -1 : index + 1)));
     }, 0)
-    this.currentTime = -1;
+    this.resetTime();
 
     this.currentGridChange.next(this.getCurrentSkillGrid());
     this.saveGrid(this.currentGridName);
@@ -107,41 +122,39 @@ export class TimelineService {
     return _.map(JSON.parse(str), (arr) => _.map(arr, (id) => this.availableSkillService.getSkillById(id)));
   }
 
-  renameGrid(name: string): void{
-    this.deleteGrid(name);
+  renameGrid(name: string): void {
+    this.deleteGrid(this.currentGridName);
     this.currentGridName = name;
     this.saveGrid(this.currentGridName);
   }
 
-  newGrid(): void{
-    if(this.savedGridNames == undefined)
-    {
+  newGrid(): void {
+    if (this.savedGridNames == undefined) {
       this.savedGridNames = [];
     }
 
     var gridNameModifier: string = "";
-    while(_.includes(this.savedGridNames, "Untitled" + gridNameModifier)){
-      if(gridNameModifier == ""){
+    while (_.includes(this.savedGridNames, "UNTITLED" + gridNameModifier)) {
+      if (gridNameModifier == "") {
         gridNameModifier = "0";
       }
       gridNameModifier = (parseInt(gridNameModifier) + 1).toString();
     }
 
     this.setDefaultGrid();
-    this.saveGrid("Untitled" + gridNameModifier);
-    this.currentGridName = "Untitled" + gridNameModifier;
+    this.saveGrid("UNTITLED" + gridNameModifier);
+    this.currentGridName = "UNTITLED" + gridNameModifier;
   }
 
-  deleteGrid(name: string = this.currentGridName, replace: boolean = false): void{
-    if(this.savedGridNames == undefined)
-    {
+  deleteGrid(name: string = this.currentGridName, replace: boolean = false): void {
+    if (this.savedGridNames == undefined) {
       this.savedGridNames = [];
     }
     this.savedGridNames = _.without(this.savedGridNames, name);
     this.saveService.saveData("gridnames", JSON.stringify(this.savedGridNames));
     this.saveService.removeData("grid-" + name);
 
-    if(replace){
+    if (replace) {
       this.loadGrid();
     }
   }
@@ -149,9 +162,9 @@ export class TimelineService {
   saveGrid(name: string): void {
     this.saveService.saveData("grid-" + name, this.gridToString(this.getCurrentSkillGrid()));
 
-    if(this.savedGridNames == undefined){
+    if (this.savedGridNames == undefined) {
       this.savedGridNames = [name];
-    }else if(!_.includes(this.savedGridNames, name)){
+    } else if (!_.includes(this.savedGridNames, name)) {
       this.savedGridNames.push(name);
     }
     this.saveService.saveData("gridnames", JSON.stringify(this.savedGridNames));
@@ -167,12 +180,12 @@ export class TimelineService {
         this.savedGridNames = [];
       }
     }
-    
+
     if (this.savedGridNames != undefined && this.savedGridNames.length > 0
       && (_.includes(this.savedGridNames, name) || name == undefined)) {
       // name is present or just trying to load first
       var nameToLoad = name != undefined ? name : _.last(this.savedGridNames);
-      if(nameToLoad == undefined){
+      if (nameToLoad == undefined) {
         nameToLoad = this.savedGridNames[0];
       }
       var loadAttempt = this.saveService.getData("grid-" + nameToLoad);
@@ -182,7 +195,7 @@ export class TimelineService {
         this.currentGridName = nameToLoad;
       } catch (e) {
         console.log("Failed to load name; ", e);
-        this.currentGridName = "Untitled";
+        this.currentGridName = "UNTITLED";
         this.setDefaultGrid();
       }
     } else {
@@ -190,12 +203,32 @@ export class TimelineService {
       if (name != undefined) {
         console.log("Name not present");
       }
-      this.currentGridName = "Untitled";
+      this.currentGridName = "UNTITLED";
       this.setDefaultGrid();
     }
 
     this.updateGrid();
   }
 
-  constructor(private saveService: SaveService, private availableSkillService: AvailableSkillsService) { }
+  eachMillisecond(time: number): void {
+    var delta = Date.now() - this.lastDate;
+
+    if (this.automaticProgress) {
+      this.progressTimer += delta / 1000;
+    } else {
+      this.progressTimer = 0;
+    }
+
+    while (this.progressTimer > this.timelineProceedLimit) {
+      this.progressTimer -= this.timelineProceedLimit;
+      this.processTime();
+    }
+
+    this.lastDate = Date.now();
+  }
+
+  constructor(private saveService: SaveService, private availableSkillService: AvailableSkillsService,
+    private characterInstanceService: CharacterInstancesService) {
+    this.subscription = this.timeSource.subscribe(time => this.eachMillisecond(time))
+  }
 }
