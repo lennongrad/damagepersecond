@@ -1,0 +1,123 @@
+@import (reference) "../../app.component.less";
+
+
+.skill-selector {
+    position: relative;
+    padding-bottom: 8px;
+    padding-top: 7px;
+    margin-left: 50px;
+    margin-right: 50px;
+
+    background: url("~src/assets/iconholder.png") repeat-x bottom;
+
+    transition: .5s;
+
+    .left,
+    .right {
+        bottom: 0;
+        position: absolute;
+    }
+
+    .left {
+        left: 0;
+        transform: translateX(-98%);
+    }
+
+    .right {
+        right: 0;
+        transform: translateX(98%);
+    }
+}
+
+.skill-holder {
+    position: relative;
+    padding: 10px 20px 0 20px;
+    margin: 0 -20px 0 -20px;
+
+    overflow-x: scroll;
+    white-space: nowrap;
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+        display: none;
+    }
+}
+
+.skill {
+    position: relative;
+    width: 30px; 
+    height: 30px;
+    margin: 0 3px 0 3px;
+    display: inline-block;
+
+    text-align: center;
+    line-height: 30px;
+
+    background-color: #282725;
+    box-shadow: 0 0 9px black inset,  1px 2px 2px black;
+    border: 1px solid #555;
+    cursor: pointer;
+
+    transition: 0.5s, background-color .2s, transform 0s;
+
+    &.selected {
+        background-color: blue;
+        &:extend(.float-animation);
+
+        .keycode{
+            opacity: 0;
+        }
+
+        .pin-icon{
+            opacity: 0;
+        }
+    }
+}
+
+.keycode{
+    position: absolute;
+    width: 100%;
+    top: -17px;
+    opacity: .5;
+    transition: .25s;
+}
+
+.main-icon {
+    width: 16px;
+    height: 16px;
+    image-rendering: pixelated;
+    margin: 4px;
+    filter: drop-shadow(1px 1px 2px #008) drop-shadow(-1px -1px 3px #111);
+    pointer-events: none;
+    vertical-align: middle;
+}
+
+.pin-icon {
+    position: absolute;
+    right: -2px;
+    bottom: 0;
+    width: 7px;
+    height: 8px;
+    image-rendering: pixelated;
+    pointer-events: none;
+    transition: .5s;
+}
+
+.popup-button{
+    position: absolute;
+    top: 5px;
+    right: 3px;
+    width: 20px;
+    height: 20px;
+    background-color: #181818;
+    text-align: center;
+    line-height: 20px;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 100%;
+    cursor: pointer;
+}
+
+.popup-button:hover{
+    background-color: #222;
+}

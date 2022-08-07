@@ -1,0 +1,31 @@
+@import (reference) "../../app.component.less";
+
+.battlefield {
+    position: relative;
+    height: 200px;
+    display: flex;
+    justify-content: center;
+
+    background-image: url("~src/assets/ff6-background.png");
+    background-size: 960px 340px;
+    background-position: -90px -50px;
+    image-rendering: pixelated;
+}
+
+.sprite-container {
+    position: relative;
+    width: 180px;
+}
+
+.enemy-container app-animated-sprite {
+    transform: scaleX(-1);
+}
+
+app-animated-sprite {
+    position: absolute;
+}
+
+:host {
+    display: block;
+    margin-bottom: -50px;
+}

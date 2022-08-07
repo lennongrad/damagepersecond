@@ -1,0 +1,12 @@
+<div class="battlefield">
+    <div class="sprite-container character-container">
+        <app-animated-sprite *ngFor="let characterInstance of getCharacterInstances(); let i = index"
+            [AnimationDetails]="characterInstance.getAnimationDetails()"[AnimationSubject]="characterInstance.animationChange" 
+            [ngStyle]="getSpriteStyle(true, i)" (click)="characterInstance.animationChange.next('Damage')"></app-animated-sprite>
+    </div>
+    <div class="sprite-container enemy-container">
+        <app-animated-sprite *ngFor="let enemyInstance of getEnemyInstances(); let i = index"
+            [AnimationDetails]="enemyInstance.getAnimationDetails()" [AnimationSubject]="enemyInstance.animationChange" 
+            [ngStyle]="getSpriteStyle(false, i)" (click)="enemyInstance.animationChange.next('Damage')"></app-animated-sprite>
+    </div>
+</div>

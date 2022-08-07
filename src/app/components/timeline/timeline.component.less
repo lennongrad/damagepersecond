@@ -1,0 +1,304 @@
+@import (reference) "../../app.component.less";
+@icon-width: 16px;
+@icon-padding: 5px;
+@icon-margins: 2px;
+@slot-width: @icon-width + @icon-padding * 2 + @icon-margins * 2;
+
+.header {
+    height: 34px;
+    margin-right: 20px;
+    margin-left: 16px;
+    position: relative;
+    display: flex;
+    filter: drop-shadow(0px 3px 5px black) drop-shadow(0px 3px 2px black);
+
+    .crusty-bg {
+        height: calc(100% - 12px);
+        padding-top: 6px;
+        padding-bottom: 6px;
+
+        position: relative;
+        background-image: url("~src/assets/headerframe-middle.png");
+        background-repeat: repeat-x;
+    }
+}
+
+.header-grow {
+    flex-grow: 1;
+    height: calc(100% - 15px);
+    padding-top: 7px;
+    padding-bottom: 8px;
+}
+
+.divided-button {
+    position: relative;
+    margin-top: -1px;
+    height: calc(100% + 1px);
+    margin-left: 1px;
+    margin-right: 1px;
+    overflow: hidden;
+    
+    &:hover {
+        filter: brightness(0.9);
+    }
+
+    button{
+        height: 100%;
+        background: linear-gradient(#43423E, #31302C);
+        box-shadow: 0 0 5px #222 inset;
+        border: 1px solid #444;
+        filter: drop-shadow(2px 2px 0 black);
+        cursor: pointer;
+    
+    
+        background-image: linear-gradient(#555555, #CCC);
+        background-size: 100%;
+        background-repeat: repeat;
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        text-transform: uppercase;
+        font-weight: bold;
+    
+        &:active {
+            transform: translateY(2px);
+            box-shadow: 0 0 4px black inset, 0 -2px 4px black inset;
+        }
+    }
+
+    &.time-progress{
+        background: linear-gradient(#333647, #262835);
+
+        button{
+            width: 60px;
+            border: 1px solid #113;
+            text-transform: none;
+        }
+    }
+}
+
+.displaced-input{
+    position: absolute;
+    left: 1px;
+    width: calc(100% - 5px);
+    height: calc(100% - 14px);
+    background: linear-gradient(#43423E, #31302C);
+    box-shadow: 0 0 5px #222 inset;
+    border: 1px solid #444;
+    filter: drop-shadow(2px 2px 0 black);
+    cursor: pointer;
+
+    input {
+        width: 100%;
+        height: 100%;
+        padding: 0 0 0 4px;
+
+        background-image: linear-gradient(#555555, #CCC);
+        background-size: 100%;
+        background-repeat: repeat;
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        text-transform: uppercase;
+        font-weight: bold;
+        border: none;
+        color: white;
+    }
+
+    input::placeholder{
+        font-size: 10px;
+        font-style: italic;
+    }
+}
+
+
+.name-select {
+    width: 200px;
+    height: 100%;
+    background-color: black;
+    border-radius: 1px;
+    box-shadow: 0 0 8px #555 inset;
+}
+
+.scroll-container {
+    position: relative;
+    padding: 10px;
+}
+
+.scroll-border {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: 18px solid transparent;
+    border-image: url("~src/assets/metalframe.png") 23 stretch;
+    filter: drop-shadow(1px 1px 3px black);
+    box-sizing: border-box;
+    pointer-events: none;
+}
+
+.timeline-scroll {
+    display: block;
+    overflow-x: scroll;
+    overflow-y: hidden;
+    white-space: nowrap;
+    background: linear-gradient(rgba(0,0,0,25%) 100%, transparent), url("~src/assets/trackslot.png");
+    background-position: 1px 1px;
+    background-size: 30px;
+
+    &::-webkit-scrollbar {
+        background-color: #AAA;
+        width: 9px;
+        height: 6px;
+        box-shadow: 0px 0px 3px black inset;
+        border-bottom: 1px black;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background-color: rgba(50, 25, 25, .375);
+        border-radius: 17px;
+        border: 1px solid transparent;
+        background-clip: padding-box;
+        pointer-events: none;
+    }
+}
+
+.timeline {
+    width: 0px;
+    table-layout: fixed;
+    border-spacing: 0;
+
+
+    background: url("~src/assets/trackslot.png");
+    background-size: @slot-width;
+
+    border-top: 1px solid #352F2F;
+    border-bottom: 1px solid #3F3B38;
+
+    &.dragging {
+        .icon {
+            pointer-events: none;
+            filter: drop-shadow(0 1px 1px black);
+        }
+    }
+
+    &:not(.dragging) {
+        &.placing {
+            .slot {
+                cursor: pointer;
+            }
+
+            .slot:hover {
+                background-color: rgba(0, 0, 100, .3);
+            }
+        }
+
+        .slot.time {
+            filter: brightness(1.6);
+            border-radius: 3px;
+
+            .select-beam {
+                opacity: 1;
+            }
+        }
+    }
+}
+
+
+.slot {
+    position: relative;
+    width: @slot-width;
+    height: @slot-width;
+    vertical-align: top;
+
+    border: none;
+    padding: 0;
+    outline: none;
+
+    transition: opacity .15s;
+
+    &.selected {
+        .icon {
+            background: linear-gradient(45deg, #22A 10%, #55A)
+        }
+    }
+}
+
+.select-beam {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.44) 45% 55%, transparent);
+    opacity: 0;
+    transition: 0.075s;
+    pointer-events: none;
+}
+
+.icon {
+    position: absolute;
+    top: calc(@icon-margins + 1px);
+    left: @icon-margins;
+    width: @icon-width;
+    height: @icon-width;
+    padding: calc(@icon-padding - 3px);
+    line-height: @icon-width;
+
+    background: linear-gradient(45deg, #333 10%, #666);
+    border: 3px solid transparent;
+    border-image: url("~src/assets/cookieclickerframe.png") 4 round;
+    box-shadow: 1px 1px 3px rgba(0, 0, 0, 50%);
+
+    cursor: pointer;
+
+    img {
+        width: @icon-width;
+        height: @icon-width;
+        pointer-events: none;
+
+        image-rendering: pixelated;
+        filter: drop-shadow(1px 1px 2px #666) drop-shadow(-1px -1px 3px #333);
+    }
+}
+
+.hint {
+    margin-top: 5px;
+    margin-left: 5px;
+    line-height: 20px;
+}
+
+.cdk-drag-preview {
+    box-sizing: border-box;
+    border-radius: 4px;
+    filter: drop-shadow(2px 1px 3px rgba(0, 0, 0, .45)) drop-shadow(-2px 1px 3px rgba(0, 0, 0, .45));
+
+    .drag-preview {
+        opacity: 1;
+    }
+}
+
+.cdk-drag-placeholder {
+    opacity: 0;
+}
+
+.placeholder {
+    background-color: green;
+    width: @slot-width;
+    height: 4px;
+}
+
+.drag-preview {
+    position: absolute;
+    left: 30px;
+    background: #44A;
+    color: white;
+    font-weight: bold;
+    padding: 0.25em 0.5em 0.2em;
+    border-radius: 30px;
+    display: inline-block;
+    opacity: 0;
+}
+
+.cdk-drag-animating {
+    transition: transform 120ms cubic-bezier(0, 0, 0.2, 1);
+}
