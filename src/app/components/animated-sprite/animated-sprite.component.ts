@@ -10,15 +10,15 @@ import * as _ from 'underscore';
   styleUrls: ['./animated-sprite.component.less']
 })
 export class AnimatedSpriteComponent implements OnInit {
-  @Input() set AnimationSubject(value: Subject<string>){
+  @Input() set AnimationSubject(value: Subject<string>) {
     value.subscribe(name => this.playAnimation(name));
   }
 
   animationDetails?: AnimationDetails;
-  @Input() set AnimationDetails(value: AnimationDetails){
+  @Input() set AnimationDetails(value: AnimationDetails) {
     this.animationDetails = value;
 
-    if(this.animationIndex == undefined){
+    if (this.animationIndex == undefined) {
       this.playAnimation("Idle");
     }
   }
@@ -70,9 +70,13 @@ export class AnimatedSpriteComponent implements OnInit {
       }
     }
 
-    if(this.animationDetails != undefined){
-      style["background-size"] = this.animationDetails.sheetWidth + "00% " + this.animationDetails.sheetHeight + "00%"; 
+    if (this.animationDetails != undefined) {
+      style["background-size"] = this.animationDetails.sheetWidth + "00% " + this.animationDetails.sheetHeight + "00%";
       style["background-image"] = "url(assets/" + this.animationDetails.imageURL + ")";
+
+      if (this.animationDetails.horizontalDisplacement != undefined) {
+        style["transform"] = "translateX(" + this.animationDetails.horizontalDisplacement + "px)";
+      }
     }
 
     return style;
@@ -83,11 +87,10 @@ export class AnimatedSpriteComponent implements OnInit {
     var delta = Date.now() - this.lastDate;
 
     var animationInformation = this.getAnimationInformation();
-
     var originalTime = this.animationTime
     if (animationInformation != undefined) {
       this.animationTime += delta / 1000;
-      if(animationInformation.randomize != undefined && Math.random() < animationInformation.randomize){
+      if (animationInformation.randomize != undefined && Math.random() < animationInformation.randomize) {
         this.animationTime += .01;
       }
 
@@ -112,9 +115,19 @@ export class AnimatedSpriteComponent implements OnInit {
       return;
     }
 
-    this.animationIndex = _.findIndex(this.animationDetails.animations, { name: animationName });
-    this.animationTime = 0;
-    if(animationName == "Idle"){
+    var animationInformation = this.getAnimationInformation();
+    if (animationInformation != undefined && animationInformation.name == animationName) {
+      if (animationInformation.restartAt != undefined) {
+        this.animationTime = animationInformation.restartAt;
+      } else {
+        this.animationTime = 0;
+      }
+    } else {
+      this.animationIndex = _.findIndex(this.animationDetails.animations, { name: animationName });
+      this.animationTime = 0;
+    }
+
+    if (animationName == "Idle") {
       this.animationTime += this.animationDetails.animations[0].frameDurations[0].duration * Math.random();
     }
   }

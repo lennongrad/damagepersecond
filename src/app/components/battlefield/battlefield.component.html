@@ -7,6 +7,6 @@
     <div class="sprite-container enemy-container">
         <app-animated-sprite *ngFor="let enemyInstance of getEnemyInstances(); let i = index"
             [AnimationDetails]="enemyInstance.getAnimationDetails()" [AnimationSubject]="enemyInstance.animationChange" 
-            [ngStyle]="getSpriteStyle(false, i)" (click)="enemyInstance.animationChange.next('Damage')"></app-animated-sprite>
+            [ngStyle]="getSpriteStyle(false, i)" (click)="enemyInstance.animationChange.next('Attack')"></app-animated-sprite>
     </div>
 </div>

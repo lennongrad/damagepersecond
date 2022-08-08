@@ -284,6 +284,10 @@ export class TimelineComponent implements OnInit {
 
   onDragStart(slotIndex: number, rowIndex: number, event: any): void {
     event.dataTransfer.setDragImage(new Image(), 0, 0);
+    if(this.selectedSkill != undefined){
+      return;
+    }
+    
     this.initialDragIndex = { x: slotIndex, y: rowIndex };
     this.draggingSkill = this.getSkillGrid()[rowIndex][slotIndex] != undefined;
 

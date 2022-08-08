@@ -1,5 +1,6 @@
 export interface AnimationDetails{
     imageURL: string,
+    horizontalDisplacement?: number,
     sheetWidth: number,
     sheetHeight: number,
     animations: Array<AnimationInformation>
@@ -10,5 +11,6 @@ export interface AnimationInformation {
     repeat: boolean,
     returnTo?: string,
     randomize?: number,
+    restartAt?: number,
     frameDurations: Array<{duration: number, frame: {x: number, y: number}}>; 
 };
