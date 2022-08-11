@@ -12,5 +12,11 @@ export class CharacterInstancesService {
     new CharacterInstance("C", CHARACTERS[2])
   ]
 
+  resetCharacters(){
+    this.characterInstances.forEach(character => {
+      console.log(character)
+    })
+  }
+
   constructor() { }
 }

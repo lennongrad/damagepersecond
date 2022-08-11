@@ -1,2 +1,3 @@
-<div [ngStyle]="getStyle()" class="sprite"></div>
+<div [ngStyle]="getStyle()" class="sprite" [class.dead]="isDead"></div>
+<div [ngStyle]="getStyle(true)" class="sprite sprite-shadow" [class.dead]="isDead"></div>
 <div class="clickable"></div>

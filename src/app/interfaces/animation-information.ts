@@ -1,5 +1,6 @@
 export interface AnimationDetails{
     imageURL: string,
+    shadowImageURL?: string,
     horizontalDisplacement?: number,
     sheetWidth: number,
     sheetHeight: number,

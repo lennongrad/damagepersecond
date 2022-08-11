@@ -19,6 +19,7 @@ import { SkillSelectorPopupComponent } from './components/skill-selector/skill-s
 import { FocusOnShowDirective } from './directives/focus-on-show.directive';
 import { AnimatedSpriteComponent } from './components/animated-sprite/animated-sprite.component';
 import { BattlefieldComponent } from './components/battlefield/battlefield.component';
+import { CharacterTooltipComponent } from './components/character-tooltip/character-tooltip.component';
 
 @NgModule({
   declarations: [
@@ -31,7 +32,8 @@ import { BattlefieldComponent } from './components/battlefield/battlefield.compo
     SkillSelectorPopupComponent,
     FocusOnShowDirective,
     AnimatedSpriteComponent,
-    BattlefieldComponent
+    BattlefieldComponent,
+    CharacterTooltipComponent
   ],
   imports: [
     BrowserModule,

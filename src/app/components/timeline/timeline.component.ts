@@ -77,7 +77,9 @@ export class TimelineComponent implements OnInit {
   }
 
   deleteGrid(): void {
-    this.timelineService.deleteGrid(this.timelineService.currentGridName, true);
+    if(confirm("Are you sure you want to delete the current skill timeline?")){
+      this.timelineService.deleteGrid(this.timelineService.currentGridName, true);
+    }
   }
 
   renameGrid(event: any): void {
@@ -125,6 +127,10 @@ export class TimelineComponent implements OnInit {
 
   getGridName() {
     return this.timelineService.currentGridName;
+  }
+
+  getAutomaticProgress(){
+    return this.timelineService.automaticProgress;
   }
 
   getGridNames(sorted: boolean = false): Array<string> {
@@ -287,7 +293,7 @@ export class TimelineComponent implements OnInit {
     if(this.selectedSkill != undefined){
       return;
     }
-    
+
     this.initialDragIndex = { x: slotIndex, y: rowIndex };
     this.draggingSkill = this.getSkillGrid()[rowIndex][slotIndex] != undefined;
 

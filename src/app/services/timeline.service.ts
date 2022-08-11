@@ -1,10 +1,13 @@
 import { Injectable } from '@angular/core';
 import { Subject, interval, Subscription } from 'rxjs';
 import * as _ from 'underscore';
-import { Skill } from '../interfaces/skill';
+import { Skill, SkillContext, SkillTargetType } from '../interfaces/skill';
 import { SaveService } from './save.service';
 import { AvailableSkillsService } from './available-skills.service';
 import { CharacterInstancesService } from './character-instances.service';
+import { EnemyInstancesService } from './enemy-instances.service';
+import { CharacterInstance } from '../classes/character-instance';
+import { EnemyInstance } from '../classes/enemy-instance';
 
 export type SkillGrid = Array<Array<Skill | undefined>>
 export interface SlotIndex { x: number, y: number };
@@ -22,13 +25,13 @@ export class TimelineService {
   currentTime = -1;
   gridTimeMax = 0;
 
-  timeSource = interval(40);
+  timeSource = interval(20);
   subscription?: Subscription;
 
   progressTimer = 0;
   automaticProgress = false;
   lastDate = Date.now();
-  timelineProceedLimit = .15;
+  timelineProceedLimit = 1 / 6;
   timeSinceLastProcess = 0;
 
   getGridMax(): number {
@@ -39,8 +42,24 @@ export class TimelineService {
     return this.currentSkillGrid;
   }
 
-  clickProcess(){
-    if(this.timeSinceLastProcess  > this.timelineProceedLimit){
+  clickProcess() {
+    if (this.timeSinceLastProcess > this.timelineProceedLimit) {
+      this.processTime();
+    }
+  }
+
+  resetTime(resetAutomaticProgress: boolean = true) {
+    this.characterInstanceService.characterInstances.forEach(character => {
+      character.resetCharacter();
+    })
+    this.enemyInstanceService.enemyInstances.forEach(enemy => {
+      enemy.resetEnemy();
+    })
+
+    this.currentTime = -1;
+    if (resetAutomaticProgress) {
+      this.automaticProgress = false;
+    } else {
       this.processTime();
     }
   }
@@ -50,11 +69,17 @@ export class TimelineService {
       if (isNaN(this.currentTime)) {
         this.resetTime();
       }
-      this.currentTime = (this.currentTime + 1) % this.gridTimeMax;
+      this.currentTime = this.currentTime + 1;
 
-      for (var rowIndex in this.getCurrentSkillGrid()) {
-        var actingCharacter = this.characterInstanceService.characterInstances[rowIndex];
-        this.getCurrentSkillGrid()[rowIndex][this.currentTime]?.effect(actingCharacter);
+      if (this.currentTime < this.gridTimeMax) {
+        for (var rowIndex in this.getCurrentSkillGrid()) {
+          var skill = this.getCurrentSkillGrid()[rowIndex][this.currentTime];
+          if (skill != undefined) {
+            this.activateSkill(this.characterInstanceService.characterInstances[rowIndex], skill);
+          }
+        }
+      } else {
+        this.resetTime(false);
       }
     } else {
       this.resetTime();
@@ -63,9 +88,38 @@ export class TimelineService {
     this.timeSinceLastProcess = 0;
   }
 
-  resetTime() {
-    this.currentTime = -1;
-    this.automaticProgress = false;
+  activateSkill(origin: CharacterInstance, skill: Skill) {
+    var targets = Array<CharacterInstance | EnemyInstance>();
+    switch (skill.target) {
+      case SkillTargetType.allButSelf:
+        targets = _.without(this.characterInstanceService.characterInstances, origin); break;
+      case SkillTargetType.allCharacters:
+        targets = this.characterInstanceService.characterInstances; break;
+      case SkillTargetType.allEnemies:
+        targets = this.enemyInstanceService.enemyInstances; break;
+      case SkillTargetType.firstEnemy:
+        var firstEnemy = _.find(this.enemyInstanceService.enemyInstances, (enemy) => enemy.isAlive());
+        targets = firstEnemy != undefined ? [firstEnemy] : [];
+        break;
+      case SkillTargetType.firstCharacter:
+        var firstCharacter = _.find(this.characterInstanceService.characterInstances, (character) => character.isAlive());
+        targets = firstCharacter != undefined ? [firstCharacter] : [];
+        break;
+      case SkillTargetType.noTarget:
+        targets = []; break;
+      case SkillTargetType.randomAliveCharacter:
+        var aliveCharacters = _.reject(this.characterInstanceService.characterInstances, (character) => character.isAlive());
+        targets = _.sample(aliveCharacters, 1); break;
+      case SkillTargetType.randomAliveEnemy:
+        var aliveEnemies = _.reject(this.enemyInstanceService.enemyInstances, (enemy) => enemy.isAlive());
+        targets = _.sample(aliveEnemies, 1); break;
+    }
+
+    var context: SkillContext = {
+      targets: targets,
+      origin: origin
+    }
+    skill.effect(context);
   }
 
   insertSkill(slotIndex: number, rowIndex: number, skill: Skill | undefined): SlotIndex {
@@ -237,7 +291,8 @@ export class TimelineService {
   }
 
   constructor(private saveService: SaveService, private availableSkillService: AvailableSkillsService,
-    private characterInstanceService: CharacterInstancesService) {
+    private characterInstanceService: CharacterInstancesService,
+    private enemyInstanceService: EnemyInstancesService) {
     this.subscription = this.timeSource.subscribe(time => this.eachMillisecond(time))
   }
 }

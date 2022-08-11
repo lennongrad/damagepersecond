@@ -2,8 +2,9 @@ import { EnemyInformation } from "../interfaces/enemy-information";
 
 export const ENEMIES: Array<EnemyInformation> = [
     {
-        enemyName: "Soldier", enemyAnimation: {
-            imageURL: "enemy-test.png",
+        enemyName: "Soldier", maxHP: 10, enemyAnimation: {
+            imageURL: "enemy-body.png",
+            shadowImageURL: "enemy-shadow.png",
             horizontalDisplacement: 22,
             sheetWidth: 8,
             sheetHeight: 8,
@@ -30,7 +31,7 @@ export const ENEMIES: Array<EnemyInformation> = [
                 ]
             }, {
                 name: "Damage", repeat: false, returnTo: "Idle", frameDurations: [
-                    { duration: .02, frame: { x: 4, y: 0 } },
+                    //{ duration: .02, frame: { x: 4, y: 0 } },
                     { duration: .3, frame: { x: 3, y: 0 } },
                 ]
             }]

@@ -23,6 +23,8 @@ export class AnimatedSpriteComponent implements OnInit {
     }
   }
 
+  @Input() isDead: boolean = false;
+
   bufferPlayAnimation?: string;
 
   timeSource = interval(1);
@@ -58,7 +60,7 @@ export class AnimatedSpriteComponent implements OnInit {
     return null;
   }
 
-  getStyle(): any {
+  getStyle(isShadow: boolean = false): any {
     var style: { [klass: string]: any } = {};
 
     var animationInformation = this.getAnimationInformation();
@@ -73,6 +75,13 @@ export class AnimatedSpriteComponent implements OnInit {
     if (this.animationDetails != undefined) {
       style["background-size"] = this.animationDetails.sheetWidth + "00% " + this.animationDetails.sheetHeight + "00%";
       style["background-image"] = "url(assets/" + this.animationDetails.imageURL + ")";
+      if (isShadow) {
+        if (this.animationDetails.shadowImageURL != undefined) {
+          style["background-image"] = "url(assets/" + this.animationDetails.shadowImageURL + ")";
+        } else {
+          style["display"] = "none";
+        }
+      }
 
       if (this.animationDetails.horizontalDisplacement != undefined) {
         style["transform"] = "translateX(" + this.animationDetails.horizontalDisplacement + "px)";
@@ -84,6 +93,10 @@ export class AnimatedSpriteComponent implements OnInit {
 
   lastDate = Date.now();
   eachMillisecond(time: number): void {
+    if(this.isDead){
+      return;
+    }
+
     var delta = Date.now() - this.lastDate;
 
     var animationInformation = this.getAnimationInformation();

@@ -2,9 +2,10 @@ import { CharacterInformation } from "../interfaces/character-information";
 
 export const CHARACTERS: Array<CharacterInformation> = [
     {
-        characterName: "Eirika", characterAnimation:
+        characterName: "Eirika", baseMaxHP: 10, baseMaxFP: 6, characterAnimation:
         {
-            imageURL: "eirika-test.png",
+            imageURL: "eirika-body.png",
+            shadowImageURL: "eirika-shadow.png",
             sheetWidth: 8,
             sheetHeight: 8,
             animations: [{
@@ -40,9 +41,10 @@ export const CHARACTERS: Array<CharacterInformation> = [
             }]
         }
     }, {
-        characterName: "Archer", characterAnimation:
+        characterName: "Archer", baseMaxHP: 8, baseMaxFP: 8, characterAnimation:
         {
-            imageURL: "archer-test.png",
+            imageURL: "archer-body.png",
+            shadowImageURL: "archer-shadow.png",
             sheetWidth: 8,
             sheetHeight: 8,
             animations: [{
@@ -86,9 +88,10 @@ export const CHARACTERS: Array<CharacterInformation> = [
             }]
         }
     }, {
-        characterName: "Wizard", characterAnimation:
+        characterName: "Wizard", baseMaxHP: 5, baseMaxFP: 13, characterAnimation:
         {
-            imageURL: "wizard-test.png",
+            imageURL: "wizard-body.png",
+            shadowImageURL: "wizard-shadow.png",
             sheetWidth: 8,
             sheetHeight: 8,
             horizontalDisplacement: -35,
@@ -103,7 +106,7 @@ export const CHARACTERS: Array<CharacterInformation> = [
                     { duration: .1, frame: { x: 3, y: 0 } }
                 ]
             }, {
-                name: "Attack", repeat: false, returnTo: "Idle", restartAt: .2, frameDurations: [
+                name: "Attack", repeat: false, returnTo: "Idle", restartAt: .11, frameDurations: [
                     { duration: .005, frame: { x: 0, y: 0 } },
                     { duration: .005, frame: { x: 1, y: 0 } },
                     { duration: .01, frame: { x: 0, y: 1 } },

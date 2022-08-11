@@ -2,7 +2,7 @@
     [opacity]="hoveredOpacity">
 </app-skill-tooltip>
 
-<div class="header timeline-header">
+<div class="header timeline-header" (window:keydown.escape)="isRenaming = false">
     <img src="assets/headerframe-left.png" class="left" />
     <img src="assets/headerframe-divider.png" />
     <div class="crusty-bg">
@@ -13,7 +13,8 @@
     <img src="assets/headerframe-divider.png" />
     <div class="crusty-bg">
         <div class="divided-button">
-            <button (click)="toggleAutomaticProgress(); buttonClick()">R</button>
+            <button (click)="toggleAutomaticProgress(); buttonClick()" *ngIf="getAutomaticProgress()">◼</button>
+            <button (click)="toggleAutomaticProgress(); buttonClick()" *ngIf="!getAutomaticProgress()">▶</button>
         </div>
     </div>
     <img src="assets/headerframe-divider.png" />
@@ -22,13 +23,7 @@
     <img src="assets/headerframe-divider.png" />
     <div class="crusty-bg">
         <div class="divided-button">
-            <button (click)="deleteGrid(); buttonClick()">D</button>
-        </div>
-    </div>
-    <img src="assets/headerframe-divider.png" />
-    <div class="crusty-bg">
-        <div class="divided-button">
-            <button (click)="newGrid(); buttonClick()">N</button>
+            <button (click)="isRenaming = !isRenaming; buttonClick()">✎</button>
         </div>
     </div>
     <img src="assets/headerframe-divider.png" />
@@ -45,7 +40,13 @@
     <img src="assets/headerframe-divider.png" />
     <div class="crusty-bg">
         <div class="divided-button">
-            <button (click)="isRenaming = !isRenaming; buttonClick()">R</button>
+            <button (click)="newGrid(); buttonClick()">✚</button>
+        </div>
+    </div>
+    <img src="assets/headerframe-divider.png" />
+    <div class="crusty-bg">
+        <div class="divided-button">
+            <button (click)="deleteGrid(); buttonClick()">✗</button>
         </div>
     </div>
     <img src="assets/headerframe-right.png" class="right" />
@@ -54,8 +55,10 @@
 <div class="scroll-container">
     <div class="timeline-scroll" appHorizontalScroll>
         <table class="timeline" [class.dragging]="initialDragIndex != undefined"
-            [class.placing]="selectedSkill != undefined" (window:keydown.delete)="deleteSelection()"
-            (window:keydown.shift.d)="duplicateSelection()" (window:keydown.arrowup)="moveSelection({x: 0, y: -1})"
+            [class.placing]="selectedSkill != undefined" 
+            (window:keydown.delete)="deleteSelection()"
+            (window:keydown.shift.d)="duplicateSelection()" 
+            (window:keydown.arrowup)="moveSelection({x: 0, y: -1})"
             (window:keydown.arrowdown)="moveSelection({x: 0, y: 1})"
             (window:keydown.arrowleft)="moveSelection({x: -1, y: 0})"
             (window:keydown.arrowright)="moveSelection({x: 1, y: 0})">
