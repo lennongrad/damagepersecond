@@ -5,23 +5,21 @@
     height: 128px;
     image-rendering: pixelated;
     position: absolute;
-    transition: .2s opacity, .1s filter;
+    transition: .15s opacity, .1s filter;
 
-    &.dead {
+    .dead & {
         filter: saturate(0);
         opacity: .3;
     }
 }
 
-:host:hover :not(.sprite-shadow) {
+:host:hover .sprite:not(.sprite-shadow) {
     &:not(.dead) {
-        filter: drop-shadow(0 1px 1px cyan) drop-shadow(0 -1px 1px cyan) drop-shadow(1px 0 1px cyan)
-            drop-shadow(-1px 0 1px cyan) drop-shadow(0px 0 1px white);
+        filter: drop-shadow(0 1px 1px cyan) drop-shadow(0 -1px 1px cyan) drop-shadow(1px 0 1px cyan) drop-shadow(-1px 0 1px cyan) drop-shadow(0px 0 1px white);
     }
 
     &.dead {
-        filter: drop-shadow(0 1px 1px white) drop-shadow(0 -1px 1px white) drop-shadow(1px 0 1px white)
-            drop-shadow(-1px 0 1px white) drop-shadow(0px 0 1px white) saturate(0);
+        filter: drop-shadow(0 1px 1px white) drop-shadow(0 -1px 1px white) drop-shadow(1px 0 1px white) drop-shadow(-1px 0 1px white) drop-shadow(0px 0 1px white) saturate(0);
     }
 }
 
@@ -40,6 +38,33 @@
 
     pointer-events: all;
     cursor: help;
+}
+
+.flip {
+    transform: scaleX(-1);
+}
+
+.ticks {
+    position: absolute;
+    left: 50%;
+    top: calc(50% + 20px);
+    transform: translate(-50%, -50%);
+}
+
+.tick {
+    position: absolute;
+    font-size: 20px;
+    font-weight: bold;
+    filter: drop-shadow(0 0 2px black) drop-shadow(0 0 2px black) drop-shadow(0 0 2px black);
+    transform: translate(-50%, -50%);
+
+    &.negative {
+        color: #ed6d6d;
+    }
+
+    &.positive {
+        color: #48db70;
+    }
 }
 
 :host {

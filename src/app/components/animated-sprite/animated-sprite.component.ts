@@ -13,6 +13,11 @@ export class AnimatedSpriteComponent implements OnInit {
   @Input() set AnimationSubject(value: Subject<string>) {
     value.subscribe(name => this.playAnimation(name));
   }
+  @Input() set TickSubject(value: Subject<number | true>) {
+    value.subscribe(amt => this.addTick(amt));
+  }
+
+  @Input() flipSprite = false;
 
   animationDetails?: AnimationDetails;
   @Input() set AnimationDetails(value: AnimationDetails) {
@@ -32,6 +37,8 @@ export class AnimatedSpriteComponent implements OnInit {
 
   animationIndex?: number;
   animationTime = 0;
+
+  activeTicks = new Array<{ value: number, time: number }>();
 
   getAnimationInformation(): AnimationInformation | undefined {
     if (this.animationIndex == undefined || this.animationDetails == undefined) {
@@ -91,33 +98,43 @@ export class AnimatedSpriteComponent implements OnInit {
     return style;
   }
 
+  getTickStyle(tick: {value: number, time: number}): any{
+    var style: { [klass: string]: any } = {};
+
+    style["bottom"] = 6 * Math.pow(tick.time, 0.4) - 30 + "px";
+    style["opacity"] = 3.15 - 4.3/(1+Math.exp(-tick.time / 300));
+
+    return style;
+  }
+
   lastDate = Date.now();
   eachMillisecond(time: number): void {
-    if(this.isDead){
-      return;
-    }
-
     var delta = Date.now() - this.lastDate;
 
-    var animationInformation = this.getAnimationInformation();
-    var originalTime = this.animationTime
-    if (animationInformation != undefined) {
-      this.animationTime += delta / 1000;
-      if (animationInformation.randomize != undefined && Math.random() < animationInformation.randomize) {
-        this.animationTime += .01;
-      }
-
-      var frame = this.getFrame(this.animationTime);
-      if (frame == null) {
-        if (animationInformation.repeat) {
-          this.animationTime = 0;
-        } else if (animationInformation.returnTo != undefined) {
-          this.playAnimation(animationInformation.returnTo);
-        } else {
-          this.animationTime = originalTime;
+    if (!this.isDead) {
+      var animationInformation = this.getAnimationInformation();
+      var originalTime = this.animationTime
+      if (animationInformation != undefined) {
+        this.animationTime += delta / 1000;
+        if (animationInformation.randomize != undefined && Math.random() < animationInformation.randomize) {
+          this.animationTime += .01;
+        }
+  
+        var frame = this.getFrame(this.animationTime);
+        if (frame == null) {
+          if (animationInformation.repeat) {
+            this.animationTime = 0;
+          } else if (animationInformation.returnTo != undefined) {
+            this.playAnimation(animationInformation.returnTo);
+          } else {
+            this.animationTime = originalTime;
+          }
         }
       }
     }
+
+    this.activeTicks = _.forEach(this.activeTicks, tick => { tick.time += 1; });
+    this.activeTicks = _.filter(this.activeTicks, tick => tick.time < 300);
 
     this.lastDate = Date.now();
   }
@@ -142,6 +159,20 @@ export class AnimatedSpriteComponent implements OnInit {
 
     if (animationName == "Idle") {
       this.animationTime += this.animationDetails.animations[0].frameDurations[0].duration * Math.random();
+    }
+  }
+
+  addTick(value: number | true): void {
+    if(value === true){
+      this.activeTicks = [];
+    } else {
+      this.activeTicks = _.forEach(this.activeTicks, tick => { 
+        if(tick.time < 50){
+          tick.time += 20; 
+        }
+      });
+      
+      this.activeTicks.push({ value: value, time: 0 });
     }
   }
 

@@ -1,0 +1,28 @@
+<div #tooltipbox class="tooltip" [ngStyle]="{'top.px': topOffset, 'left.px': leftOffset, 'opacity': opacity}">
+    <div class="header" *ngIf="hoveredUnit != undefined">
+        <!--<div class="icon">
+            <img src="assets/{{hoveredSkill!.icon}}"/>
+        </div>--> 
+        <div class="title">
+            <span class="name">{{hoveredUnit!.information.name}}</span><!--<br>
+            <span class="type">{{hoveredSkill!.name}}</span>-->
+        </div>
+    </div>
+    <div class="status-info" *ngIf="hoveredUnit != undefined">
+        <div class="status-type" *ngFor="let type of [StatusType.buff, StatusType.debuff, StatusType.neutral]"
+        [class.buff]="type == StatusType.buff" [class.debuff]="type == StatusType.debuff" [class.neutral]="type == StatusType.neutral">
+            <div class="divider" *ngIf="hoveredUnit.getStatusesByType(type).length > 0"></div>
+            <div class="status" *ngFor="let status of hoveredUnit.getStatusesByType(type);">
+                <div class="status-title">
+                    <div class="status-degree">({{status.degree}})</div>
+                    <img class="status-icon" src="assets/{{status.statusInformation.icon}}" />
+                    <span class="status-name">{{status.statusInformation.name}}</span>
+                </div>
+                <div class="status-description" [innerHTML]="status.statusInformation.description"
+                *ngIf="pressedKeys['Shift']"></div>
+            </div>
+        </div>
+    </div>
+    <!--<div class="description" *ngIf="hoveredSkill != undefined">{{hoveredSkill.description()}}</div>
+    <div class="flavour" *ngIf="hoveredSkill != undefined">"{{hoveredSkill.flavour}}"</div>-->
+</div>

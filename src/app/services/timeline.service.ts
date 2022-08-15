@@ -1,13 +1,14 @@
 import { Injectable } from '@angular/core';
 import { Subject, interval, Subscription } from 'rxjs';
 import * as _ from 'underscore';
-import { Skill, SkillContext, SkillTargetType } from '../interfaces/skill';
+import { Skill, SkillContext, SkillTargetType } from '../interfaces/skill-information';
 import { SaveService } from './save.service';
 import { AvailableSkillsService } from './available-skills.service';
 import { CharacterInstancesService } from './character-instances.service';
 import { EnemyInstancesService } from './enemy-instances.service';
 import { CharacterInstance } from '../classes/character-instance';
 import { EnemyInstance } from '../classes/enemy-instance';
+import { UnitInstance } from '../classes/unit-instance';
 
 export type SkillGrid = Array<Array<Skill | undefined>>
 export interface SlotIndex { x: number, y: number };
@@ -31,8 +32,14 @@ export class TimelineService {
   progressTimer = 0;
   automaticProgress = false;
   lastDate = Date.now();
-  timelineProceedLimit = 1 / 6;
   timeSinceLastProcess = 0;
+  
+  getProceedLimit(): number{
+    if(this.currentTime == this.gridTimeMax - 1){
+      return 1 / 2;
+    }
+    return 1 / 6;
+  }
 
   getGridMax(): number {
     return this.getCurrentSkillGrid()[0].length;
@@ -43,18 +50,14 @@ export class TimelineService {
   }
 
   clickProcess() {
-    if (this.timeSinceLastProcess > this.timelineProceedLimit) {
+    if (this.timeSinceLastProcess > this.getProceedLimit()) {
       this.processTime();
     }
   }
 
   resetTime(resetAutomaticProgress: boolean = true) {
-    this.characterInstanceService.characterInstances.forEach(character => {
-      character.resetCharacter();
-    })
-    this.enemyInstanceService.enemyInstances.forEach(enemy => {
-      enemy.resetEnemy();
-    })
+    this.characterInstanceService.resetCharacters();
+    this.enemyInstanceService.resetEnemies();
 
     this.currentTime = -1;
     if (resetAutomaticProgress) {
@@ -74,8 +77,9 @@ export class TimelineService {
       if (this.currentTime < this.gridTimeMax) {
         for (var rowIndex in this.getCurrentSkillGrid()) {
           var skill = this.getCurrentSkillGrid()[rowIndex][this.currentTime];
-          if (skill != undefined) {
-            this.activateSkill(this.characterInstanceService.characterInstances[rowIndex], skill);
+          var origin = this.characterInstanceService.characterInstances[rowIndex];
+          if (skill != undefined && origin.isAlive()) {
+            this.activateSkill(origin, skill);
           }
         }
       } else {
@@ -89,8 +93,8 @@ export class TimelineService {
   }
 
   activateSkill(origin: CharacterInstance, skill: Skill) {
-    var targets = Array<CharacterInstance | EnemyInstance>();
-    switch (skill.target) {
+    var targets = Array<UnitInstance>();
+    switch (skill.skillInfo.target) {
       case SkillTargetType.allButSelf:
         targets = _.without(this.characterInstanceService.characterInstances, origin); break;
       case SkillTargetType.allCharacters:
@@ -119,7 +123,8 @@ export class TimelineService {
       targets: targets,
       origin: origin
     }
-    skill.effect(context);
+    
+    skill.skillInfo.effect(context);
   }
 
   insertSkill(slotIndex: number, rowIndex: number, skill: Skill | undefined): SlotIndex {
@@ -176,12 +181,16 @@ export class TimelineService {
 
   // modify these to be safer
   gridToString(grid: SkillGrid): string {
-    var idGrid = _.map(grid, (arr) => _.map(arr, (skill) => skill != undefined ? skill.id : -1));
+    var idGrid = _.map(grid, (arr) => _.map(arr, (skill) => skill != undefined ? skill.skillInfo.id : -1));
     return JSON.stringify(idGrid);
   }
 
   gridFromString(str: string): SkillGrid {
-    return _.map(JSON.parse(str), (arr) => _.map(arr, (id) => this.availableSkillService.getSkillById(id)));
+    return _.map(JSON.parse(str), (arr) => _.map(arr, (id) => {
+      var skillInfo = this.availableSkillService.getSkillById(id);
+      return skillInfo != undefined ? { skillInfo: skillInfo } : undefined;
+    })
+    )
   }
 
   renameGrid(name: string): void {
@@ -282,8 +291,8 @@ export class TimelineService {
     }
     this.timeSinceLastProcess += delta / 1000;
 
-    while (this.progressTimer > this.timelineProceedLimit) {
-      this.progressTimer -= this.timelineProceedLimit;
+    while (this.progressTimer > this.getProceedLimit()) {
+      this.progressTimer -= this.getProceedLimit();
       this.processTime();
     }
 

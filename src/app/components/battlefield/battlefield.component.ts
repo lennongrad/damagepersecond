@@ -1,8 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { CharacterInstance } from 'src/app/classes/character-instance';
 import { EnemyInstance } from 'src/app/classes/enemy-instance';
+import { UnitInformation } from 'src/app/interfaces/unit-information';
+import { UnitInstance } from 'src/app/classes/unit-instance';
 import { CharacterInstancesService } from 'src/app/services/character-instances.service';
 import { EnemyInstancesService } from 'src/app/services/enemy-instances.service';
+import { TooltipService } from 'src/app/services/tooltip.service';
 
 @Component({
   selector: 'app-battlefield',
@@ -32,10 +35,21 @@ export class BattlefieldComponent implements OnInit {
     return style;
   }
 
+  mouseoverUnit(event: any, hoveredUnit: UnitInstance) {
+    this.tooltipService.setUnitTooltip(hoveredUnit, event.toElement, .9);
+  }
+
+  mouseoutUnit(event: any, hoveredUnit: UnitInstance) {
+    this.tooltipService.setUnitTooltip(undefined, undefined, 0);
+  }
+
   constructor(private characterInstancesService: CharacterInstancesService,
-    private enemyInstancesService: EnemyInstancesService) { }
+    private enemyInstancesService: EnemyInstancesService,
+    private cdref: ChangeDetectorRef,
+    private tooltipService: TooltipService) { }
 
   ngOnInit(): void {
+    this.cdref.detectChanges();
   }
 
 }

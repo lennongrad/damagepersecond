@@ -1,9 +1,10 @@
 <div class="battlefield">
     <div class="hp-container character">
-        <div *ngFor="let characterInstance of getCharacterInstances(); let i = index" class="name-bar">
+        <div *ngFor="let characterInstance of getCharacterInstances(); let i = index" class="name-bar"
+            (mouseover)="mouseoverUnit($event, characterInstance)" (mouseout)="mouseoutUnit($event, characterInstance)">
             <div class="title-bar">
                 <div class="title-name">
-                    {{characterInstance.characterInformation.characterName}}
+                    {{characterInstance.characterInformation.name}}
                 </div>
                 <div class="experience-bar">
                     <div class="experience-bar-amount">{{characterInstance.getXP()}}</div>
@@ -37,20 +38,25 @@
     <div class="sprite-container character">
         <app-animated-sprite *ngFor="let characterInstance of getCharacterInstances(); let i = index"
             [AnimationDetails]="characterInstance.getAnimationDetails()" [isDead]="!characterInstance.isAlive()"
-            [AnimationSubject]="characterInstance.animationChange" [ngStyle]="getSpriteStyle(true, i)"
-            (click)="characterInstance.hp = characterInstance.hp - 1"></app-animated-sprite>
+            [AnimationSubject]="characterInstance.animationChange" [TickSubject]="characterInstance.tickChange"
+            [ngStyle]="getSpriteStyle(true, i)" (mouseover)="mouseoverUnit($event, characterInstance)"
+            (mouseout)="mouseoutUnit($event, characterInstance)" (click)="characterInstance.dealDamage(1)">
+        </app-animated-sprite>
     </div>
     <div class="sprite-container enemy">
-        <app-animated-sprite *ngFor="let enemyInstance of getEnemyInstances(); let i = index" [isDead]="!enemyInstance.isAlive()"
-            [AnimationDetails]="enemyInstance.getAnimationDetails()" [AnimationSubject]="enemyInstance.animationChange"
-            [ngStyle]="getSpriteStyle(false, i)" (click)="enemyInstance.animationChange.next('Attack')">
+        <app-animated-sprite *ngFor="let enemyInstance of getEnemyInstances(); let i = index" [flipSprite]="true"
+            [isDead]="!enemyInstance.isAlive()" [AnimationDetails]="enemyInstance.getAnimationDetails()"
+            [AnimationSubject]="enemyInstance.animationChange" [TickSubject]="enemyInstance.tickChange"
+            [ngStyle]="getSpriteStyle(false, i)" (mouseover)="mouseoverUnit($event, enemyInstance)"
+            (mouseout)="mouseoutUnit($event, enemyInstance)" (click)="enemyInstance.animationChange.next('Attack')">
         </app-animated-sprite>
     </div>
     <div class="hp-container enemy">
-        <div *ngFor="let enemyInstance of getEnemyInstances(); let i = index" class="name-bar">
+        <div *ngFor="let enemyInstance of getEnemyInstances(); let i = index" class="name-bar"
+            (mouseover)="mouseoverUnit($event, enemyInstance)" (mouseout)="mouseoutUnit($event, enemyInstance)">
             <div class="title-bar">
                 <div class="title-name">
-                    {{enemyInstance.enemyInformation.enemyName}}
+                    {{enemyInstance.enemyInformation.name}}
                 </div>
             </div>
             <div class="value-bar-container">

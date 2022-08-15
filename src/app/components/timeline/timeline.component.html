@@ -1,7 +1,3 @@
-<app-skill-tooltip [hoveredSkill]="hoveredTooltipSkill" *ngIf="initialDragIndex == undefined" [element]="hoveredElement"
-    [opacity]="hoveredOpacity">
-</app-skill-tooltip>
-
 <div class="header timeline-header" (window:keydown.escape)="isRenaming = false">
     <img src="assets/headerframe-left.png" class="left" />
     <img src="assets/headerframe-divider.png" />
@@ -70,8 +66,8 @@
                     [class.time]="getCurrentTime() == slotIndex" [class.selected]="selectedSlots[rowIndex][slotIndex]">
                     <div class="select-beam"></div>
                     <div [ngStyle]="getIconStyle(slotIndex, rowIndex)" *ngIf="skill != undefined" class="icon"
-                        (mouseover)="mouseoverSlot($event, skill)" (mouseout)="mouseoutSlot($event, skill)">
-                        <img src="assets/{{skill.icon}}" />
+                        (mouseover)="mouseoverSlot($event, skill.skillInfo)" (mouseout)="mouseoutSlot($event, skill.skillInfo)">
+                        <img src="assets/{{skill.skillInfo.icon}}" />
                     </div>
                 </td>
             </tr>

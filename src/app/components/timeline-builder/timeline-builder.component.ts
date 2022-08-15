@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { TimelineService } from 'src/app/services/timeline.service';
 import { SelectedSkillService } from '../../services/selected-skill.service';
 
 @Component({
@@ -12,9 +13,15 @@ export class TimelineBuilderComponent implements OnInit {
     this.selectedSkillService.keycodeSelect.next(event.keyCode);
   }
 
-  constructor(private selectedSkillService: SelectedSkillService) { }
+  load(): void{
+    this.timelineService.loadGrid();
+  }
+
+  constructor(private selectedSkillService: SelectedSkillService,
+    private timelineService: TimelineService) { }
 
   ngOnInit(): void {
+    this.load();
   }
 
 }

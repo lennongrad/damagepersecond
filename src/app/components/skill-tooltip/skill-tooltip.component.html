@@ -1,6 +1,5 @@
-<div #tooltipbox class="tooltip" *ngIf="hoveredSkill != undefined" 
-        [ngStyle]="{'top.px': topOffset, 'left.px': leftOffset, 'opacity': opacity}">
-    <div class="header">
+<div #tooltipbox class="tooltip" [ngStyle]="{'top.px': topOffset, 'left.px': leftOffset, 'opacity': opacity}">
+    <div class="header" *ngIf="hoveredSkill != undefined">
         <div class="icon">
             <img src="assets/{{hoveredSkill!.icon}}"/>
         </div> 
@@ -10,6 +9,6 @@
         </div>
     </div>
     <div class="divider"></div>
-    <div class="description">{{hoveredSkill.description()}}</div>
-    <div class="flavour">"{{hoveredSkill.flavour}}"</div>
+    <div class="description" *ngIf="hoveredSkill != undefined">{{hoveredSkill.description()}}</div>
+    <div class="flavour" *ngIf="hoveredSkill != undefined">"{{hoveredSkill.flavour}}"</div>
 </div>

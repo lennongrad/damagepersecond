@@ -1,11 +1,11 @@
 import { Subject } from "rxjs";
+import { UnitInstance } from "./unit-instance";
 import { AnimationDetails } from "../interfaces/animation-information";
-import { CharacterInformation } from "../interfaces/character-information";
+import { CharacterInformation, CharacterSave } from "../interfaces/unit-information";
+import { CharacterInstancesService } from "../services/character-instances.service";
 
-export class CharacterInstance {
-    animationChange = new Subject<string>();
-    hp = 0;
-    fp = 0;
+export class CharacterInstance extends UnitInstance {
+    permanentData!: CharacterSave;
 
     getMaxHP(): number {
         return this.characterInformation.baseMaxHP;
@@ -14,31 +14,30 @@ export class CharacterInstance {
         return this.characterInformation.baseMaxFP;
     }
     getXP(): number {
-        return 10;
+        return this.permanentData.experience;
     }
 
-    isAlive(): boolean {
-        return this.hp > 0;
+    addXP(amount: number): void{
+        this.permanentData.experience += amount;
+        this.saveData();
     }
 
-    getAnimationDetails(): AnimationDetails {
-        return this.characterInformation.characterAnimation;
+    saveData(): void{
+        this.characterInstancesService.saveData(this);
     }
 
-    playAnimation(name: string): void {
-        this.animationChange.next(name);
+    loadData(): void {
+        var loadedData = this.characterInstancesService.loadData(this);
+        if(loadedData != undefined){
+            this.permanentData = loadedData;
+        } else {
+            this.permanentData = { experience: 0 };
+        }
     }
 
-    resetCharacter(): void {
-        this.hp = this.getMaxHP();
-        this.fp = this.getMaxFP();
-    }
+    constructor(name: string, public characterInformation: CharacterInformation, private characterInstancesService: CharacterInstancesService) {
+        super(name, characterInformation);
 
-    dealDamage(damage: number): void {
-        this.hp -= damage;
-    }
-
-    constructor(public name: string, public characterInformation: CharacterInformation) {
-
+        this.loadData();
     }
 }

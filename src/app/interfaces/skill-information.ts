@@ -1,5 +1,6 @@
 import { CharacterInstance } from "../classes/character-instance";
 import { EnemyInstance } from "../classes/enemy-instance";
+import { UnitInstance } from "../classes/unit-instance";
 
 export enum SkillTargetType{
     noTarget = "NO-TARGET",
@@ -13,11 +14,17 @@ export enum SkillTargetType{
 }
 
 export interface SkillContext{
-    targets: Array<CharacterInstance | EnemyInstance>,
-    origin: CharacterInstance
+    targets: Array<UnitInstance>,
+    origin: CharacterInstance,
+    damageMultiplier?: number,
+    fpMultiplier?: number
 }
 
 export interface Skill {
+    skillInfo: SkillInfo
+}
+
+export interface SkillInfo{
     id?: number;
     icon: string;
     name: string;

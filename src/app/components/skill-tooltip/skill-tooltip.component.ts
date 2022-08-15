@@ -1,5 +1,6 @@
 import { Component, OnInit, Input, SimpleChanges, ViewChild, ElementRef } from '@angular/core';
-import { Skill } from 'src/app/interfaces/skill';
+import { SkillInfo } from 'src/app/interfaces/skill-information';
+import { TooltipService } from 'src/app/services/tooltip.service';
 
 @Component({
   selector: 'app-skill-tooltip',
@@ -9,20 +10,16 @@ import { Skill } from 'src/app/interfaces/skill';
 export class SkillTooltipComponent implements OnInit {
   @ViewChild('tooltipbox') tooltipBox!: ElementRef;
 
-  @Input() hoveredSkill?: Skill;
-  @Input() element?: Element;
-  @Input() opacity = 1;
+  hoveredSkill?: SkillInfo;
+  element?: Element;
+  opacity = 1;
 
   // calculated so that the tooltip is not offscreen
   topOffset = -1000;
   leftOffset = -1000;
 
-  constructor() { }
-
-  ngOnInit(): void {
-  }
-
-  ngOnChanges(changes: SimpleChanges) {
+  update() {
+    //console.log(this.element, this.tooltipBox)
     if (this.element != undefined && this.tooltipBox != undefined) {
       var elementRect = this.element.getBoundingClientRect();
       this.leftOffset = elementRect.x + elementRect.width;
@@ -36,6 +33,13 @@ export class SkillTooltipComponent implements OnInit {
 
       this.topOffset = elementRect.y + elementRect.height;
     }
+  }
+
+  constructor(private tooltipService: TooltipService) { 
+    tooltipService.skillTooltip = this;
+  }
+
+  ngOnInit(): void {
   }
 
 }

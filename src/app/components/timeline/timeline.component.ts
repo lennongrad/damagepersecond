@@ -1,9 +1,10 @@
-import { Component, OnInit, HostListener } from '@angular/core';
-import { Skill } from 'src/app/interfaces/skill';
+import { Component, OnInit, HostListener, ChangeDetectorRef } from '@angular/core';
+import { Skill, SkillInfo } from 'src/app/interfaces/skill-information';
 import { SoundInfo } from 'src/app/interfaces/soundinfo';
 import { SelectedSkillService } from 'src/app/services/selected-skill.service';
 import { SoundEffectPlayerService } from 'src/app/services/sound-effect-player.service';
 import { TimelineService, SkillGrid, SlotIndex } from 'src/app/services/timeline.service';
+import { TooltipService } from 'src/app/services/tooltip.service';
 import * as _ from 'underscore';
 
 @Component({
@@ -12,8 +13,8 @@ import * as _ from 'underscore';
   styleUrls: ['./timeline.component.less']
 })
 export class TimelineComponent implements OnInit {
-  selectedSkill?: Skill;
-  onSelectSkill(skill?: Skill): void {
+  selectedSkill?: SkillInfo;
+  onSelectSkill(skill?: SkillInfo): void {
     this.selectedSkillService.changeSelectedSkill(skill);
   }
 
@@ -35,7 +36,7 @@ export class TimelineComponent implements OnInit {
   dragBox = { left: -1, right: -1, top: -1, bottom: -1 };
   draggingSkill?: Boolean;
 
-  hoveredTooltipSkill?: Skill;
+  hoveredTooltipSkill?: SkillInfo;
   hoveredElement?: Element;
   hoveredOpacity = 0;
 
@@ -191,7 +192,7 @@ export class TimelineComponent implements OnInit {
 
   clickSlot(slotIndex: number, rowIndex: number, event: MouseEvent): void {
     if (this.selectedSkill != undefined) {
-      this.timelineService.insertSkill(slotIndex, rowIndex, this.selectedSkill);
+      this.timelineService.insertSkill(slotIndex, rowIndex, {skillInfo: this.selectedSkill});
 
       if (this.selectedSkill != undefined) {
         this.selectedSkillService.useSkill(this.selectedSkill);
@@ -358,25 +359,24 @@ export class TimelineComponent implements OnInit {
     this.draggingSkill = undefined;
   }
 
-  mouseoverSlot(event: any, hoveredSkill: Skill) {
-    this.hoveredTooltipSkill = hoveredSkill;
-    this.hoveredElement = event.toElement;
-    this.hoveredOpacity = .9;
+  mouseoverSlot(event: any, hoveredSkill: SkillInfo) {
+    this.tooltipService.setSkillTooltip(hoveredSkill, event.toElement, .9);
   }
 
-  mouseoutSlot(event: any, hoveredSkill: Skill) {
-    this.hoveredOpacity = 0;
+  mouseoutSlot(event: any, hoveredSkill: SkillInfo) {
+    this.tooltipService.setSkillTooltip(undefined, undefined, 0);
   }
 
   constructor(private selectedSkillService: SelectedSkillService,
     private soundEffectPlayer: SoundEffectPlayerService,
-    private timelineService: TimelineService) {
+    private timelineService: TimelineService,
+    private tooltipService: TooltipService,
+    private cdref: ChangeDetectorRef) {
     this.selectedSkillService.selectedSkillChange.subscribe(value => this.selectedSkill = value);
     this.timelineService.currentGridChange.subscribe(value => this.setSkillGrid(value));
   }
 
 
   ngOnInit(): void {
-    this.timelineService.loadGrid();
   }
 }

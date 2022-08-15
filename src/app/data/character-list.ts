@@ -1,8 +1,8 @@
-import { CharacterInformation } from "../interfaces/character-information";
+import { CharacterInformation } from "../interfaces/unit-information";
 
 export const CHARACTERS: Array<CharacterInformation> = [
     {
-        characterName: "Eirika", baseMaxHP: 10, baseMaxFP: 6, characterAnimation:
+        name: "Eirika", baseMaxHP: 10, baseMaxFP: 6, animation:
         {
             imageURL: "eirika-body.png",
             shadowImageURL: "eirika-shadow.png",
@@ -41,7 +41,7 @@ export const CHARACTERS: Array<CharacterInformation> = [
             }]
         }
     }, {
-        characterName: "Archer", baseMaxHP: 8, baseMaxFP: 8, characterAnimation:
+        name: "Archer", baseMaxHP: 8, baseMaxFP: 8, animation:
         {
             imageURL: "archer-body.png",
             shadowImageURL: "archer-shadow.png",
@@ -88,7 +88,7 @@ export const CHARACTERS: Array<CharacterInformation> = [
             }]
         }
     }, {
-        characterName: "Wizard", baseMaxHP: 5, baseMaxFP: 13, characterAnimation:
+        name: "Wizard", baseMaxHP: 5, baseMaxFP: 13, animation:
         {
             imageURL: "wizard-body.png",
             shadowImageURL: "wizard-shadow.png",

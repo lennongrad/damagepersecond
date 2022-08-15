@@ -7,11 +7,12 @@ body {
 body {
     margin: 0;
     font-family: Roboto, "Helvetica Neue", sans-serif;
+    background-color: rgb(51, 51, 51);
 }
 
 /* Material styles (which can't be put in relative css)  */
 .timeline-header {
-    mat-select{
+    mat-select {
         overflow-y: hidden;
     }
 
@@ -28,22 +29,22 @@ body {
         box-shadow: 0 0 5px #222 inset;
         border: 1px solid #444;
 
-        &:hover{
+        &:hover {
             filter: brightness(0.9);
         }
 
-        &:active{
+        &:active {
             transform: translateY(2px);
             box-shadow: 0 0 4px black inset, 0 -2px 4px black inset;
         }
     }
 
-    .mat-select-value-text{
+    .mat-select-value-text {
         font-weight: bold;
         color: white;
     }
 
-    .mat-select-min-line{    
+    .mat-select-min-line {
         background-image: linear-gradient(#555555, #CCC);
         background-size: 100%;
         background-repeat: repeat;
@@ -64,25 +65,25 @@ body {
     }
 }
 
-.cdk-overlay-connected-position-bounding-box{
-    .cdk-overlay-pane{
+.cdk-overlay-connected-position-bounding-box {
+    .cdk-overlay-pane {
         width: 200px;
         transform: translate(0) !important;
     }
 
-    .mat-select-panel{
+    .mat-select-panel {
         background-color: transparent;
         box-shadow: none;
         min-width: 100% !important;
         border-radius: 1px;
-        filter: drop-shadow(2px 4px 3px rgba(0,0,0,.5));
+        filter: drop-shadow(2px 4px 3px rgba(0, 0, 0, .5));
 
-        .mat-option.mat-selected{
+        .mat-option.mat-selected {
             background: linear-gradient(#43423E, #31302C);
         }
     }
 
-    .mat-option{
+    .mat-option {
         background: linear-gradient(#43423E, #31302C);
         height: 23px !important;
         border: 1px solid #444;
@@ -90,7 +91,7 @@ body {
         margin-bottom: 2px;
         padding-left: 6px;
 
-        &:hover{
+        &:hover {
             background: linear-gradient(#43423E, #31302C);
         }
     }
@@ -151,6 +152,16 @@ body {
     }
 }
 
+@keyframes MOVE-SQUARE-BG {
+    from {
+        background-position: 0 0;
+    }
+
+    to {
+        background-position: 50px 50px;
+    }
+}
+
 @keyframes MOVE-BG {
     from {
         background-position: 0% 0%, 100% 0%, 0 100%, 0% 0%;
@@ -184,6 +195,7 @@ body {
     filter: blur(1px);
 }
 
-textarea:focus, input:focus{
+textarea:focus,
+input:focus {
     outline: none;
 }

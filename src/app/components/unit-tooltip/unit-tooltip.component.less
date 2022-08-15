@@ -77,6 +77,52 @@
     transform: scaleX(1.05);
 }
 
+.status{
+    margin-bottom: 6px;
+}
+
+.status-type{
+    margin-bottom: -4px;
+}
+
+.status-title{
+    position: relative;
+    padding: 2px;
+    border-radius: 4px;
+    margin-bottom: 2px;
+
+    .buff &{
+        background: linear-gradient(to right, rgba(0,0,100,.6) 80%, transparent);
+    }
+
+    .debuff &{
+        background: linear-gradient(to right, rgba(120,20,20,.6) 80%, transparent);
+    }
+
+    .neutral &{
+        background: linear-gradient(to right, rgba(0,100,0,.6) 80%, transparent);
+    }
+}
+
+.status-icon{
+    vertical-align: middle;
+    margin-right: 4px;
+}
+
+.status-name{
+    font-weight: bold;
+    vertical-align: bottom;
+    margin-right: 4px;
+}
+
+.status-degree{
+    position: absolute;
+    top: 50%;
+    right: 6px;
+    font-size: 12px;
+    transform: translateY(-50%);
+}
+
 .flavour{
     margin-top: 5px;
 

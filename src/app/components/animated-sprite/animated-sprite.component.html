@@ -1,3 +1,10 @@
-<div [ngStyle]="getStyle()" class="sprite" [class.dead]="isDead"></div>
-<div [ngStyle]="getStyle(true)" class="sprite sprite-shadow" [class.dead]="isDead"></div>
+<div [class.dead]="isDead" [class.flip]="flipSprite">
+    <div [ngStyle]="getStyle()" class="sprite"></div>
+    <div [ngStyle]="getStyle(true)" class="sprite sprite-shadow"></div>
+</div>
 <div class="clickable"></div>
+<div class="ticks">
+    <div class="tick" *ngFor="let tick of activeTicks" [ngStyle]="getTickStyle(tick)" [class.positive]="tick.value > 0"
+        [class.negative]="tick.value < 0">
+        {{tick.value < 0 ? tick.value : "+" + tick.value}} </div>
+    </div>

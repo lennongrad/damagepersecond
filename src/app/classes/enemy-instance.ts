@@ -1,34 +1,23 @@
 import { Subject } from "rxjs";
-import { EnemyInformation } from "../interfaces/enemy-information";
+import { UnitInstance } from "./unit-instance";
+import { EnemyInformation } from "../interfaces/unit-information";
 import { AnimationDetails } from "../interfaces/animation-information";
+import { EnemyInstancesService } from "../services/enemy-instances.service";
 
-export class EnemyInstance {
-    animationChange = new Subject<string>();
-    hp = 0;
-
+export class EnemyInstance extends UnitInstance{
     getMaxHP(): number{
-        return this.enemyInformation.maxHP;
+        return this.enemyInformation.baseMaxHP;
+    }
+    getMaxFP(): number{
+        return 0;
     }
 
-    isAlive(): boolean{
-        return this.hp > 0;
+    override onDie(): void{
+        super.onDie();
+        this.enemyInstancesService.rewardXP(10);
     }
 
-    getAnimationDetails(): AnimationDetails {
-        return this.enemyInformation.enemyAnimation;
+    constructor(name: string, public enemyInformation: EnemyInformation, private enemyInstancesService: EnemyInstancesService){
+        super(name, enemyInformation);
     }
-
-    playAnimation(name: string): void {
-        this.animationChange.next(name);
-    }
-
-    resetEnemy(): void{
-        this.hp = this.getMaxHP();
-    }
-
-    dealDamage(damage: number): void{
-        this.hp -= damage;
-    }
-
-    constructor(public name: string, public enemyInformation: EnemyInformation){}
 }

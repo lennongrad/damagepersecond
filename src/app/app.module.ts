@@ -19,7 +19,7 @@ import { SkillSelectorPopupComponent } from './components/skill-selector/skill-s
 import { FocusOnShowDirective } from './directives/focus-on-show.directive';
 import { AnimatedSpriteComponent } from './components/animated-sprite/animated-sprite.component';
 import { BattlefieldComponent } from './components/battlefield/battlefield.component';
-import { CharacterTooltipComponent } from './components/character-tooltip/character-tooltip.component';
+import { UnitTooltipComponent } from './components/unit-tooltip/unit-tooltip.component';
 
 @NgModule({
   declarations: [
@@ -33,7 +33,7 @@ import { CharacterTooltipComponent } from './components/character-tooltip/charac
     FocusOnShowDirective,
     AnimatedSpriteComponent,
     BattlefieldComponent,
-    CharacterTooltipComponent
+    UnitTooltipComponent
   ],
   imports: [
     BrowserModule,

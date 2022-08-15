@@ -1,15 +1,15 @@
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
-import { Skill } from '../interfaces/skill';
+import { SkillInfo } from '../interfaces/skill-information';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SelectedSkillService {
-  selectedSkill?: Skill;
-  selectedSkillChange = new Subject<Skill | undefined>();
+  selectedSkill?: SkillInfo;
+  selectedSkillChange = new Subject<SkillInfo | undefined>();
 
-  skillUsed = new Subject<Skill>;
+  skillUsed = new Subject<SkillInfo>;
 
   keycodeSelect = new Subject<number>;
 
@@ -19,11 +19,11 @@ export class SelectedSkillService {
     });
   }
 
-  changeSelectedSkill(newSkill?: Skill){
+  changeSelectedSkill(newSkill?: SkillInfo){
     this.selectedSkillChange.next(newSkill);
   }
 
-  useSkill(skill: Skill){
+  useSkill(skill: SkillInfo){
     this.skillUsed.next(skill);
   }
 
