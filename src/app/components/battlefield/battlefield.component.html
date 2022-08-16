@@ -7,7 +7,7 @@
                     {{characterInstance.characterInformation.name}}
                 </div>
                 <div class="experience-bar">
-                    <div class="experience-bar-amount">{{characterInstance.getXP()}}</div>
+                    <div class="experience-bar-amount">{{beautify(characterInstance.getXP())}}</div>
                     <div class="experience-bar-name">XP.</div>
                 </div>
             </div>
@@ -15,7 +15,7 @@
                 <div class="value-segment hp">
                     <div class="value-text">
                         <div class="value-name">HP</div>
-                        <div class="value-amount">{{characterInstance.hp}}</div>
+                        <div class="value-amount">{{beautify(characterInstance.hp)}}</div>
                     </div>
                     <div class="value-bar"
                         [ngStyle]="{'background-size': characterInstance.hp / characterInstance.getMaxHP() * 100 + '% 100%'}">
@@ -25,7 +25,7 @@
                 <div class="value-segment fp">
                     <div class="value-text">
                         <div class="value-name">FP</div>
-                        <div class="value-amount">{{characterInstance.fp}}</div>
+                        <div class="value-amount">{{beautify(characterInstance.fp)}}</div>
                     </div>
                     <div class="value-bar"
                         [ngStyle]="{'background-size': characterInstance.fp / characterInstance.getMaxFP() * 100 + '% 100%'}">
@@ -40,7 +40,7 @@
             [AnimationDetails]="characterInstance.getAnimationDetails()" [isDead]="!characterInstance.isAlive()"
             [AnimationSubject]="characterInstance.animationChange" [TickSubject]="characterInstance.tickChange"
             [ngStyle]="getSpriteStyle(true, i)" (mouseover)="mouseoverUnit($event, characterInstance)"
-            (mouseout)="mouseoutUnit($event, characterInstance)" (click)="characterInstance.dealDamage(1)">
+            (mouseout)="mouseoutUnit($event, characterInstance)" (click)="characterInstance.receiveDamage(1)">
         </app-animated-sprite>
     </div>
     <div class="sprite-container enemy">

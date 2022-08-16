@@ -1,5 +1,6 @@
-import { Component, OnInit, Input, SimpleChanges, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, Input, SimpleChanges, ViewChild, ElementRef, HostListener } from '@angular/core';
 import { SkillInfo } from 'src/app/interfaces/skill-information';
+import { StatusType } from 'src/app/interfaces/status-information';
 import { TooltipService } from 'src/app/services/tooltip.service';
 
 @Component({
@@ -13,6 +14,8 @@ export class SkillTooltipComponent implements OnInit {
   hoveredSkill?: SkillInfo;
   element?: Element;
   opacity = 1;
+
+  readonly StatusType = StatusType;
 
   // calculated so that the tooltip is not offscreen
   topOffset = -1000;
@@ -32,6 +35,19 @@ export class SkillTooltipComponent implements OnInit {
       }
 
       this.topOffset = elementRect.y + elementRect.height;
+    }
+  }
+
+  getDescription(): string{
+    if(this.hoveredSkill == undefined)
+    {
+      return "";
+    }
+    
+    if(typeof this.hoveredSkill.description === 'string'){
+      return this.hoveredSkill.description;
+    } else {
+      return this.hoveredSkill.description();
     }
   }
 

@@ -1,8 +1,6 @@
-import { Subject } from "rxjs";
 import { UnitInstance } from "./unit-instance";
 import { EnemyInformation } from "../interfaces/unit-information";
-import { AnimationDetails } from "../interfaces/animation-information";
-import { EnemyInstancesService } from "../services/enemy-instances.service";
+import { UnitInstancesService } from "../services/unit-instances.service";
 
 export class EnemyInstance extends UnitInstance{
     getMaxHP(): number{
@@ -14,10 +12,10 @@ export class EnemyInstance extends UnitInstance{
 
     override onDie(): void{
         super.onDie();
-        this.enemyInstancesService.rewardXP(10);
+        this.unitInstancesService.rewardXP(10);
     }
 
-    constructor(name: string, public enemyInformation: EnemyInformation, private enemyInstancesService: EnemyInstancesService){
-        super(name, enemyInformation);
+    constructor(name: string, public enemyInformation: EnemyInformation, unitInstancesService: UnitInstancesService){
+        super(name, enemyInformation, unitInstancesService);
     }
 }

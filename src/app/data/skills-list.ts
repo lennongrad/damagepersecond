@@ -3,43 +3,49 @@ import { Status, StatusInformation } from '../interfaces/status-information';
 import { STATUSES } from './status-list';
 import { CharacterInstance } from '../classes/character-instance';
 import { EnemyInstance } from '../classes/enemy-instance';
+import * as _ from 'underscore';
 
-function genericSkill(strength: number): SkillInfo {
-  var iconNumber = strength.toString()
-  if (iconNumber.length == 1) {
-    iconNumber = "0" + iconNumber;
-  } 
-
-  return {
-    icon: 'skill-icons/skill_' + iconNumber + '.png', name: 'Ranged' + strength,
-    description: () => {
-      return "Deal " + Math.pow(10, strength - 1) + " damage to each enemy."
-    },
-    flavour: 'A swift flurry of blows.',
-    target: SkillTargetType.firstEnemy,
-    effect: (context: SkillContext) => {
-      context.targets.forEach(target => {
-        context.origin.playAnimation("Attack");
-        context.origin.addStatus({ statusInformation: STATUSES["strength"], degree: 1 })
-        context.origin.addStatus({ statusInformation: STATUSES["weakness"], degree: 1 })
-        context.origin.addStatus({ statusInformation: STATUSES["smelly"], degree: 1 })
-        context.origin.addStatus({ statusInformation: STATUSES["strength"], degree: 1 })
-        context.origin.addStatus({ statusInformation: STATUSES["weakness"], degree: 1 })
-        context.origin.addStatus({ statusInformation: STATUSES["smelly"], degree: 1 })
-        target.dealDamage(Math.pow(10, strength - 1));
-        //context.origin.healDamage(10);
-        target.playAnimation("Damage");
-      })
-    },
-  };
+//skillContext.origin.addStatus({ statusInformation: STATUSES["strength"], degree: 1, duration: 3 })
+function basicDamage(skillContext: SkillContext, baseDamage: number) {
+  skillContext.targets.forEach(target => {
+    skillContext.origin.playAnimation("Attack");
+    skillContext.origin.dealDamage(skillContext, target, baseDamage);
+    target.playAnimation("Damage");
+  })
 }
 
-export const SKILLS: SkillInfo[] = [];
-
-for (var i = 0; i < 40; i++) {
-  SKILLS.push(genericSkill(i + 1));
+function statusIcon(statusInformation: StatusInformation): string {
+  return "<img src='assets/" + statusInformation.icon + "'/>";
 }
 
+export const SKILLS: SkillInfo[] = [
+  {
+    icon: "skill-icons/skill_01.png", name: "Strike", 
+    description: "Deal 1 base damage to the closest enemy.",
+    flavour: undefined, target: SkillTargetType.firstEnemy,
+    effect: (skillContext: SkillContext) => basicDamage(skillContext, 1)
+  }, {
+    icon: "Light-Skills/383.png", name: "Infuse", fpCost: 2,
+    description: "Gain <b>+1 " + statusIcon(STATUSES["strength"]) + " Strength</b> for the next 3 seconds.",
+    flavour: undefined, target: SkillTargetType.noTarget,
+    relevantStatuses: [STATUSES["strength"]],
+    effect: (skillContext: SkillContext) => {
+      skillContext.origin.addStatus({ statusInformation: STATUSES["strength"], degree: 1, duration: 3 })
+    }
+  }, {
+    icon: "skill-icons/skill_272.png", name: "Bladesong",
+    description: "Gain <b>+2 " + statusIcon(STATUSES["strength"]) + " Strength</b> if you have none.",
+    flavour: undefined, target: SkillTargetType.noTarget,
+    relevantStatuses: [STATUSES["strength"]],
+    effect: (skillContext: SkillContext) => {
+      if (!_.some(skillContext.origin.statuses, { statusInformation: STATUSES["strength"] })) {
+        skillContext.origin.addStatus({ statusInformation: STATUSES["strength"], degree: 2 })
+      }
+    }
+  }
+];
+
+// always do this last
 for (var i = 0; i < SKILLS.length; i++) {
   SKILLS[i].id = i;
 }

@@ -35,7 +35,7 @@ app-animated-sprite {
     position: relative;
     image-rendering: initial;
     padding-top: 19px;
-    min-width: 160px;
+    min-width: 200px;
     z-index: 2;
 
     &.character {
@@ -49,7 +49,7 @@ app-animated-sprite {
 
 .name-bar {
     position: relative;
-    width: 150px;
+    width: 195px;
     height: 27px;
     left: -6px;
     margin-bottom: 21px;
@@ -62,7 +62,7 @@ app-animated-sprite {
     }
 
     &:hover {
-        width: 160px;
+        width: 200px;
     }
 
     &:hover .value-segment {
@@ -82,13 +82,13 @@ app-animated-sprite {
 .title-bar {
     position: absolute;
     top: 3px;
-    left: 7px;
+    left: 5px;
+    min-width: 80%;
     padding-right: 8px;
-    padding-left: 1px;
+    padding-left: 6px;
     background-image: url("~src/assets/name-bar.png");
     background-size: 100% 100%;
     transform: translateY(-100%);
-    text-align: right;
     filter: drop-shadow(0 0 1px black);
 
     .enemy & {
@@ -200,6 +200,7 @@ app-animated-sprite {
     bottom: 0;
     left: 50%;
     transform: translateX(-50%);
+    transition: .1s;
 
     .hp & {
         background-image: url("~src/assets/hp-line.png");

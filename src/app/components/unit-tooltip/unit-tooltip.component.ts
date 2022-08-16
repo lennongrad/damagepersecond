@@ -3,6 +3,9 @@ import { UnitInstance } from 'src/app/classes/unit-instance';
 import { StatusType } from 'src/app/interfaces/status-information';
 import { TooltipService } from 'src/app/services/tooltip.service';
 import { EnemyInstance } from 'src/app/classes/enemy-instance';
+import { BeautifyService } from 'src/app/services/beautify.service';
+import { CharacterInstance } from 'src/app/classes/character-instance';
+import { TimelineService } from 'src/app/services/timeline.service';
 
 
 @Component({
@@ -38,7 +41,7 @@ export class UnitTooltipComponent implements OnInit {
     if (this.element != undefined && this.tooltipBox != undefined) {
       var elementRect = this.element.getBoundingClientRect();
 
-      if(this.isEnemy()){  
+      if (this.isEnemy()) {
         if (this.tooltipBox != undefined) {
           var tooltipRect = this.tooltipBox.nativeElement.getBoundingClientRect();
           this.leftOffset = elementRect.x - tooltipRect.width;
@@ -48,7 +51,7 @@ export class UnitTooltipComponent implements OnInit {
         }
       } else {
         this.leftOffset = elementRect.x + elementRect.width;
-  
+
         if (this.tooltipBox != undefined) {
           var tooltipRect = this.tooltipBox.nativeElement.getBoundingClientRect();
           if (this.leftOffset + tooltipRect.width > document.body.clientWidth) {
@@ -61,8 +64,15 @@ export class UnitTooltipComponent implements OnInit {
     }
   }
 
-  constructor(private tooltipService: TooltipService) {
-    tooltipService.unitTooltip = this;
+  getDPR(): number {
+    if (this.hoveredUnit != undefined && this.hoveredUnit instanceof CharacterInstance) {
+      return Math.floor(100 * this.hoveredUnit.getDPR(this.timelineService.getTimelineLength())) / 100;
+    }
+    return -1;
+  }
+
+  constructor(private tooltipService: TooltipService, beautifyService: BeautifyService, private timelineService: TimelineService) {
+    this.tooltipService.unitTooltip = this;
   }
 
   ngOnInit(): void {

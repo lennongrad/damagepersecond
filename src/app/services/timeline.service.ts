@@ -1,14 +1,12 @@
 import { Injectable } from '@angular/core';
 import { Subject, interval, Subscription } from 'rxjs';
-import * as _ from 'underscore';
 import { Skill, SkillContext, SkillTargetType } from '../interfaces/skill-information';
 import { SaveService } from './save.service';
 import { AvailableSkillsService } from './available-skills.service';
-import { CharacterInstancesService } from './character-instances.service';
-import { EnemyInstancesService } from './enemy-instances.service';
 import { CharacterInstance } from '../classes/character-instance';
-import { EnemyInstance } from '../classes/enemy-instance';
 import { UnitInstance } from '../classes/unit-instance';
+import { UnitInstancesService } from './unit-instances.service';
+import * as _ from 'underscore';
 
 export type SkillGrid = Array<Array<Skill | undefined>>
 export interface SlotIndex { x: number, y: number };
@@ -33,9 +31,9 @@ export class TimelineService {
   automaticProgress = false;
   lastDate = Date.now();
   timeSinceLastProcess = 0;
-  
-  getProceedLimit(): number{
-    if(this.currentTime == this.gridTimeMax - 1){
+
+  getProceedLimit(): number {
+    if (this.currentTime == this.gridTimeMax - 1) {
       return 1 / 2;
     }
     return 1 / 6;
@@ -49,19 +47,23 @@ export class TimelineService {
     return this.currentSkillGrid;
   }
 
+  getTimelineLength(): number{
+    return this.gridTimeMax;
+  }
+
   clickProcess() {
     if (this.timeSinceLastProcess > this.getProceedLimit()) {
       this.processTime();
     }
   }
 
-  resetTime(resetAutomaticProgress: boolean = true) {
-    this.characterInstanceService.resetCharacters();
-    this.enemyInstanceService.resetEnemies();
+  resetTime(completeReset: boolean = true) {
+    this.unitInstancesService.resetUnits();
 
     this.currentTime = -1;
-    if (resetAutomaticProgress) {
+    if (completeReset) {
       this.automaticProgress = false;
+      this.unitInstancesService.forEachUnit((unit) => unit.completeReset())
     } else {
       this.processTime();
     }
@@ -76,8 +78,10 @@ export class TimelineService {
 
       if (this.currentTime < this.gridTimeMax) {
         for (var rowIndex in this.getCurrentSkillGrid()) {
+          var origin = this.unitInstancesService.characterInstances[rowIndex];
+          origin.timeIncrement();
+
           var skill = this.getCurrentSkillGrid()[rowIndex][this.currentTime];
-          var origin = this.characterInstanceService.characterInstances[rowIndex];
           if (skill != undefined && origin.isAlive()) {
             this.activateSkill(origin, skill);
           }
@@ -96,212 +100,224 @@ export class TimelineService {
     var targets = Array<UnitInstance>();
     switch (skill.skillInfo.target) {
       case SkillTargetType.allButSelf:
-        targets = _.without(this.characterInstanceService.characterInstances, origin); break;
+        targets = _.without(this.unitInstancesService.characterInstances, origin); break;
       case SkillTargetType.allCharacters:
-        targets = this.characterInstanceService.characterInstances; break;
+        targets = this.unitInstancesService.characterInstances; break;
       case SkillTargetType.allEnemies:
-        targets = this.enemyInstanceService.enemyInstances; break;
+        targets = this.unitInstancesService.enemyInstances; break;
       case SkillTargetType.firstEnemy:
-        var firstEnemy = _.find(this.enemyInstanceService.enemyInstances, (enemy) => enemy.isAlive());
+        var firstEnemy = _.find(this.unitInstancesService.enemyInstances, (enemy) => enemy.isAlive());
         targets = firstEnemy != undefined ? [firstEnemy] : [];
         break;
       case SkillTargetType.firstCharacter:
-        var firstCharacter = _.find(this.characterInstanceService.characterInstances, (character) => character.isAlive());
+        var firstCharacter = _.find(this.unitInstancesService.characterInstances, (character) => character.isAlive());
         targets = firstCharacter != undefined ? [firstCharacter] : [];
         break;
       case SkillTargetType.noTarget:
         targets = []; break;
       case SkillTargetType.randomAliveCharacter:
-        var aliveCharacters = _.reject(this.characterInstanceService.characterInstances, (character) => character.isAlive());
+        var aliveCharacters = _.reject(this.unitInstancesService.characterInstances, (character) => character.isAlive());
         targets = _.sample(aliveCharacters, 1); break;
       case SkillTargetType.randomAliveEnemy:
-        var aliveEnemies = _.reject(this.enemyInstanceService.enemyInstances, (enemy) => enemy.isAlive());
+        var aliveEnemies = _.reject(this.unitInstancesService.enemyInstances, (enemy) => enemy.isAlive());
         targets = _.sample(aliveEnemies, 1); break;
     }
 
-    var context: SkillContext = {
+    var skillContext: SkillContext = {
       targets: targets,
-      origin: origin
+      origin: origin,
+      baseDamageAddition: 0,
+      damageMultiplier: 1,
+      fpMultiplier: 1
     }
-    
-    skill.skillInfo.effect(context);
-  }
 
-  insertSkill(slotIndex: number, rowIndex: number, skill: Skill | undefined): SlotIndex {
-    var currentIndex = slotIndex;
-    var movingSkill = skill;
-    while (this.getCurrentSkillGrid()[rowIndex][currentIndex] != undefined) {
-      var nextSkill = this.getCurrentSkillGrid()[rowIndex][currentIndex];
-      this.getCurrentSkillGrid()[rowIndex][currentIndex] = movingSkill;
-      movingSkill = nextSkill;
+    if(origin.canAfford(skillContext, skill)){
+      origin.spendFP(skillContext, skill);
 
-      currentIndex += 1;
-      this.setGridMax(currentIndex);
+      this.unitInstancesService.forEachUnit((unit) => unit.forEachStatus((status) => {
+        if(status.statusInformation.onSkillUse != undefined){
+          status.statusInformation.onSkillUse(status, skillContext, unit)
+        }
+      }))
+  
+      skill.skillInfo.effect(skillContext);
     }
+}
+
+insertSkill(slotIndex: number, rowIndex: number, skill: Skill | undefined): SlotIndex {
+  var currentIndex = slotIndex;
+  var movingSkill = skill;
+  while (this.getCurrentSkillGrid()[rowIndex][currentIndex] != undefined) {
+    var nextSkill = this.getCurrentSkillGrid()[rowIndex][currentIndex];
     this.getCurrentSkillGrid()[rowIndex][currentIndex] = movingSkill;
-    this.setGridMax(currentIndex + 8)
+    movingSkill = nextSkill;
 
-    return { x: currentIndex, y: rowIndex };
+    currentIndex += 1;
+    this.setGridMax(currentIndex);
+  }
+  this.getCurrentSkillGrid()[rowIndex][currentIndex] = movingSkill;
+  this.setGridMax(currentIndex + 8)
+
+  return { x: currentIndex, y: rowIndex };
+}
+
+deleteSkill(rowIndex: number, slotIndex: number) {
+  this.getCurrentSkillGrid()[rowIndex][slotIndex] = undefined;
+}
+
+setGridMax(newMax: number): void {
+  for(var rowIndex in this.getCurrentSkillGrid()) {
+  while (this.getCurrentSkillGrid()[rowIndex].length < newMax) {
+    this.getCurrentSkillGrid()[rowIndex].push(undefined);
+  }
+}
   }
 
-  deleteSkill(rowIndex: number, slotIndex: number) {
-    this.getCurrentSkillGrid()[rowIndex][slotIndex] = undefined;
-  }
-
-  setGridMax(newMax: number): void {
-    for (var rowIndex in this.getCurrentSkillGrid()) {
-      while (this.getCurrentSkillGrid()[rowIndex].length < newMax) {
-        this.getCurrentSkillGrid()[rowIndex].push(undefined);
-      }
-    }
-  }
-
-  forEachSlot(callback: (rowIndex: number, slotIndex: number) => void): void {
-    _.forEach(this.getCurrentSkillGrid(), (row, rowIndex) => {
-      _.forEach(row, (_skill, slotIndex) => {
-        callback(rowIndex, slotIndex);
-      })
+forEachSlot(callback: (rowIndex: number, slotIndex: number) => void): void {
+  _.forEach(this.getCurrentSkillGrid(), (row, rowIndex) => {
+    _.forEach(row, (_skill, slotIndex) => {
+      callback(rowIndex, slotIndex);
     })
-  }
+  })
+}
 
-  updateGrid(): void {
-    this.gridTimeMax = _.reduce(this.getCurrentSkillGrid(), (highest: number, arr: Array<Skill | undefined>) => {
-      return Math.max(highest, _.max(arr.map((value, index) => value == undefined ? -1 : index + 1)));
-    }, 0)
+updateGrid(): void {
+  this.gridTimeMax = _.reduce(this.getCurrentSkillGrid(), (highest: number, arr: Array<Skill | undefined>) => {
+    return Math.max(highest, _.max(arr.map((value, index) => value == undefined ? -1 : index + 1)));
+  }, 0)
     this.resetTime();
 
-    this.currentGridChange.next(this.getCurrentSkillGrid());
-    this.saveGrid(this.currentGridName);
+  this.currentGridChange.next(this.getCurrentSkillGrid());
+  this.saveGrid(this.currentGridName);
+}
+
+setDefaultGrid(): void {
+  this.currentSkillGrid = Array<Array<Skill | undefined>>(3).fill([]).map(() => new Array());
+  this.setGridMax(40);
+}
+
+// modify these to be safer
+gridToString(grid: SkillGrid): string {
+  var idGrid = _.map(grid, (arr) => _.map(arr, (skill) => skill != undefined ? skill.skillInfo.id : -1));
+  return JSON.stringify(idGrid);
+}
+
+gridFromString(str: string): SkillGrid {
+  return _.map(JSON.parse(str), (arr) => _.map(arr, (id) => {
+    var skillInfo = this.availableSkillService.getSkillById(id);
+    return skillInfo != undefined ? { skillInfo: skillInfo } : undefined;
+  })
+  )
+}
+
+renameGrid(name: string): void {
+  this.deleteGrid(this.currentGridName);
+  this.currentGridName = name;
+  this.saveGrid(this.currentGridName);
+}
+
+newGrid(): void {
+  if(this.savedGridNames == undefined) {
+  this.savedGridNames = [];
+}
+
+var gridNameModifier: string = "";
+while (_.includes(this.savedGridNames, "UNTITLED" + gridNameModifier)) {
+  if (gridNameModifier == "") {
+    gridNameModifier = "0";
+  }
+  gridNameModifier = (parseInt(gridNameModifier) + 1).toString();
+}
+
+this.setDefaultGrid();
+this.saveGrid("UNTITLED" + gridNameModifier);
+this.currentGridName = "UNTITLED" + gridNameModifier;
   }
 
-  setDefaultGrid(): void {
-    this.currentSkillGrid = Array<Array<Skill | undefined>>(3).fill([]).map(() => new Array());
-    this.setGridMax(40);
+deleteGrid(name: string = this.currentGridName, replace: boolean = false): void {
+  if(this.savedGridNames == undefined) {
+  this.savedGridNames = [];
+}
+this.savedGridNames = _.without(this.savedGridNames, name);
+this.saveService.saveData("gridnames", JSON.stringify(this.savedGridNames));
+this.saveService.removeData("grid-" + name);
+
+if (replace) {
+  this.loadGrid();
+}
   }
 
-  // modify these to be safer
-  gridToString(grid: SkillGrid): string {
-    var idGrid = _.map(grid, (arr) => _.map(arr, (skill) => skill != undefined ? skill.skillInfo.id : -1));
-    return JSON.stringify(idGrid);
+saveGrid(name: string): void {
+  this.saveService.saveData("grid-" + name, this.gridToString(this.getCurrentSkillGrid()));
+
+  if(this.savedGridNames == undefined) {
+  this.savedGridNames = [name];
+} else if (!_.includes(this.savedGridNames, name)) {
+  this.savedGridNames.push(name);
+}
+this.saveService.saveData("gridnames", JSON.stringify(this.savedGridNames));
   }
 
-  gridFromString(str: string): SkillGrid {
-    return _.map(JSON.parse(str), (arr) => _.map(arr, (id) => {
-      var skillInfo = this.availableSkillService.getSkillById(id);
-      return skillInfo != undefined ? { skillInfo: skillInfo } : undefined;
-    })
-    )
+loadGrid(name: string | undefined = undefined): void {
+  if(this.savedGridNames == undefined) {
+  // load existing grid names
+  var loadAttempt = this.saveService.getData("gridnames");
+  try {
+    this.savedGridNames = JSON.parse(loadAttempt);
+  } catch (e) {
+    this.savedGridNames = [];
   }
+}
 
-  renameGrid(name: string): void {
-    this.deleteGrid(this.currentGridName);
-    this.currentGridName = name;
-    this.saveGrid(this.currentGridName);
+if (this.savedGridNames != undefined && this.savedGridNames.length > 0
+  && (_.includes(this.savedGridNames, name) || name == undefined)) {
+  // name is present or just trying to load first
+  var nameToLoad = name != undefined ? name : _.last(this.savedGridNames);
+  if (nameToLoad == undefined) {
+    nameToLoad = this.savedGridNames[0];
   }
-
-  newGrid(): void {
-    if (this.savedGridNames == undefined) {
-      this.savedGridNames = [];
-    }
-
-    var gridNameModifier: string = "";
-    while (_.includes(this.savedGridNames, "UNTITLED" + gridNameModifier)) {
-      if (gridNameModifier == "") {
-        gridNameModifier = "0";
-      }
-      gridNameModifier = (parseInt(gridNameModifier) + 1).toString();
-    }
-
+  var loadAttempt = this.saveService.getData("grid-" + nameToLoad);
+  try {
+    this.currentSkillGrid = this.gridFromString(loadAttempt);
+    // grid can be parsed
+    this.currentGridName = nameToLoad;
+  } catch (e) {
+    console.log("Failed to load name; ", e);
+    this.currentGridName = "UNTITLED";
     this.setDefaultGrid();
-    this.saveGrid("UNTITLED" + gridNameModifier);
-    this.currentGridName = "UNTITLED" + gridNameModifier;
+  }
+} else {
+  // no saved grids
+  if (name != undefined) {
+    console.log("Name not present");
+  }
+  this.currentGridName = "UNTITLED";
+  this.setDefaultGrid();
+}
+
+this.updateGrid();
   }
 
-  deleteGrid(name: string = this.currentGridName, replace: boolean = false): void {
-    if (this.savedGridNames == undefined) {
-      this.savedGridNames = [];
-    }
-    this.savedGridNames = _.without(this.savedGridNames, name);
-    this.saveService.saveData("gridnames", JSON.stringify(this.savedGridNames));
-    this.saveService.removeData("grid-" + name);
+eachMillisecond(time: number): void {
+  var delta = Date.now() - this.lastDate;
 
-    if (replace) {
-      this.loadGrid();
-    }
+  if(this.automaticProgress) {
+  this.progressTimer += delta / 1000;
+} else {
+  this.progressTimer = 0;
+}
+this.timeSinceLastProcess += delta / 1000;
+
+while (this.progressTimer > this.getProceedLimit()) {
+  this.progressTimer -= this.getProceedLimit();
+  this.processTime();
+}
+
+this.lastDate = Date.now();
   }
 
-  saveGrid(name: string): void {
-    this.saveService.saveData("grid-" + name, this.gridToString(this.getCurrentSkillGrid()));
-
-    if (this.savedGridNames == undefined) {
-      this.savedGridNames = [name];
-    } else if (!_.includes(this.savedGridNames, name)) {
-      this.savedGridNames.push(name);
-    }
-    this.saveService.saveData("gridnames", JSON.stringify(this.savedGridNames));
-  }
-
-  loadGrid(name: string | undefined = undefined): void {
-    if (this.savedGridNames == undefined) {
-      // load existing grid names
-      var loadAttempt = this.saveService.getData("gridnames");
-      try {
-        this.savedGridNames = JSON.parse(loadAttempt);
-      } catch (e) {
-        this.savedGridNames = [];
-      }
-    }
-
-    if (this.savedGridNames != undefined && this.savedGridNames.length > 0
-      && (_.includes(this.savedGridNames, name) || name == undefined)) {
-      // name is present or just trying to load first
-      var nameToLoad = name != undefined ? name : _.last(this.savedGridNames);
-      if (nameToLoad == undefined) {
-        nameToLoad = this.savedGridNames[0];
-      }
-      var loadAttempt = this.saveService.getData("grid-" + nameToLoad);
-      try {
-        this.currentSkillGrid = this.gridFromString(loadAttempt);
-        // grid can be parsed
-        this.currentGridName = nameToLoad;
-      } catch (e) {
-        console.log("Failed to load name; ", e);
-        this.currentGridName = "UNTITLED";
-        this.setDefaultGrid();
-      }
-    } else {
-      // no saved grids
-      if (name != undefined) {
-        console.log("Name not present");
-      }
-      this.currentGridName = "UNTITLED";
-      this.setDefaultGrid();
-    }
-
-    this.updateGrid();
-  }
-
-  eachMillisecond(time: number): void {
-    var delta = Date.now() - this.lastDate;
-
-    if (this.automaticProgress) {
-      this.progressTimer += delta / 1000;
-    } else {
-      this.progressTimer = 0;
-    }
-    this.timeSinceLastProcess += delta / 1000;
-
-    while (this.progressTimer > this.getProceedLimit()) {
-      this.progressTimer -= this.getProceedLimit();
-      this.processTime();
-    }
-
-    this.lastDate = Date.now();
-  }
-
-  constructor(private saveService: SaveService, private availableSkillService: AvailableSkillsService,
-    private characterInstanceService: CharacterInstancesService,
-    private enemyInstanceService: EnemyInstancesService) {
-    this.subscription = this.timeSource.subscribe(time => this.eachMillisecond(time))
-  }
+constructor(private saveService: SaveService, private availableSkillService: AvailableSkillsService,
+  private unitInstancesService: UnitInstancesService) {
+  this.subscription = this.timeSource.subscribe(time => this.eachMillisecond(time))
+}
 }

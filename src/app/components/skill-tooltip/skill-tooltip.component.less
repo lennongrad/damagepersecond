@@ -38,6 +38,18 @@
         vertical-align: middle;
     }
 
+    .fp-cost{
+        position: absolute;
+        right: 5px;
+        top: 5px;
+        font-size: 18px;
+        font-weight: bold;
+    }
+
+    .fp-name{
+        font-size: 15px;
+    }
+
     .icon{
         width: 40px;
         height: 40px;
@@ -83,4 +95,34 @@
     text-align: right;
     font-style: italic;
     color: #bbb;
+}
+
+.status-title{
+    padding: 2px;
+    padding-right: 50px;
+    border-radius: 4px;
+    margin-bottom: 2px;
+
+    .buff &{
+        background: linear-gradient(to right, rgba(0,0,100,.6) 80%, transparent);
+    }
+
+    .debuff &{
+        background: linear-gradient(to right, rgba(120,20,20,.6) 80%, transparent);
+    }
+
+    .neutral &{
+        background: linear-gradient(to right, rgba(0,100,0,.6) 80%, transparent);
+    }
+}
+
+.status-icon{
+    vertical-align: middle;
+    margin-right: 4px;
+}
+
+.status-name{
+    font-weight: bold;
+    vertical-align: bottom;
+    margin-right: 4px;
 }

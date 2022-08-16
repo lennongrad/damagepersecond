@@ -1,8 +1,9 @@
 import { CharacterInstance } from "../classes/character-instance";
 import { EnemyInstance } from "../classes/enemy-instance";
 import { UnitInstance } from "../classes/unit-instance";
+import { StatusInformation } from "./status-information";
 
-export enum SkillTargetType{
+export enum SkillTargetType {
     noTarget = "NO-TARGET",
     allEnemies = "ALL-ENEMIES",
     firstEnemy = "FIRST-ENEMY",
@@ -13,23 +14,26 @@ export enum SkillTargetType{
     firstCharacter = "FIRST-CHARACTER"
 }
 
-export interface SkillContext{
+export interface SkillContext {
     targets: Array<UnitInstance>,
     origin: CharacterInstance,
-    damageMultiplier?: number,
-    fpMultiplier?: number
+    baseDamageAddition: number,
+    damageMultiplier: number,
+    fpMultiplier: number
 }
 
 export interface Skill {
     skillInfo: SkillInfo
 }
 
-export interface SkillInfo{
-    id?: number;
-    icon: string;
-    name: string;
-    flavour: string;
+export interface SkillInfo {
+    id?: number,
+    icon: string,
+    name: string,
+    flavour?: string,
+    fpCost?: number,
     target: SkillTargetType,
-    effect: (context: SkillContext) => void;
-    description: () => string;
+    effect: (skillContext: SkillContext) => void,
+    description: string | (() => string),
+    relevantStatuses?: Array<StatusInformation>
 }

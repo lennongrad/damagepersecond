@@ -1,11 +1,10 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { CharacterInstance } from 'src/app/classes/character-instance';
 import { EnemyInstance } from 'src/app/classes/enemy-instance';
-import { UnitInformation } from 'src/app/interfaces/unit-information';
 import { UnitInstance } from 'src/app/classes/unit-instance';
-import { CharacterInstancesService } from 'src/app/services/character-instances.service';
-import { EnemyInstancesService } from 'src/app/services/enemy-instances.service';
+import { BeautifyService } from 'src/app/services/beautify.service';
 import { TooltipService } from 'src/app/services/tooltip.service';
+import { UnitInstancesService } from 'src/app/services/unit-instances.service';
 
 @Component({
   selector: 'app-battlefield',
@@ -14,11 +13,11 @@ import { TooltipService } from 'src/app/services/tooltip.service';
 })
 export class BattlefieldComponent implements OnInit {
   getCharacterInstances(): Array<CharacterInstance> {
-    return this.characterInstancesService.characterInstances;
+    return this.unitInstancesService.characterInstances;
   }
 
   getEnemyInstances(): Array<EnemyInstance> {
-    return this.enemyInstancesService.enemyInstances;
+    return this.unitInstancesService.enemyInstances;
   }
 
   getSpriteStyle(isCharacter: boolean, index: number): any {
@@ -34,6 +33,10 @@ export class BattlefieldComponent implements OnInit {
 
     return style;
   }
+  
+  beautify(value: number){
+    return this.beautifyService.beautify(value, true);
+  }
 
   mouseoverUnit(event: any, hoveredUnit: UnitInstance) {
     this.tooltipService.setUnitTooltip(hoveredUnit, event.toElement, .9);
@@ -43,10 +46,10 @@ export class BattlefieldComponent implements OnInit {
     this.tooltipService.setUnitTooltip(undefined, undefined, 0);
   }
 
-  constructor(private characterInstancesService: CharacterInstancesService,
-    private enemyInstancesService: EnemyInstancesService,
+  constructor(private unitInstancesService: UnitInstancesService,
     private cdref: ChangeDetectorRef,
-    private tooltipService: TooltipService) { }
+    private tooltipService: TooltipService,
+    private beautifyService: BeautifyService) { }
 
   ngOnInit(): void {
     this.cdref.detectChanges();

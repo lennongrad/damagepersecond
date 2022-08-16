@@ -1,14 +1,30 @@
 <div #tooltipbox class="tooltip" [ngStyle]="{'top.px': topOffset, 'left.px': leftOffset, 'opacity': opacity}">
     <div class="header" *ngIf="hoveredSkill != undefined">
+        <div class="fp-cost" *ngIf="hoveredSkill.fpCost != undefined">
+            {{hoveredSkill.fpCost}} <span class="fp-name">FP</span>
+        </div>
         <div class="icon">
-            <img src="assets/{{hoveredSkill!.icon}}"/>
-        </div> 
+            <img src="assets/{{hoveredSkill!.icon}}" />
+        </div>
         <div class="title">
             <span class="name">{{hoveredSkill!.name}}</span><br>
             <span class="type">{{hoveredSkill!.name}}</span>
         </div>
     </div>
     <div class="divider"></div>
-    <div class="description" *ngIf="hoveredSkill != undefined">{{hoveredSkill.description()}}</div>
-    <div class="flavour" *ngIf="hoveredSkill != undefined">"{{hoveredSkill.flavour}}"</div>
+    <div class="description" *ngIf="hoveredSkill != undefined" [innerHTML]="getDescription()"></div>
+    <div class="flavour" *ngIf="hoveredSkill != undefined && hoveredSkill.flavour != undefined">
+        "{{hoveredSkill.flavour}}"</div>
+    <div class="statuses" *ngIf="hoveredSkill != undefined && hoveredSkill.relevantStatuses != undefined">
+        <div class="divider"></div>
+        <div class="status" *ngFor="let status of hoveredSkill.relevantStatuses"
+            [class.buff]="status.type == StatusType.buff" [class.debuff]="status.type == StatusType.debuff"
+            [class.neutral]="status.type == StatusType.neutral">
+            <div class="status-title">
+                <img class="status-icon" src="assets/{{status.icon}}" />
+                <span class="status-name">{{status.name}}</span>
+            </div>
+            <div class="status-description" [innerHTML]="status.description(undefined)"></div>
+        </div>
+    </div>
 </div>

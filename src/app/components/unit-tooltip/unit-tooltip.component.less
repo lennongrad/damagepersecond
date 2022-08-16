@@ -23,6 +23,7 @@
     animation: MOVE-SQUARE-BG 5s linear infinite;
     
     padding: 4px 8px;
+    padding-bottom: 6px;
     margin: 4px;
     border: 6px solid transparent;
     border-image: url("~src/assets/frame.png") 26 round;
@@ -78,7 +79,7 @@
 }
 
 .status{
-    margin-bottom: 6px;
+    margin-bottom: 2px;
 }
 
 .status-type{
@@ -88,8 +89,8 @@
 .status-title{
     position: relative;
     padding: 2px;
+    padding-right: 50px;
     border-radius: 4px;
-    margin-bottom: 2px;
 
     .buff &{
         background: linear-gradient(to right, rgba(0,0,100,.6) 80%, transparent);
@@ -116,11 +117,29 @@
 }
 
 .status-degree{
+    font-size: 12px;
+    vertical-align: bottom;
+}
+
+.status-duration{
     position: absolute;
     top: 50%;
-    right: 6px;
+    right: 2px;
     font-size: 12px;
     transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+
+    img{
+        width: 12px;
+        height: 12px;
+        margin-left: 4px;
+    }
+}
+
+.status-description{
+    margin-top: 2px;
+    margin-bottom: 4px;
 }
 
 .flavour{
