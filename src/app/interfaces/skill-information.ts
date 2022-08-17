@@ -19,7 +19,11 @@ export interface SkillContext {
     origin: CharacterInstance,
     baseDamageAddition: number,
     damageMultiplier: number,
-    fpMultiplier: number
+    fpMultiplier: number,
+    directRateAddition:  number,
+    criticalRateAddition: number,
+    directDamageAddition: number,
+    criticalDamageAddition: number
 }
 
 export interface Skill {

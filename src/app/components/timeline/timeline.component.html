@@ -54,6 +54,7 @@
             [class.placing]="selectedSkill != undefined" 
             (window:keydown.delete)="deleteSelection()"
             (window:keydown.shift.d)="duplicateSelection()" 
+            (window:keydown.a)="selectAll()"
             (window:keydown.arrowup)="moveSelection({x: 0, y: -1})"
             (window:keydown.arrowdown)="moveSelection({x: 0, y: 1})"
             (window:keydown.arrowleft)="moveSelection({x: -1, y: 0})"

@@ -29,6 +29,7 @@ export interface StatusInformation{
     type: StatusType,
     description: (status: Status | undefined) => string,
     onSkillUse?: (status: Status, skillContext: SkillContext, host: UnitInstance) => void,
-    onDamageCheck?: (status: Status, skillContext: SkillContext, host: UnitInstance, target: UnitInstance) => void,
+    onDamageDeal?: (status: Status, skillContext: SkillContext, host: UnitInstance, target: UnitInstance) => void,
+    onDamageReceive?: (status: Status, skillContext: SkillContext, host: UnitInstance, target: UnitInstance) => void,
     onTimeIncrement?: (status: Status, host: UnitInstance) => void
 }

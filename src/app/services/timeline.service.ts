@@ -85,6 +85,8 @@ export class TimelineService {
           if (skill != undefined && origin.isAlive()) {
             this.activateSkill(origin, skill);
           }
+
+          this.unitInstancesService.enemyInstances[rowIndex].timeIncrement();
         }
       } else {
         this.resetTime(false);
@@ -128,17 +130,21 @@ export class TimelineService {
       origin: origin,
       baseDamageAddition: 0,
       damageMultiplier: 1,
-      fpMultiplier: 1
+      fpMultiplier: 1,
+      directRateAddition: 0,
+      criticalRateAddition: 0,
+      directDamageAddition: 0,
+      criticalDamageAddition: 0
     }
+
+    this.unitInstancesService.forEachUnit((unit) => unit.forEachStatus((status) => {
+      if(status.statusInformation.onSkillUse != undefined){
+        status.statusInformation.onSkillUse(status, skillContext, unit)
+      }
+    }))
 
     if(origin.canAfford(skillContext, skill)){
       origin.spendFP(skillContext, skill);
-
-      this.unitInstancesService.forEachUnit((unit) => unit.forEachStatus((status) => {
-        if(status.statusInformation.onSkillUse != undefined){
-          status.statusInformation.onSkillUse(status, skillContext, unit)
-        }
-      }))
   
       skill.skillInfo.effect(skillContext);
     }

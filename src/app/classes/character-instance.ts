@@ -21,7 +21,7 @@ export class CharacterInstance extends UnitInstance {
     }
     getDPR(length: number): number {
         var totalDamage = 0;
-        if(this.finalDamages.length > 0){
+        if (this.finalDamages.length > 0) {
             totalDamage = _.reduce(this.finalDamages, (memo, num) => memo + num) as number;
             totalDamage /= this.finalDamages.length;
         } else {
@@ -48,8 +48,9 @@ export class CharacterInstance extends UnitInstance {
         }
     }
 
-    override dealDamage(skillContext: SkillContext, target: UnitInstance, baseDamage: number): number {
-        var damageDealt = super.dealDamage(skillContext, target, baseDamage);
+    override dealDamage(skillContext: SkillContext, target: UnitInstance, baseDamage: number,
+        directRate: number = 0, criticalRate: number = 0): number {
+        var damageDealt = super.dealDamage(skillContext, target, baseDamage, directRate, criticalRate);
 
         this.currentDamageDealt += damageDealt;
 
@@ -67,8 +68,8 @@ export class CharacterInstance extends UnitInstance {
         this.finalDamages = [];
     }
 
-    constructor(name: string, 
-        public characterInformation: CharacterInformation, 
+    constructor(name: string,
+        public characterInformation: CharacterInformation,
         unitInstancesService: UnitInstancesService) {
         super(name, characterInformation, unitInstancesService);
 

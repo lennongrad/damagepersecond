@@ -78,7 +78,7 @@ export class TimelineComponent implements OnInit {
   }
 
   deleteGrid(): void {
-    if(confirm("Are you sure you want to delete the current skill timeline?")){
+    if (confirm("Are you sure you want to delete the current skill timeline?")) {
       this.timelineService.deleteGrid(this.timelineService.currentGridName, true);
     }
   }
@@ -130,7 +130,7 @@ export class TimelineComponent implements OnInit {
     return this.timelineService.currentGridName;
   }
 
-  getAutomaticProgress(){
+  getAutomaticProgress() {
     return this.timelineService.automaticProgress;
   }
 
@@ -192,7 +192,7 @@ export class TimelineComponent implements OnInit {
 
   clickSlot(slotIndex: number, rowIndex: number, event: MouseEvent): void {
     if (this.selectedSkill != undefined) {
-      this.timelineService.insertSkill(slotIndex, rowIndex, {skillInfo: this.selectedSkill});
+      this.timelineService.insertSkill(slotIndex, rowIndex, { skillInfo: this.selectedSkill });
 
       if (this.selectedSkill != undefined) {
         this.selectedSkillService.useSkill(this.selectedSkill);
@@ -212,7 +212,7 @@ export class TimelineComponent implements OnInit {
     this.timelineService.resetTime();
   }
 
-  selectSlot(slotIndex: number, rowIndex: number, holdingSHIFT: boolean): void {
+  selectSlot(slotIndex: number, rowIndex: number, holdingSHIFT: boolean = true): void {
     if (rowIndex != this.selectedRow) {
       this.selectedRow = rowIndex;
     }
@@ -254,6 +254,22 @@ export class TimelineComponent implements OnInit {
     this.timelineService.updateGrid();
   }
 
+  selectAll() {
+    var anyUnselected = false;
+
+    this.timelineService.forEachSlot((rowIndex, slotIndex) => {
+      if (this.getSkillGrid()[rowIndex][slotIndex] && !this.selectedSlots[rowIndex][slotIndex]) {
+        anyUnselected = true;
+      }
+    })
+
+    this.timelineService.forEachSlot((rowIndex, slotIndex) => {
+      if (this.getSkillGrid()[rowIndex][slotIndex] != undefined) {
+        this.selectedSlots[rowIndex][slotIndex] = anyUnselected;
+      }
+    })
+  }
+
   moveSelection(displacement: SlotIndex) {
     const selectedSlotIndices = Array<SlotIndex>();
     const selectedItems = Array<Skill | undefined>();
@@ -291,7 +307,7 @@ export class TimelineComponent implements OnInit {
 
   onDragStart(slotIndex: number, rowIndex: number, event: any): void {
     event.dataTransfer.setDragImage(new Image(), 0, 0);
-    if(this.selectedSkill != undefined){
+    if (this.selectedSkill != undefined) {
       return;
     }
 
