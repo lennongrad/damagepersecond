@@ -39,7 +39,7 @@ export class BattlefieldComponent implements OnInit {
   }
 
   mouseoverUnit(event: any, hoveredUnit: UnitInstance) {
-    this.tooltipService.setUnitTooltip(hoveredUnit, event.toElement, .9);
+    this.tooltipService.setUnitTooltip(hoveredUnit, event.toElement ? event.toElement : event.target, .9);
   }
 
   mouseoutUnit(event: any, hoveredUnit: UnitInstance) {

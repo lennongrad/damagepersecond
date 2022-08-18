@@ -2,7 +2,7 @@ import { EnemyInformation } from "../interfaces/unit-information"
 
 export const ENEMIES: Array<EnemyInformation> = [
     {
-        name: "Soldier", baseMaxHP: 10, animation: {
+        name: "Soldier", baseMaxHP: 1000000, animation: {
             imageURL: "enemy-body.png",
             shadowImageURL: "enemy-shadow.png",
             horizontalDisplacement: 22,

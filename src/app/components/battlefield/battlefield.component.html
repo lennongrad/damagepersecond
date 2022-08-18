@@ -63,7 +63,7 @@
                 <div class="value-segment hp">
                     <div class="value-text">
                         <div class="value-name">HP</div>
-                        <div class="value-amount">{{enemyInstance.getHP()}}</div>
+                        <div class="value-amount">{{beautify(enemyInstance.getHP())}}</div>
                     </div>
                     <div class="value-bar"
                         [ngStyle]="{'background-size': enemyInstance.hp / enemyInstance.getMaxHP() * 100 + '% 100%'}">

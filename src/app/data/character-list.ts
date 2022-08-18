@@ -2,7 +2,7 @@ import { CharacterInformation } from "../interfaces/unit-information";
 
 export const CHARACTERS: Array<CharacterInformation> = [
     {
-        name: "Eirika", baseMaxHP: 10, baseMaxFP: 6, animation:
+        name: "Eirika", baseMaxHP: 10, baseMaxFP: 10, animation:
         {
             imageURL: "eirika-body.png",
             shadowImageURL: "eirika-shadow.png",

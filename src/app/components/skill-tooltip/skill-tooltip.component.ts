@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, SimpleChanges, ViewChild, ElementRef, HostListener } from '@angular/core';
-import { SkillInfo } from 'src/app/interfaces/skill-information';
+import { SkillInfo, SkillSubtype } from 'src/app/interfaces/skill-information';
 import { StatusType } from 'src/app/interfaces/status-information';
 import { TooltipService } from 'src/app/services/tooltip.service';
 
@@ -15,6 +15,12 @@ export class SkillTooltipComponent implements OnInit {
   element?: Element;
   opacity = 1;
 
+  pressedKeys: { [keycode: string]: boolean } = {};
+  @HostListener('window:keydown', ['$event'])
+  onKeyUp(event: KeyboardEvent) { this.pressedKeys[event.key] = true }
+  @HostListener('document:keyup', ['$event'])
+  onKeyDown(event: KeyboardEvent) { this.pressedKeys[event.key] = false; }
+
   readonly StatusType = StatusType;
 
   // calculated so that the tooltip is not offscreen
@@ -22,7 +28,6 @@ export class SkillTooltipComponent implements OnInit {
   leftOffset = -1000;
 
   update() {
-    //console.log(this.element, this.tooltipBox)
     if (this.element != undefined && this.tooltipBox != undefined) {
       var elementRect = this.element.getBoundingClientRect();
       this.leftOffset = elementRect.x + elementRect.width;
@@ -49,6 +54,26 @@ export class SkillTooltipComponent implements OnInit {
     } else {
       return this.hoveredSkill.description();
     }
+  }
+  
+  getType(): string{
+    var baseString = "";
+
+    if(this.hoveredSkill != undefined){
+      baseString = this.hoveredSkill.type.toLowerCase();
+      baseString = baseString.charAt(0).toUpperCase() + baseString.slice(1);
+
+      if(this.hoveredSkill.subtypes != undefined){
+        baseString += " – ";
+        this.hoveredSkill.subtypes.forEach((subtype: SkillSubtype) => {
+          var subtypeString = subtype.toLowerCase();
+          subtypeString = subtypeString.charAt(0).toUpperCase() + subtypeString.slice(1);
+          baseString += subtypeString + " ";
+        })
+      }
+    }
+
+    return baseString;
   }
 
   constructor(private tooltipService: TooltipService) { 

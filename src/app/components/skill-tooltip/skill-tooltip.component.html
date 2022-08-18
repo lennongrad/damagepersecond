@@ -8,14 +8,16 @@
         </div>
         <div class="title">
             <span class="name">{{hoveredSkill!.name}}</span><br>
-            <span class="type">{{hoveredSkill!.name}}</span>
+            <span class="type">{{getType()}}</span>
         </div>
     </div>
     <div class="divider"></div>
-    <div class="description" *ngIf="hoveredSkill != undefined" [innerHTML]="getDescription()"></div>
+    <div class="description" [class.show-status-names]="pressedKeys['Shift']" *ngIf="hoveredSkill != undefined"
+        [innerHTML]="getDescription()"></div>
     <div class="flavour" *ngIf="hoveredSkill != undefined && hoveredSkill.flavour != undefined">
         "{{hoveredSkill.flavour}}"</div>
-    <div class="statuses" *ngIf="hoveredSkill != undefined && hoveredSkill.relevantStatuses != undefined">
+    <div class="statuses"
+        *ngIf="hoveredSkill != undefined && hoveredSkill.relevantStatuses != undefined && pressedKeys['Shift']">
         <div class="divider"></div>
         <div class="status" *ngFor="let status of hoveredSkill.relevantStatuses"
             [class.buff]="status.type == StatusType.buff" [class.debuff]="status.type == StatusType.debuff"

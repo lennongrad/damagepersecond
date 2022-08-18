@@ -14,7 +14,23 @@ export enum SkillTargetType {
     firstCharacter = "FIRST-CHARACTER"
 }
 
+export enum SkillType{
+    attack = "ATTACK",
+    ability = "ABILITY"
+}
+
+export enum SkillSubtype{
+    // attacks
+    arm = "ARM",
+    leg = "LEG",
+    sword = "SWORD",
+
+    // abilities
+    song = "SONG"
+}
+
 export interface SkillContext {
+    skill: Skill,
     targets: Array<UnitInstance>,
     origin: CharacterInstance,
     baseDamageAddition: number,
@@ -34,6 +50,8 @@ export interface SkillInfo {
     id?: number,
     icon: string,
     name: string,
+    type: SkillType,
+    subtypes?: Array<SkillSubtype>,
     flavour?: string,
     fpCost?: number,
     target: SkillTargetType,

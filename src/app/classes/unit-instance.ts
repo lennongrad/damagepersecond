@@ -16,10 +16,10 @@ export abstract class UnitInstance {
     abstract getMaxHP(): number;
     abstract getMaxFP(): number;
 
-    getHP(): number{
+    getHP(): number {
         return Math.floor(this.hp * 100) / 100;
     }
-    getFP(): number{
+    getFP(): number {
         return Math.floor(this.fp * 100) / 100;
     }
 
@@ -28,7 +28,7 @@ export abstract class UnitInstance {
     }
 
     isAlive(): boolean {
-        return this.hp > 0;
+        return this.hp > 0.01;
     }
 
     onDie(): void {
@@ -43,18 +43,18 @@ export abstract class UnitInstance {
         return this.information.animation;
     }
 
-    getFPCost(skillContext: SkillContext, skill: Skill): number {
-        var baseCost = skill.skillInfo.fpCost != undefined ? skill.skillInfo.fpCost : 0;
+    getFPCost(skillContext: SkillContext): number {
+        var baseCost = skillContext.skill.skillInfo.fpCost != undefined ? skillContext.skill.skillInfo.fpCost : 0;
         baseCost *= skillContext.fpMultiplier;
         return baseCost;
     }
 
-    canAfford(skillContext: SkillContext, skill: Skill): boolean {
-        return this.getFPCost(skillContext, skill) <= this.fp;
+    canAfford(skillContext: SkillContext): boolean {
+        return this.getFPCost(skillContext) <= this.fp;
     }
 
-    spendFP(skillContext: SkillContext, skill: Skill): void {
-        this.fp -= this.getFPCost(skillContext, skill);
+    spendFP(skillContext: SkillContext): void {
+        this.fp -= this.getFPCost(skillContext);
     }
 
     dealDamage(skillContext: SkillContext, target: UnitInstance, baseDamage: number,
@@ -72,10 +72,10 @@ export abstract class UnitInstance {
         })
 
         var hitRoll = Math.ceil(Math.random() * 100);
-        if(hitRoll < baseCriticalHit + copiedContext.criticalRateAddition){
-            copiedContext.damageMultiplier += copiedContext.criticalDamageAddition + 1.5
-        } else if(hitRoll < baseDirectHit + copiedContext.directRateAddition) {
-            copiedContext.damageMultiplier += copiedContext.directDamageAddition + .25
+        if (hitRoll < baseCriticalHit + copiedContext.criticalRateAddition) {
+            copiedContext.damageMultiplier += copiedContext.criticalDamageAddition / 100 + 1.5
+        } else if (hitRoll < baseDirectHit + copiedContext.directRateAddition) {
+            copiedContext.damageMultiplier += copiedContext.directDamageAddition / 100 + .25
         }
 
         var damageToDeal = (baseDamage + copiedContext.baseDamageAddition) * copiedContext.damageMultiplier;
@@ -112,6 +112,10 @@ export abstract class UnitInstance {
     }
 
     addStatus(status: Status): void {
+        if (status.duration != undefined) {
+            status.duration += 1;
+        }
+
         var existingStatus = _.findWhere(this.statuses, { statusInformation: status.statusInformation })
 
         if (existingStatus == undefined || status.statusInformation.stackType == StackType.keepBoth) {
@@ -135,6 +139,14 @@ export abstract class UnitInstance {
             }
         })
         this.statuses = _.filter(this.statuses, (status) => status.duration != undefined ? status.duration > 0 : true)
+    }
+
+    timeNoSkill(): void {
+        this.forEachStatus((status) => {
+            if (status.statusInformation.onNoSkill != undefined) {
+                status.statusInformation.onNoSkill(status, this);
+            }
+        })
     }
 
     forEachStatus(callback: (status: Status) => void): void {
