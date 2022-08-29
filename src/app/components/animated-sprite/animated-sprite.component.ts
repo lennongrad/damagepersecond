@@ -30,6 +30,8 @@ export class AnimatedSpriteComponent implements OnInit {
 
   @Input() isDead: boolean = false;
 
+  tickTimeToComplete = 100;
+
   bufferPlayAnimation?: string;
 
   timeSource = interval(1);
@@ -101,8 +103,10 @@ export class AnimatedSpriteComponent implements OnInit {
   getTickStyle(tick: {value: number, time: number}): any{
     var style: { [klass: string]: any } = {};
 
-    style["bottom"] = 6 * Math.pow(tick.time, 0.4) - 30 + "px";
-    style["opacity"] = 3.15 - 4.3/(1+Math.exp(-tick.time / 300));
+    var percentTime = tick.time / this.tickTimeToComplete;
+
+    style["bottom"] = Math.pow(percentTime, .35) * 60 - 20 + "px";
+    style["opacity"] = -Math.pow(percentTime, 1.5) + 1;
 
     return style;
   }
@@ -134,7 +138,7 @@ export class AnimatedSpriteComponent implements OnInit {
     }
 
     this.activeTicks = _.forEach(this.activeTicks, tick => { tick.time += 1; });
-    this.activeTicks = _.filter(this.activeTicks, tick => tick.time < 300);
+    this.activeTicks = _.filter(this.activeTicks, tick => tick.time < this.tickTimeToComplete);
 
     this.lastDate = Date.now();
   }
@@ -167,8 +171,8 @@ export class AnimatedSpriteComponent implements OnInit {
       this.activeTicks = [];
     } else {
       this.activeTicks = _.forEach(this.activeTicks, tick => { 
-        if(tick.time < 50){
-          tick.time += 20; 
+        if(tick.time < this.tickTimeToComplete / 6){
+          tick.time += this.tickTimeToComplete / 18; 
         }
       });
       

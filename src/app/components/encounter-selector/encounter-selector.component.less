@@ -1,0 +1,30 @@
+.animation-holder{
+    display: inline-block;
+    margin: 7px;
+
+    width: 120px;
+    height: 85px;
+    padding: 10px 20px 10px 10px;
+    position: relative;
+    overflow: hidden;
+    
+    background: linear-gradient(135deg, rgba(40, 40, 40, .5), rgba(0,0,0,.5) 24%), url('~src/assets/checkerboard.png') 0px/50px, #000;
+    background-size: 50px 50px;
+    animation: MOVE-SQUARE-BG 5s linear infinite;
+
+    border: 6px solid transparent;
+    border-image: url("~src/assets/frame.png") 26 round;
+    border-radius: 2px;
+    box-shadow: 0px 0px 1px 2px rgb(0 0 0 / 50%), 0px 2px 4px rgb(0 0 0 / 25%), 0px 0px 6px 1px rgb(0 0 0 / 50%) inset;
+
+    cursor: pointer;
+
+    &:hover{
+        filter: brightness(1.2);
+    }
+
+    app-animated-sprite{
+        top: -40px;
+        position: relative;
+    }
+}

@@ -4,7 +4,7 @@ import { UnitInformation } from "../interfaces/unit-information";
 import { AnimationDetails } from "../interfaces/animation-information";
 import * as _ from 'underscore';
 import { UnitInstancesService } from "../services/unit-instances.service";
-import { Skill, SkillContext } from "../interfaces/skill-information";
+import { DamageType, Skill, SkillContext } from "../interfaces/skill-information";
 
 export abstract class UnitInstance {
     animationChange = new Subject<string>();
@@ -72,16 +72,21 @@ export abstract class UnitInstance {
         })
 
         var hitRoll = Math.ceil(Math.random() * 100);
+        skillContext.damageType = DamageType.normal;
         if (hitRoll < baseCriticalHit + copiedContext.criticalRateAddition) {
             copiedContext.damageMultiplier += copiedContext.criticalDamageAddition / 100 + 1.5
+            skillContext.damageType = DamageType.critical;
         } else if (hitRoll < baseDirectHit + copiedContext.directRateAddition) {
             copiedContext.damageMultiplier += copiedContext.directDamageAddition / 100 + .25
+            skillContext.damageType = DamageType.direct;
         }
 
         var damageToDeal = (baseDamage + copiedContext.baseDamageAddition) * copiedContext.damageMultiplier;
         damageToDeal = Math.floor(damageToDeal * 100) / 100;
 
         target.receiveDamage(damageToDeal);
+
+        skillContext.damageDealt += damageToDeal;
 
         return damageToDeal;
     }
@@ -122,9 +127,15 @@ export abstract class UnitInstance {
             this.statuses.push(status);
         } else {
             switch (status.statusInformation.stackType) {
-                case StackType.add: existingStatus.degree += status.degree; break;
-                case StackType.keepHighest: existingStatus.degree = Math.max(status.degree, existingStatus.degree); break;
-                case StackType.replace: existingStatus.degree = status.degree; break;
+                case StackType.add:
+                    if (existingStatus.degree != undefined) existingStatus.degree += status.degree ? status.degree : 0;
+                    break;
+                case StackType.keepHighest:
+                    existingStatus.degree = Math.max(status.degree ? status.degree : 0, existingStatus.degree ? existingStatus.degree : 0);
+                    break;
+                case StackType.replace:
+                    existingStatus.degree = status.degree;
+                    break;
             }
         }
     }

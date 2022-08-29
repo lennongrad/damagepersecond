@@ -1,0 +1,5 @@
+<div class="animation-holder" *ngFor="let encounter of encounterList | keyvalue"
+    (click)="clickEncounter(encounter.key)">
+    <app-animated-sprite *ngFor="let enemy of encounter.value.enemies; let i = index" [AnimationDetails]="enemy.animation"
+        [ngStyle]="getSpriteStyle(i)" [isDead]="false"></app-animated-sprite>
+</div>

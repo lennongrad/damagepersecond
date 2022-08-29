@@ -200,24 +200,34 @@ input:focus {
     outline: none;
 }
 
-.description img{
+.description img {
     vertical-align: middle;
     width: 14px;
     height: 14px;
 }
 
-.negative-description{
+.negative-description {
     color: #d66767;
 }
 
-.positive-description{
+.positive-description {
     color: #6a67d6;
 }
 
-.small{
+.small {
     font-size: 10px;
 }
 
-.description:not(.show-status-names) .skill-description-status{
+.description:not(.show-status-names) .skill-description-status {
     display: none;
+}
+
+.encounter-select-dialog {
+    width: 100%;
+    text-align: center;
+
+    .mat-dialog-container {
+        background-color: rgba(25, 25, 25, .9);
+        padding: 10px;
+    }
 }

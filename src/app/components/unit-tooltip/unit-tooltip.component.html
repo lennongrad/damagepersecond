@@ -17,7 +17,7 @@
                 <div class="status-title">
                     <img class="status-icon" src="assets/{{status.statusInformation.icon}}" />
                     <span class="status-name">{{status.statusInformation.name}}</span>
-                    <span class="status-degree">({{status.degree}})</span>
+                    <span class="status-degree" *ngIf="status.degree != undefined">({{status.degree}})</span>
                     <div class="status-duration" *ngIf="status.duration != undefined">
                         <span>{{status.duration}}</span><img src="assets/stopwatch.png">
                     </div>

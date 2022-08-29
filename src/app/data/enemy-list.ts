@@ -1,8 +1,21 @@
-import { EnemyInformation } from "../interfaces/unit-information"
+import { EncounterInformation, EnemyInformation } from "../interfaces/unit-information"
 
-export const ENEMIES: Array<EnemyInformation> = [
-    {
-        name: "Soldier", baseMaxHP: 1000000, animation: {
+export const ENEMIES: { [id: string]: EnemyInformation } = {
+    "dummy": {
+        id: "dummy", name: "Training Dummy", baseMaxHP: 123 * Math.pow(10, 12), animation: {
+            imageURL: "dummy-body.png",
+            shadowImageURL: "dummy-shadow.png",
+            sheetWidth: 1,
+            sheetHeight: 1,
+            animations: [{
+                name: "Idle", repeat: true, frameDurations: [
+                    { duration: 1, frame: { x: 0, y: 0 } }
+                ]
+            }]
+        }
+    },
+    "soldier": {
+        id: "soldier", name: "Soldier", baseMaxHP: 50, animation: {
             imageURL: "enemy-body.png",
             shadowImageURL: "enemy-shadow.png",
             horizontalDisplacement: 22,
@@ -10,7 +23,7 @@ export const ENEMIES: Array<EnemyInformation> = [
             sheetHeight: 8,
             animations: [{
                 name: "Idle", repeat: true, randomize: .1, frameDurations: [
-                    
+
                     { duration: 8, frame: { x: 0, y: 0 } },
                     { duration: .1, frame: { x: 1, y: 0 } },
                     { duration: .2, frame: { x: 2, y: 0 } },
@@ -37,4 +50,15 @@ export const ENEMIES: Array<EnemyInformation> = [
             }]
         }
     }
-]
+}
+
+export const ENCOUNTERS: {[id: string]: EncounterInformation} = {
+    "training":
+    {
+        id: "training", name: "Training", enemies: [ENEMIES["dummy"], ENEMIES["dummy"], ENEMIES["dummy"]]
+    },
+    "soldiers":
+    {
+        id: "soldiers", name: "Soldiers", enemies: [ENEMIES["soldier"], ENEMIES["soldier"], ENEMIES["soldier"]]
+    }
+}

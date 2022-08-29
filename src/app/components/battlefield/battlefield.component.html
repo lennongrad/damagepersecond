@@ -48,7 +48,7 @@
             [isDead]="!enemyInstance.isAlive()" [AnimationDetails]="enemyInstance.getAnimationDetails()"
             [AnimationSubject]="enemyInstance.animationChange" [TickSubject]="enemyInstance.tickChange"
             [ngStyle]="getSpriteStyle(false, i)" (mouseover)="mouseoverUnit($event, enemyInstance)"
-            (mouseout)="mouseoutUnit($event, enemyInstance)" (click)="enemyInstance.animationChange.next('Attack')">
+            (mouseout)="mouseoutUnit($event, enemyInstance)" (click)="enemyClick()">
         </app-animated-sprite>
     </div>
     <div class="hp-container enemy">

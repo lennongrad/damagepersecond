@@ -16,7 +16,7 @@ export enum StatusType{
 
 export interface Status{
     statusInformation: StatusInformation,
-    degree: number,
+    degree?: number,
     duration?: number,
     origin?: UnitInstance
 }
@@ -30,6 +30,7 @@ export interface StatusInformation{
     description: (status: Status | undefined) => string,
     onSkillUse?: (status: Status, skillContext: SkillContext, host: UnitInstance) => void,
     onDamageDeal?: (status: Status, skillContext: SkillContext, host: UnitInstance, target: UnitInstance) => void,
+    onDamageDone?: (status: Status, skillContext: SkillContext, host: UnitInstance, target: UnitInstance) => void,
     onDamageReceive?: (status: Status, skillContext: SkillContext, host: UnitInstance, target: UnitInstance) => void,
     onTimeIncrement?: (status: Status, host: UnitInstance) => void
     onNoSkill?: (status: Status, host: UnitInstance) => void

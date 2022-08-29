@@ -29,17 +29,26 @@ export enum SkillSubtype{
     song = "SONG"
 }
 
+export enum DamageType{
+    normal = "NORMAL",
+    direct = "DIRECT",
+    critical = "CRITICAL"
+}
+
 export interface SkillContext {
     skill: Skill,
     targets: Array<UnitInstance>,
     origin: CharacterInstance,
+    cancelSkill?: boolean,
     baseDamageAddition: number,
     damageMultiplier: number,
     fpMultiplier: number,
     directRateAddition:  number,
     criticalRateAddition: number,
     directDamageAddition: number,
-    criticalDamageAddition: number
+    criticalDamageAddition: number,
+    damageDealt: number,
+    damageType?: DamageType
 }
 
 export interface Skill {

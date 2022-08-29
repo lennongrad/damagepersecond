@@ -20,6 +20,7 @@ import { FocusOnShowDirective } from './directives/focus-on-show.directive';
 import { AnimatedSpriteComponent } from './components/animated-sprite/animated-sprite.component';
 import { BattlefieldComponent } from './components/battlefield/battlefield.component';
 import { UnitTooltipComponent } from './components/unit-tooltip/unit-tooltip.component';
+import { EncounterSelectorComponent } from './components/encounter-selector/encounter-selector.component';
 
 @NgModule({
   declarations: [
@@ -33,7 +34,8 @@ import { UnitTooltipComponent } from './components/unit-tooltip/unit-tooltip.com
     FocusOnShowDirective,
     AnimatedSpriteComponent,
     BattlefieldComponent,
-    UnitTooltipComponent
+    UnitTooltipComponent,
+    EncounterSelectorComponent
   ],
   imports: [
     BrowserModule,

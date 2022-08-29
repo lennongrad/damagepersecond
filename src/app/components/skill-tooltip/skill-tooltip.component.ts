@@ -35,7 +35,7 @@ export class SkillTooltipComponent implements OnInit {
       if(this.tooltipBox != undefined){
         var tooltipRect = this.tooltipBox.nativeElement.getBoundingClientRect();
         if(this.leftOffset + tooltipRect.width > document.body.clientWidth){
-          this.leftOffset = document.body.clientWidth -  tooltipRect.width;
+          this.leftOffset = document.body.clientWidth -  tooltipRect.width - 8;
         }
       }
 

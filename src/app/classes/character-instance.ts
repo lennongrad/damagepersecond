@@ -3,6 +3,7 @@ import { CharacterInformation, CharacterSave } from "../interfaces/unit-informat
 import { UnitInstancesService } from "../services/unit-instances.service";
 import { Skill, SkillContext, SkillTargetType } from "../interfaces/skill-information";
 import * as _ from 'underscore';
+import { Status } from "../interfaces/status-information";
 
 export class CharacterInstance extends UnitInstance {
     permanentData!: CharacterSave;
@@ -10,7 +11,7 @@ export class CharacterInstance extends UnitInstance {
     currentDamageDealt = 0;
     finalDamages = Array<number>();
 
-    recentlyUsedSkills = Array<Skill>();
+    recentlyUsedSkills = Array<{ skill: Skill, skillContext: SkillContext }>();
 
     getMaxHP(): number {
         return this.characterInformation.baseMaxHP;
@@ -30,6 +31,28 @@ export class CharacterInstance extends UnitInstance {
             totalDamage = this.currentDamageDealt;
         }
         return totalDamage / length;
+    }
+
+    recentSkillsCount(predicate: (skill: Skill, skillContext: SkillContext) => boolean, distance: number): number {
+        return _.reduceRight(this.recentlyUsedSkills, (total, usedSkill, index) => {
+            return total + ((predicate(usedSkill.skill, usedSkill.skillContext) && index < distance) ? 1 : 0);
+        }, 0)
+        /*
+        var total = 0;
+        this.recentlyUsedSkills.forEach((used: {skill: Skill, skillContext: SkillContext}, index: number) => {
+            if(predicate(used.skill, used.skillContext) && true){
+                total += 1;
+            }
+        })
+        return total;*/
+    }
+
+    recentSkillsAll(predicate: (skill: Skill, skillContext: SkillContext) => boolean, distance: number): boolean {
+        return this.recentSkillsCount(predicate, distance) == Math.min(distance, this.recentlyUsedSkills.length);
+    }
+
+    recentSkillsNone(predicate: (skill: Skill, skillContext: SkillContext) => boolean, distance: number): boolean {
+        return this.recentSkillsCount(predicate, distance) == 0;
     }
 
     addXP(amount: number): void {
@@ -91,7 +114,8 @@ export class CharacterInstance extends UnitInstance {
             directRateAddition: 0,
             criticalRateAddition: 0,
             directDamageAddition: 0,
-            criticalDamageAddition: 0
+            criticalDamageAddition: 0,
+            damageDealt: 0
         }
 
         this.forEachStatus((status) => {
@@ -100,10 +124,12 @@ export class CharacterInstance extends UnitInstance {
             }
         })
 
-        if (this.canAfford(skillContext)) {
+        if (this.canAfford(skillContext) && !skillContext.cancelSkill) {
             this.spendFP(skillContext);
 
             skill.skillInfo.effect(skillContext);
+
+            this.recentlyUsedSkills.unshift({ skill: skill, skillContext: skillContext });
         }
     }
 

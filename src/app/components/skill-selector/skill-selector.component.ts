@@ -93,7 +93,7 @@ export class SkillSelectorComponent implements OnInit {
   }
 
   mouseoverSkill(event: any, hoveredSkill: SkillInfo) {
-    this.tooltipService.setSkillTooltip(hoveredSkill, event.toElement ? event.toElement : event.target, .9);
+    this.tooltipService.setSkillTooltip(hoveredSkill, event.toElement ? event.toElement : event.target, 1);
   }
 
   mouseoutSkill(event: any, hoveredSkill: SkillInfo) {

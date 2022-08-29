@@ -11,7 +11,7 @@ export const STATUSES: { [id: string]: StatusInformation; } = {
             return "Increases damage dealt per attack by <b class='positive-description'>+" + (status != undefined ? status.degree : "X") + "</b>."
         },
         onDamageDeal: (status: Status, skillContext: SkillContext, origin: UnitInstance, target: UnitInstance) => {
-            skillContext.baseDamageAddition += status.degree;
+            skillContext.baseDamageAddition += status.degree ? status.degree : 0;
         }
     },
     "fierce": {
@@ -21,7 +21,7 @@ export const STATUSES: { [id: string]: StatusInformation; } = {
             return "Increases critical hit chance by <b class='positive-description'>+" + (status != undefined ? status.degree : "X") + "%</b>."
         },
         onDamageDeal: (status: Status, skillContext: SkillContext, origin: UnitInstance, target: UnitInstance) => {
-            skillContext.criticalRateAddition += status.degree;
+            skillContext.criticalRateAddition += status.degree ? status.degree : 0;
         }
     },
     "deft": {
@@ -31,7 +31,7 @@ export const STATUSES: { [id: string]: StatusInformation; } = {
             return "Increases direct hit chance by <b class='positive-description'>+" + (status != undefined ? status.degree : "X") + "%</b>."
         },
         onDamageDeal: (status: Status, skillContext: SkillContext, origin: UnitInstance, target: UnitInstance) => {
-            skillContext.directRateAddition += status.degree;
+            skillContext.directRateAddition += status.degree ? status.degree : 0;
         }
     },
     "brutal": {
@@ -41,7 +41,7 @@ export const STATUSES: { [id: string]: StatusInformation; } = {
             return "Increases critical hit damage by <b class='positive-description'>+" + (status != undefined ? status.degree : "X") + "%</b>."
         },
         onDamageDeal: (status: Status, skillContext: SkillContext, origin: UnitInstance, target: UnitInstance) => {
-            skillContext.criticalDamageAddition += status.degree;
+            skillContext.criticalDamageAddition += status.degree ? status.degree : 0;
         }
     },
     "precise": {
@@ -51,7 +51,7 @@ export const STATUSES: { [id: string]: StatusInformation; } = {
             return "Increases direct hit damage by <b class='positive-description'>+" + (status != undefined ? status.degree : "X") + "%</b>."
         },
         onDamageDeal: (status: Status, skillContext: SkillContext, origin: UnitInstance, target: UnitInstance) => {
-            skillContext.directDamageAddition += status.degree;
+            skillContext.directDamageAddition += status.degree ? status.degree : 0;
         }
     },
     "weakness": {
@@ -61,7 +61,7 @@ export const STATUSES: { [id: string]: StatusInformation; } = {
             return "Decreases damage dealt per attack by <b class='negative-description'>-" + (status != undefined ? status.degree : "X") + "</b>."
         },
         onDamageDeal: (status: Status, skillContext: SkillContext, origin: UnitInstance, target: UnitInstance) => {
-            skillContext.baseDamageAddition -= status.degree;
+            skillContext.baseDamageAddition -= status.degree ? status.degree : 0;
         }
     },
     "resistant": {
@@ -71,7 +71,7 @@ export const STATUSES: { [id: string]: StatusInformation; } = {
             return "Decreases damage received per attack by <b class='positive-description'>-" + (status != undefined ? status.degree : "X") + "%</b>."
         },
         onDamageReceive: (status: Status, skillContext: SkillContext, origin: UnitInstance, target: UnitInstance) => {
-            skillContext.damageMultiplier -= status.degree * .01;
+            skillContext.damageMultiplier -= (status.degree ? status.degree : 0) * .01;
         }
     },
     "vulnerable": {
@@ -81,21 +81,29 @@ export const STATUSES: { [id: string]: StatusInformation; } = {
             return "Increased damage received per attack by <b class='negative-description'>+" + (status != undefined ? status.degree : "X") + "%</b>."
         },
         onDamageReceive: (status: Status, skillContext: SkillContext, origin: UnitInstance, target: UnitInstance) => {
-            skillContext.damageMultiplier += status.degree * .01;
+            skillContext.damageMultiplier += (status.degree ? status.degree : 0) * .01;
         }
     },
     "bleeding": {
         id: "bleeding", name: "Bleeding", icon: 'skill-icons/skill_49.png',
-        stackType: StackType.add, type: StatusType.debuff,
+        stackType: StackType.keepBoth, type: StatusType.debuff,
         description: (status: Status | undefined) => {
             return "Each second, take <b class='negative-description'>" + (status != undefined ? status.degree : "X") + "</b> damage."
         },
         onTimeIncrement: (status: Status, host: UnitInstance) => {
-            var damage = status.degree;
+            var damage = (status.degree ? status.degree : 0);
             damage = host.receiveDamage(damage);
-            if(status.origin != undefined && status.origin instanceof CharacterInstance){
+            if (status.origin != undefined && status.origin instanceof CharacterInstance) {
                 status.origin.registerDamage(damage);
             }
+        }
+    },
+    "delayed": {
+        id: "delayed", name: "Delayed", icon: "skill-icons/skill_294.png",
+        stackType: StackType.add, type: StatusType.debuff,
+        description: (Status) => "<b class='negative-description'>You can't use skills</b>.",
+        onSkillUse: (status: Status, skillContext: SkillContext, host: UnitInstance) => {
+            skillContext.cancelSkill = true;
         }
     }
 };
