@@ -15,14 +15,15 @@ import { MatDialogModule } from "@angular/material/dialog";
 import { MatSelectModule } from '@angular/material/select';
 import { MatInputModule } from '@angular/material/input';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { SkillSelectorPopupComponent } from './components/skill-selector/skill-selector-popup/skill-selector-popup.component';
+import { SkillSelectorPopupComponent } from './components/dialogs/skill-selector-popup/skill-selector-popup.component';
 import { FocusOnShowDirective } from './directives/focus-on-show.directive';
 import { AnimatedSpriteComponent } from './components/animated-sprite/animated-sprite.component';
 import { BattlefieldComponent } from './components/battlefield/battlefield.component';
 import { UnitTooltipComponent } from './components/unit-tooltip/unit-tooltip.component';
-import { EncounterSelectorComponent } from './components/encounter-selector/encounter-selector.component';
+import { EncounterSelectorComponent } from './components/dialogs/encounter-selector/encounter-selector.component';
 import { SidebarComponent } from './components/sidebar/sidebar.component';
 import { TopbarComponent } from './components/topbar/topbar.component';
+import { SettingsDialogComponent } from './components/dialogs/settings-dialog/settings-dialog.component';
 
 @NgModule({
   declarations: [
@@ -39,7 +40,8 @@ import { TopbarComponent } from './components/topbar/topbar.component';
     UnitTooltipComponent,
     EncounterSelectorComponent,
     SidebarComponent,
-    TopbarComponent
+    TopbarComponent,
+    SettingsDialogComponent
   ],
   imports: [
     BrowserModule,

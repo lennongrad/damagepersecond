@@ -12,12 +12,12 @@
 
     transition: .5s;
 
-    .left,
-    .right {
+    .left, .right {
         bottom: 0;
         position: absolute;
         height: 64px;
         width: 18px;
+        pointer-events: none;
     }
 
     .left {
@@ -47,13 +47,13 @@
 
 .skill {
     position: relative;
-    width: 30px; 
-    height: 30px;
+    width: calc(@slot-width - 2px); 
+    height: calc(@slot-width - 2px);
     margin: 0 3px 0 3px;
     display: inline-block;
 
     text-align: center;
-    line-height: 30px;
+    line-height: calc(@slot-width - 2px);
 
     background-color: #282725;
     box-shadow: 0 0 9px black inset,  1px 2px 2px black;
@@ -61,6 +61,12 @@
     cursor: pointer;
 
     transition: 0.5s, background-color .2s, transform 0s;
+
+    .big-icons &{
+        width: calc(@slot-width-big - 2px); 
+        height: calc(@slot-width-big - 2px);
+        line-height: calc(@slot-width-big - 2px);
+    }
 
     div{
         pointer-events: none;
@@ -89,10 +95,9 @@
 }
 
 .main-icon {
-    width: 16px;
-    height: 16px;
+    width: @icon-width;
+    height: @icon-width;
     image-rendering: pixelated;
-    margin: 4px;
     filter: drop-shadow(1px 1px 2px #008) drop-shadow(-1px -1px 3px #111);
     pointer-events: none;
     vertical-align: middle;
@@ -107,21 +112,6 @@
     image-rendering: pixelated;
     pointer-events: none;
     transition: .5s;
-}
-
-.popup-button{
-    position: absolute;
-    top: 5px;
-    right: 3px;
-    width: 20px;
-    height: 20px;
-    background-color: #181818;
-    text-align: center;
-    line-height: 20px;
-    font-size: 16px;
-    font-weight: bold;
-    border-radius: 100%;
-    cursor: pointer;
 }
 
 .popup-button:hover{

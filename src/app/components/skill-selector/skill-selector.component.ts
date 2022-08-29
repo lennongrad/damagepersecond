@@ -1,11 +1,9 @@
-import { Component, Input, OnInit, Output } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { SkillInfo } from 'src/app/interfaces/skill-information';
 import { SelectedSkillService } from 'src/app/services/selected-skill.service';
 import { AvailableSkillsService } from 'src/app/services/available-skills.service';
 import { SoundInfo } from 'src/app/interfaces/soundinfo';
 import { SoundEffectPlayerService } from 'src/app/services/sound-effect-player.service';
-import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
-import { SkillSelectorPopupComponent } from './skill-selector-popup/skill-selector-popup.component';
 import * as _ from 'underscore';
 import { TooltipService } from 'src/app/services/tooltip.service';
 
@@ -76,18 +74,6 @@ export class SkillSelectorComponent implements OnInit {
     }
   }
 
-  openPopup(){
-    var dialogConfig = new MatDialogConfig();
-
-    dialogConfig.autoFocus = true;
-    dialogConfig.panelClass = "dialog-panel";
-    dialogConfig.backdropClass = "dialog-backdrop";
-    dialogConfig.data = { };
-
-    const dialogRef = this.dialogService.open(SkillSelectorPopupComponent, dialogConfig);
-    //dialogRef.afterClosed().subscribe(data => console.log(data));
-  }
-
   updateSkills(): void {
     this.recentlyUsedSkills = this.availableSkillsService.getSkills();
   }
@@ -104,7 +90,6 @@ export class SkillSelectorComponent implements OnInit {
     private selectedSkillService: SelectedSkillService,
     private availableSkillsService: AvailableSkillsService,
     private soundEffectPlayer: SoundEffectPlayerService,
-    private dialogService: MatDialog,
     private tooltipService: TooltipService) {
 
     this.selectedSkillService.selectedSkillChange.subscribe(value => this.selectedSkill = value);

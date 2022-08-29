@@ -3,3 +3,32 @@
 .builder-container:focus {
     outline: none;
 }
+
+.popup-button{
+    position: absolute;
+    right: 1px;
+    transform: translateY(-3px);
+    z-index: 2;
+
+    width: 20px;
+    height: 20px;
+    border-radius: 100%;
+    background-color: #181818;
+    border: 1px solid #777673;
+    filter: drop-shadow(0 0 2px black);
+
+    text-align: center;
+    line-height: 20px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+
+    &:hover{
+        filter: brightness(.9);
+    }
+
+    &:active{
+        filter: brightness(.9);
+        transform: translateY(-1px);
+    }
+}

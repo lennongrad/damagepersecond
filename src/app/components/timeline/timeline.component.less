@@ -1,8 +1,4 @@
 @import (reference) "../../app.component.less";
-@icon-width: 16px;
-@icon-padding: 5px;
-@icon-margins: 2px;
-@slot-width: @icon-width + @icon-padding * 2 + @icon-margins * 2;
 
 .header {
     height: 34px;
@@ -38,20 +34,20 @@
     margin-right: 1px;
     overflow: hidden;
     background-color: rgba(240, 240, 200, 0.1);
-    
+
     &:hover {
         filter: brightness(0.9);
     }
 
-    button{
+    button {
         height: 100%;
         background: linear-gradient(#43423E, #31302C);
         box-shadow: 0 0 5px #222 inset;
         border: 1px solid #444;
         filter: drop-shadow(2px 2px 0 black);
         cursor: pointer;
-    
-    
+
+
         background-image: linear-gradient(#555555, #CCC);
         background-size: 100%;
         background-repeat: repeat;
@@ -60,22 +56,22 @@
         -webkit-text-fill-color: transparent;
         text-transform: uppercase;
         font-weight: bold;
-    
+
         &:active {
             transform: translateY(2px);
             box-shadow: 0 0 4px black inset, 0 -2px 4px black inset;
         }
     }
 
-    &.time-progress{
-        button{
+    &.time-progress {
+        button {
             width: 60px;
             text-transform: none;
         }
     }
 }
 
-.displaced-input{
+.displaced-input {
     position: absolute;
     left: 1px;
     width: calc(100% - 5px);
@@ -103,7 +99,7 @@
         color: white;
     }
 
-    input::placeholder{
+    input::placeholder {
         font-size: 10px;
         font-style: italic;
     }
@@ -141,7 +137,7 @@
     overflow-x: scroll;
     overflow-y: hidden;
     white-space: nowrap;
-    background: linear-gradient(rgba(0,0,0,25%) 100%, transparent), url("~src/assets/trackslot.png");
+    background: linear-gradient(rgba(0, 0, 0, 25%) 100%, transparent), url("~src/assets/trackslot.png");
     background-position: 1px 1px;
     background-size: 30px;
 
@@ -173,6 +169,10 @@
 
     border-top: 1px solid #352F2F;
     border-bottom: 1px solid #3F3B38;
+
+    &.big-icons {
+        background-size: @slot-width-big;
+    }
 
     &.dragging {
         .icon {
@@ -216,6 +216,11 @@
 
     transition: opacity .15s;
 
+    .big-icons & {
+        width: @slot-width-big;
+        height: @slot-width-big;
+    }
+
     &.selected {
         .icon {
             background: linear-gradient(45deg, #22A 10%, #55A)
@@ -257,6 +262,20 @@
         image-rendering: pixelated;
         filter: drop-shadow(1px 1px 2px #666) drop-shadow(-1px -1px 3px #333);
     }
+
+    .big-icons &{
+        top: calc(@icon-margins-big + 1px);
+        left: @icon-margins-big;
+        width: @icon-width-big;
+        height: @icon-width-big;
+        padding: calc(@icon-padding-big - 3px);
+        line-height: @icon-width-big;
+
+        img{
+            width: @icon-width-big;
+            height: @icon-width-big;
+        }
+    }
 }
 
 .hint {
@@ -283,6 +302,10 @@
     background-color: green;
     width: @slot-width;
     height: 4px;
+
+    .big-icons & {
+        width: @slot-width;
+    }
 }
 
 .drag-preview {

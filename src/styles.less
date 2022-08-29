@@ -222,12 +222,21 @@ input:focus {
     display: none;
 }
 
+.mat-dialog-container{
+    padding: 0 !important;
+    background: linear-gradient(135deg, rgba(40, 40, 40, .5), rgba(0,0,0,.5) 24%), url('~src/assets/checkerboard.png') 0px/50px, #000;
+    background-size: 50px 50px;
+    animation: MOVE-SQUARE-BG 5s linear infinite;
+
+    border: 40px solid transparent;
+    border-image: url("~src/assets/big_bar_frame.png") 40 round;
+}
+
 .encounter-select-dialog {
     width: 100%;
     text-align: center;
 
     .mat-dialog-container {
-        background-color: rgba(25, 25, 25, .9);
-        padding: 10px;
+        padding: 0px;
     }
 }

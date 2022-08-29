@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
+import { SettingsDialogComponent } from '../dialogs/settings-dialog/settings-dialog.component';
 
 @Component({
   selector: 'app-topbar',
@@ -7,7 +9,18 @@ import { Component, OnInit } from '@angular/core';
 })
 export class TopbarComponent implements OnInit {
 
-  constructor() { }
+  openSettings(): void{
+    var dialogConfig: MatDialogConfig = {
+      autoFocus: true,
+      panelClass: "encounter-select-dialog",
+      backdropClass: "dialog-backdrop",
+      data: {}
+    }
+
+    this.dialogService.open(SettingsDialogComponent, dialogConfig);
+  }
+
+  constructor(private dialogService: MatDialog) { }
 
   ngOnInit(): void {
   }

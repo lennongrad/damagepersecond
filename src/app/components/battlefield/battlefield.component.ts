@@ -7,7 +7,7 @@ import { BeautifyService } from 'src/app/services/beautify.service';
 import { TimelineService } from 'src/app/services/timeline.service';
 import { TooltipService } from 'src/app/services/tooltip.service';
 import { UnitInstancesService } from 'src/app/services/unit-instances.service';
-import { EncounterSelectorComponent } from '../encounter-selector/encounter-selector.component';
+import { EncounterSelectorComponent } from '../dialogs/encounter-selector/encounter-selector.component';
 
 @Component({
   selector: 'app-battlefield',
@@ -56,11 +56,11 @@ export class BattlefieldComponent implements OnInit {
     var dialogConfig: MatDialogConfig = {
       autoFocus: true,
       panelClass: "encounter-select-dialog",
-      backdropClass: "encounter-select-backdrop",
+      backdropClass: "dialog-backdrop",
       data: {}
     }
 
-    const dialogRef = this.dialogService.open(EncounterSelectorComponent, dialogConfig);
+    this.dialogService.open(EncounterSelectorComponent, dialogConfig);
   }
 
   constructor(private unitInstancesService: UnitInstancesService,
