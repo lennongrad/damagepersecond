@@ -110,7 +110,8 @@ export const SKILLS: SkillInfo[] = [
           id: "flurry", name: "Flurry of Blows", icon: "skill-icons/skill_44.png",
           stackType: StackType.replace, type: StatusType.buff,
           description: (Status) => "<b class='positive-description'>+25% direct hit chance</b> and " +
-            "<b class='positive-description'>+25% direct hit damage</b>.",
+            "<b class='positive-description'>+25% direct hit damage</b> as long as " + 
+            "you keep using <i>arm</i> and <i>leg</i> skills.",
           onSkillUse: (status: Status, skillContext: SkillContext, host: UnitInstance) => {
             var subtypes = skillContext.skill.skillInfo.subtypes;
             if (subtypes == undefined || (!subtypes.includes(SkillSubtype.arm) && !subtypes.includes(SkillSubtype.leg))) {

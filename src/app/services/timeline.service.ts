@@ -166,9 +166,11 @@ export class TimelineService {
   }
 
   renameGrid(name: string): void {
-    this.deleteGrid(this.currentGridName);
-    this.currentGridName = name;
-    this.saveGrid(this.currentGridName);
+    if (this.savedGridNames != undefined && !_.includes(this.savedGridNames, name)) {
+      this.deleteGrid(this.currentGridName);
+      this.currentGridName = name;
+      this.saveGrid(this.currentGridName);
+    }
   }
 
   newGrid(): void {

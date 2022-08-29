@@ -21,6 +21,8 @@ import { AnimatedSpriteComponent } from './components/animated-sprite/animated-s
 import { BattlefieldComponent } from './components/battlefield/battlefield.component';
 import { UnitTooltipComponent } from './components/unit-tooltip/unit-tooltip.component';
 import { EncounterSelectorComponent } from './components/encounter-selector/encounter-selector.component';
+import { SidebarComponent } from './components/sidebar/sidebar.component';
+import { TopbarComponent } from './components/topbar/topbar.component';
 
 @NgModule({
   declarations: [
@@ -35,7 +37,9 @@ import { EncounterSelectorComponent } from './components/encounter-selector/enco
     AnimatedSpriteComponent,
     BattlefieldComponent,
     UnitTooltipComponent,
-    EncounterSelectorComponent
+    EncounterSelectorComponent,
+    SidebarComponent,
+    TopbarComponent
   ],
   imports: [
     BrowserModule,
