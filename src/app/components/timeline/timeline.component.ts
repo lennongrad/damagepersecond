@@ -1,7 +1,8 @@
-import { Component, OnInit, HostListener, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, HostListener } from '@angular/core';
 import { Skill, SkillInfo } from 'src/app/interfaces/skill-information';
-import { SoundInfo } from 'src/app/interfaces/soundinfo';
+import { SoundInformation } from 'src/app/interfaces/sound-information';
 import { SelectedSkillService } from 'src/app/services/selected-skill.service';
+import { SettingsService } from 'src/app/services/settings.service';
 import { SoundEffectPlayerService } from 'src/app/services/sound-effect-player.service';
 import { TimelineService, SkillGrid, SlotIndex } from 'src/app/services/timeline.service';
 import { TooltipService } from 'src/app/services/tooltip.service';
@@ -24,9 +25,6 @@ export class TimelineComponent implements OnInit {
   @HostListener('document:keyup', ['$event'])
   onKeyDown(event: KeyboardEvent) { this.pressedKeys[event.key] = false; }
 
-  slotWidth = 30;
-  slotHeight = 31;
-
   selectedSlots = Array<Array<boolean>>(3).fill([]).map(() => new Array());
   selectedRow = 0;
 
@@ -42,16 +40,17 @@ export class TimelineComponent implements OnInit {
 
   isRenaming = false;
 
-  trackPingNoise: SoundInfo = {
+  trackPingNoise: SoundInformation = {
     audioFilename: "tracknoise.mp3",
     playbackRateMin: 3,
     playbackRateMax: 4,
     volume: .5,
     concurrentMaximum: 6,
-    replacePrevious: true
+    replacePrevious: true,
+    timeSinceLast: 100
   }
 
-  trackPlacementNoise: SoundInfo = {
+  trackPlacementNoise: SoundInformation = {
     audioFilename: "tracknoise.mp3",
     playbackRateMin: 2,
     playbackRateMax: 3,
@@ -60,7 +59,7 @@ export class TimelineComponent implements OnInit {
     replacePrevious: true
   }
 
-  buttonClickNoise: SoundInfo = {
+  buttonClickNoise: SoundInformation = {
     audioFilename: "buttonnoise.mp3",
     playbackRateMin: 4,
     playbackRateMax: 8,
@@ -134,6 +133,18 @@ export class TimelineComponent implements OnInit {
     return this.timelineService.automaticProgress;
   }
 
+  getBigIconsOn(): boolean{
+    return this.settingsService.bigIconsOn;
+  }
+
+  getSlotWidth(): number{
+    return this.settingsService.bigIconsOn ? 44 : 28;
+  }
+
+  getSlotHeight(): number{
+    return this.settingsService.bigIconsOn ? 44 : 28;
+  }
+
   getGridNames(sorted: boolean = false): Array<string> {
     if (this.timelineService.savedGridNames == undefined) {
       return [];
@@ -173,8 +184,8 @@ export class TimelineComponent implements OnInit {
     var style: { [klass: string]: any } = {};
 
     if (this.selectedSlots[rowIndex][slotIndex] && this.draggingSkill) {
-      var translateX = "translateX(" + (this.dragDisplacement.x * this.slotWidth) + "px)"
-      var translateY = "translateY(" + (this.dragDisplacement.y * this.slotHeight) + "px)"
+      var translateX = "translateX(" + (this.dragDisplacement.x * this.getSlotWidth()) + "px)"
+      var translateY = "translateY(" + (this.dragDisplacement.y * this.getSlotHeight()) + "px)"
       style["transform"] = translateX + " " + translateY;
       style["opacity"] = ".4"
     }
@@ -387,7 +398,7 @@ export class TimelineComponent implements OnInit {
     private soundEffectPlayer: SoundEffectPlayerService,
     private timelineService: TimelineService,
     private tooltipService: TooltipService,
-    private cdref: ChangeDetectorRef) {
+    private settingsService: SettingsService) {
     this.selectedSkillService.selectedSkillChange.subscribe(value => this.selectedSkill = value);
     this.timelineService.currentGridChange.subscribe(value => this.setSkillGrid(value));
   }

@@ -1,8 +1,9 @@
-export interface SoundInfo {
+export interface SoundInformation {
     audioFilename: string,
     playbackRateMin: number,
     playbackRateMax: number,
     volume: number,
     concurrentMaximum: number;
-    replacePrevious: boolean;
+    replacePrevious: boolean,
+    timeSinceLast?: number
 }

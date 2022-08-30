@@ -40,6 +40,10 @@
     white-space: nowrap;
     scrollbar-width: none;
 
+    .big-icons &{
+        padding-top: 5px;
+    }
+
     &::-webkit-scrollbar {
         display: none;
     }
@@ -63,9 +67,9 @@
     transition: 0.5s, background-color .2s, transform 0s;
 
     .big-icons &{
-        width: calc(@slot-width-big - 2px); 
-        height: calc(@slot-width-big - 2px);
-        line-height: calc(@slot-width-big - 2px);
+        width: calc(@slot-width-big - 6px); 
+        height: calc(@slot-width-big - 6px);
+        line-height: calc(@slot-width-big - 6px);
     }
 
     div{
@@ -92,6 +96,10 @@
     top: -17px;
     opacity: .5;
     transition: .25s;
+
+    .big-icons &{
+        top: -18px;
+    }
 }
 
 .main-icon {
@@ -101,6 +109,11 @@
     filter: drop-shadow(1px 1px 2px #008) drop-shadow(-1px -1px 3px #111);
     pointer-events: none;
     vertical-align: middle;
+
+    .big-icons &{
+        width: @icon-width-big;
+        height: @icon-width-big;
+    }
 }
 
 .pin-icon {

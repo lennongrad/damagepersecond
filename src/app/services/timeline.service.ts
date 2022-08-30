@@ -275,6 +275,6 @@ export class TimelineService {
 
   constructor(private saveService: SaveService, private availableSkillService: AvailableSkillsService,
     private unitInstancesService: UnitInstancesService) {
-    this.subscription = this.timeSource.subscribe(time => this.eachMillisecond(time))
+    this.subscription = this.timeSource.subscribe(time => this.eachMillisecond(time));
   }
 }

@@ -25,12 +25,13 @@
     <img src="assets/headerframe-divider.png" />
     <div class="crusty-bg">
         <div class="displaced-input" style="z-index: 2" *ngIf="isRenaming">
-            <input type="text" placeholder="Type here..." (keydown)="trackNoise()" FocusAndSelect [value]="getGridName()"
-            (keydown.enter)="renameGrid($event); isRenaming = false; buttonClick()">
+            <input type="text" placeholder="Type here..." (keydown)="trackNoise()" FocusAndSelect
+                [value]="getGridName()" (keydown.enter)="renameGrid($event); isRenaming = false; buttonClick()">
         </div>
         <mat-select (selectionChange)="changeGrid($event.value);" [ngModel]="getGridName()" (click)="buttonClick()"
             class="name-select select-arrow-white " [disabled]="getGridNames().length <= 1">
-            <mat-option *ngFor="let name of getGridNames(true)" [value]="name"  (click)="buttonClick()">{{name}}</mat-option>
+            <mat-option *ngFor="let name of getGridNames(true)" [value]="name" (click)="buttonClick()">{{name}}
+            </mat-option>
         </mat-select>
     </div>
     <img src="assets/headerframe-divider.png" />
@@ -50,11 +51,9 @@
 </div>
 <div class="scroll-container">
     <div class="timeline-scroll" appHorizontalScroll>
-        <table class="timeline" [class.dragging]="initialDragIndex != undefined"
-            [class.placing]="selectedSkill != undefined" 
-            (window:keydown.delete)="deleteSelection()"
-            (window:keydown.shift.d)="duplicateSelection()" 
-            (window:keydown.a)="selectAll()"
+        <table class="timeline" [class.dragging]="initialDragIndex != undefined" [class.big-icons]="getBigIconsOn()"
+            [class.placing]="selectedSkill != undefined" (window:keydown.delete)="deleteSelection()"
+            (window:keydown.shift.d)="duplicateSelection()" (window:keydown.a)="selectAll()"
             (window:keydown.arrowup)="moveSelection({x: 0, y: -1})"
             (window:keydown.arrowdown)="moveSelection({x: 0, y: 1})"
             (window:keydown.arrowleft)="moveSelection({x: -1, y: 0})"
@@ -67,7 +66,8 @@
                     [class.time]="getCurrentTime() == slotIndex" [class.selected]="selectedSlots[rowIndex][slotIndex]">
                     <div class="select-beam"></div>
                     <div [ngStyle]="getIconStyle(slotIndex, rowIndex)" *ngIf="skill != undefined" class="icon"
-                        (mouseover)="mouseoverSlot($event, skill.skillInfo)" (mouseout)="mouseoutSlot($event, skill.skillInfo)">
+                        (mouseover)="mouseoverSlot($event, skill.skillInfo)"
+                        (mouseout)="mouseoutSlot($event, skill.skillInfo)">
                         <img src="assets/{{skill.skillInfo.icon}}" />
                     </div>
                 </td>

@@ -24,6 +24,7 @@ import { EncounterSelectorComponent } from './components/dialogs/encounter-selec
 import { SidebarComponent } from './components/sidebar/sidebar.component';
 import { TopbarComponent } from './components/topbar/topbar.component';
 import { SettingsDialogComponent } from './components/dialogs/settings-dialog/settings-dialog.component';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 
 @NgModule({
   declarations: [
@@ -53,7 +54,8 @@ import { SettingsDialogComponent } from './components/dialogs/settings-dialog/se
     MatSelectModule,
     FormsModule,
     ReactiveFormsModule,
-    MatInputModule
+    MatInputModule,
+    MatCheckboxModule
   ],
   providers: [],
   bootstrap: [AppComponent],

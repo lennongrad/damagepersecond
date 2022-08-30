@@ -12,7 +12,7 @@ export class TopbarComponent implements OnInit {
   openSettings(): void{
     var dialogConfig: MatDialogConfig = {
       autoFocus: true,
-      panelClass: "encounter-select-dialog",
+      panelClass: "dialog-panel",
       backdropClass: "dialog-backdrop",
       data: {}
     }

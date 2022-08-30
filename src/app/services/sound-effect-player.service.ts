@@ -1,18 +1,33 @@
 import { Injectable } from '@angular/core';
-import { SoundInfo } from '../interfaces/soundinfo';
+import { SoundInformation } from '../interfaces/sound-information';
 import * as _ from 'underscore';
+import { interval, Subscription } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SoundEffectPlayerService {
   noisesPlaying: Record<string, Array<any>> = {};
+  timeSinceLast: Record<string, number> = {};
+
+  timeSource = interval(1);
+  subscription?: Subscription;
+  lastDate = Date.now();
+
+  playSound(soundInfo: SoundInformation): void {
+    this._playSound(soundInfo);
+  }
 
   // returns true if there were already max number of sounds playing
-  playSound(soundInfo: SoundInfo): boolean {
+  _playSound(soundInfo: SoundInformation): void {
     // check if there are already too many of these noises playing
     if (!this.noisesPlaying.hasOwnProperty(soundInfo.audioFilename)) {
       this.noisesPlaying[soundInfo.audioFilename] = [];
+    }
+
+    if(soundInfo.timeSinceLast != undefined && this.timeSinceLast[soundInfo.audioFilename] != undefined && 
+       this.timeSinceLast[soundInfo.audioFilename] < soundInfo.timeSinceLast){
+      return;
     }
 
     if (this.noisesPlaying[soundInfo.audioFilename].length > soundInfo.concurrentMaximum) {
@@ -20,12 +35,8 @@ export class SoundEffectPlayerService {
         this.noisesPlaying[soundInfo.audioFilename].unshift();
         this._startSound(this._createSound(soundInfo), soundInfo.audioFilename);
       }
-
-      return true;
     } else {
       this._startSound(this._createSound(soundInfo), soundInfo.audioFilename);
-
-      return false;
     }
   }
 
@@ -35,7 +46,7 @@ export class SoundEffectPlayerService {
     }
   }
 
-  _createSound(soundInfo: SoundInfo) {
+  _createSound(soundInfo: SoundInformation) {
     // ts wont let me do preservesPitch unless i cast it as any
     var sound = new Audio("assets/" + soundInfo.audioFilename) as any;
     sound.playbackRate = soundInfo.playbackRateMin + (soundInfo.playbackRateMax - soundInfo.playbackRateMin) * Math.random();
@@ -54,7 +65,19 @@ export class SoundEffectPlayerService {
 
     sound.play();
     sound.addEventListener("ended", (self: any) => this._removeSound(self, filename));
+    this.timeSinceLast[filename] = 0;
   }
 
-  constructor() { }
+  _eachMillisecond(time: number): void{
+    var delta = Date.now() - this.lastDate;
+    this.lastDate = Date.now();
+
+    for(const key in this.timeSinceLast){
+      this.timeSinceLast[key] += delta;
+    }
+  }
+
+  constructor() {
+    this.subscription = this.timeSource.subscribe(time => this._eachMillisecond(time));
+   }
 }

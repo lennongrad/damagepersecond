@@ -2,10 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { SkillInfo } from 'src/app/interfaces/skill-information';
 import { SelectedSkillService } from 'src/app/services/selected-skill.service';
 import { AvailableSkillsService } from 'src/app/services/available-skills.service';
-import { SoundInfo } from 'src/app/interfaces/soundinfo';
+import { SoundInformation } from 'src/app/interfaces/sound-information';
 import { SoundEffectPlayerService } from 'src/app/services/sound-effect-player.service';
 import * as _ from 'underscore';
 import { TooltipService } from 'src/app/services/tooltip.service';
+import { SettingsService } from 'src/app/services/settings.service';
 
 @Component({
   selector: 'app-skill-selector',
@@ -20,7 +21,7 @@ export class SkillSelectorComponent implements OnInit {
   hoveredElement?: Element;
   hoveredOpacity = 0;
 
-  buttonClickNoise: SoundInfo = {
+  buttonClickNoise: SoundInformation = {
     audioFilename: "buttonnoise.mp3",
     playbackRateMin: 4,
     playbackRateMax: 8,
@@ -29,7 +30,11 @@ export class SkillSelectorComponent implements OnInit {
     replacePrevious: true
   }
 
-  getQuickSkills() {
+  bigIconsOn(): boolean{
+    return this.settingsService.bigIconsOn;
+  }
+
+  getQuickSkills(): Array<SkillInfo> {
     return this.pinnedSkills.concat(this.recentlyUsedSkills);
   }
 
@@ -90,7 +95,8 @@ export class SkillSelectorComponent implements OnInit {
     private selectedSkillService: SelectedSkillService,
     private availableSkillsService: AvailableSkillsService,
     private soundEffectPlayer: SoundEffectPlayerService,
-    private tooltipService: TooltipService) {
+    private tooltipService: TooltipService,
+    private settingsService: SettingsService) {
 
     this.selectedSkillService.selectedSkillChange.subscribe(value => this.selectedSkill = value);
     this.selectedSkillService.skillUsed.subscribe(value => this.skillUsed(value));

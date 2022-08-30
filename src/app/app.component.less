@@ -8,11 +8,11 @@
 @slot-width: @icon-width + @icon-padding * 2 + @icon-margins * 2;
 
 @icon-width-big: 32px;
-@icon-padding-big: 6px;
+@icon-padding-big: 4px;
 @icon-margins-big: 2px;
 @slot-width-big: @icon-width-big + @icon-padding-big * 2 + @icon-margins-big * 2;
 
-#main-body{
+#main-body {
     left: 0;
     top: 0;
     height: 100%;
@@ -22,7 +22,7 @@
     overflow: hidden;
 }
 
-#top-bar{
+#top-bar {
     position: absolute;
     left: 0;
     top: 0;
@@ -31,7 +31,7 @@
     z-index: 2;
 }
 
-#side-bar{
+#side-bar {
     position: absolute;
     left: 0;
     top: @top-bar-height;
@@ -39,7 +39,7 @@
     height: calc(100% - @top-bar-height);
 }
 
-#center-bar{
+#center-bar {
     position: absolute;
     right: 0;
     top: @top-bar-height;
@@ -47,12 +47,12 @@
     height: calc(100% - @top-bar-height);
 }
 
-.float-animation{
+.float-animation {
     animation: float .7s infinite ease-in-out;
-    transform-origin:50% 100%;
+    transform-origin: 50% 100%;
 }
 
-.tooltip{
+.tooltip {
     position: absolute;
     z-index: 20;
 }
