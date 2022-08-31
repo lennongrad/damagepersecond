@@ -6,7 +6,7 @@
     </div>
     <div class="divider" *ngIf="getDPR() > 0"></div>
     <div class="dpr" *ngIf="getDPR() > 0">
-        <b>DPR</b>: {{getDPR()}}
+        <b>DPS</b>: {{getDPR()}}
     </div>
     <div class="status-info" *ngIf="hoveredUnit != undefined">
         <div class="status-type" *ngFor="let type of [StatusType.buff, StatusType.debuff, StatusType.neutral]"

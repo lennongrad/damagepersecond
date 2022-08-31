@@ -254,16 +254,18 @@ export const SKILLS: SkillInfo[] = [
     }
   }, {
     icon: "skill-icons/skill_23.png", name: "Blade Flourish", type: SkillType.attack, subtypes: [SkillSubtype.sword],
-    description: "Deal 2 base damage <i class='small'>(40% / 10%)</i> to the closest enemy. If your last three skills were "
+    description: "Deal 1.5 base damage <i class='small'>(50% / 10%)</i> to the closest enemy. If you just did three "
     + "<i>sword skills</i>, do this damage three times instead.<br>" + statusDescription(STATUSES["delayed"], "", false, 1) +  ".",
     flavour: undefined, target: SkillTargetType.firstEnemy,
+    relevantStatuses: [STATUSES["delayed"]],
     effect: (skillContext: SkillContext) => {
-      basicDamage(skillContext, 2, 40, 10);
-      if (skillContext.origin.recentSkillsAll((skill, context) => {
+      basicDamage(skillContext, 1.5, 50, 10);
+      if (!skillContext.origin.recentSkillsNone((skill, context) => {
         return skill.skillInfo.subtypes != undefined && skill.skillInfo.subtypes.includes(SkillSubtype.sword)
+         && skill.skillInfo.name != "Blade Flourish"
       }, 3)){
-        basicDamage(skillContext, 2, 40, 10);
-        basicDamage(skillContext, 2, 40, 10);
+        basicDamage(skillContext, 2, 50, 10);
+        basicDamage(skillContext, 2, 50, 10);
       }
 
       skillContext.origin.addStatus({statusInformation: STATUSES["delayed"], duration: 1});

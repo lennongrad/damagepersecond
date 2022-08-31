@@ -2,7 +2,7 @@ import { Component, OnInit, HostListener } from '@angular/core';
 import { Skill, SkillInfo } from 'src/app/interfaces/skill-information';
 import { SoundInformation } from 'src/app/interfaces/sound-information';
 import { SelectedSkillService } from 'src/app/services/selected-skill.service';
-import { SettingsService } from 'src/app/services/settings.service';
+import { PersistentService } from 'src/app/services/persistent.service';
 import { SoundEffectPlayerService } from 'src/app/services/sound-effect-player.service';
 import { TimelineService, SkillGrid, SlotIndex } from 'src/app/services/timeline.service';
 import { TooltipService } from 'src/app/services/tooltip.service';
@@ -134,15 +134,15 @@ export class TimelineComponent implements OnInit {
   }
 
   getBigIconsOn(): boolean{
-    return this.settingsService.bigIconsOn;
+    return this.persistentService.bigIconsOn;
   }
 
   getSlotWidth(): number{
-    return this.settingsService.bigIconsOn ? 44 : 28;
+    return this.persistentService.bigIconsOn ? 44 : 28;
   }
 
   getSlotHeight(): number{
-    return this.settingsService.bigIconsOn ? 44 : 28;
+    return this.persistentService.bigIconsOn ? 44 : 28;
   }
 
   getGridNames(sorted: boolean = false): Array<string> {
@@ -398,7 +398,7 @@ export class TimelineComponent implements OnInit {
     private soundEffectPlayer: SoundEffectPlayerService,
     private timelineService: TimelineService,
     private tooltipService: TooltipService,
-    private settingsService: SettingsService) {
+    private persistentService: PersistentService) {
     this.selectedSkillService.selectedSkillChange.subscribe(value => this.selectedSkill = value);
     this.timelineService.currentGridChange.subscribe(value => this.setSkillGrid(value));
   }

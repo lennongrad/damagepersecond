@@ -6,7 +6,8 @@ import { SoundInformation } from 'src/app/interfaces/sound-information';
 import { SoundEffectPlayerService } from 'src/app/services/sound-effect-player.service';
 import * as _ from 'underscore';
 import { TooltipService } from 'src/app/services/tooltip.service';
-import { SettingsService } from 'src/app/services/settings.service';
+import { PersistentService } from 'src/app/services/persistent.service';
+import { SaveService } from 'src/app/services/save.service';
 
 @Component({
   selector: 'app-skill-selector',
@@ -30,7 +31,7 @@ export class SkillSelectorComponent implements OnInit {
     replacePrevious: true
   }
 
-  bigIconsOn(): boolean{
+  bigIconsOn(): boolean {
     return this.settingsService.bigIconsOn;
   }
 
@@ -57,6 +58,10 @@ export class SkillSelectorComponent implements OnInit {
       this.recentlyUsedSkills = _.without(this.recentlyUsedSkills, skill);
       this.pinnedSkills.push(skill);
     }
+
+    var pinnedIDs = _.map(this.pinnedSkills, skill => skill.id != undefined ? skill.id : -1);
+    var data = JSON.stringify(pinnedIDs)
+    this.saveService.saveData("pinned-skills", data);
   }
 
   onSelect(skill: SkillInfo): void {
@@ -80,7 +85,24 @@ export class SkillSelectorComponent implements OnInit {
   }
 
   updateSkills(): void {
-    this.recentlyUsedSkills = this.availableSkillsService.getSkills();
+    var allSkills = this.availableSkillsService.getSkills();
+    var savedPinnedSkills: Array<number>;
+    
+    var dataString = this.saveService.getData("pinned-skills");
+    try{
+      savedPinnedSkills = JSON.parse(dataString) as Array<number>;
+    } catch { 
+      // set to default value because could not load
+      savedPinnedSkills = [];
+    }
+    
+    allSkills.forEach((skill) => {
+      if (skill.id != undefined && savedPinnedSkills.includes(skill.id)) {
+        this.pinnedSkills.push(skill);
+      } else {
+        this.recentlyUsedSkills.push(skill);
+      }
+    })
   }
 
   mouseoverSkill(event: any, hoveredSkill: SkillInfo) {
@@ -96,7 +118,8 @@ export class SkillSelectorComponent implements OnInit {
     private availableSkillsService: AvailableSkillsService,
     private soundEffectPlayer: SoundEffectPlayerService,
     private tooltipService: TooltipService,
-    private settingsService: SettingsService) {
+    private saveService: SaveService,
+    private settingsService: PersistentService) {
 
     this.selectedSkillService.selectedSkillChange.subscribe(value => this.selectedSkill = value);
     this.selectedSkillService.skillUsed.subscribe(value => this.skillUsed(value));

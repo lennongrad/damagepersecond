@@ -41,8 +41,7 @@ export class UnitInstancesService {
 
     if(dataString != null){
       try{
-        var data = JSON.parse(dataString) as CharacterSave;
-        return data;
+        return JSON.parse(dataString) as CharacterSave;
       } catch{
         return undefined;
       }
