@@ -49,7 +49,7 @@ app-animated-sprite {
 }
 
 .name-bar {
-    position: relative;
+    position: absolute;
     width: 195px;
     height: 27px;
     margin-bottom: 21px;
@@ -71,10 +71,11 @@ app-animated-sprite {
 
     .enemy & {
         left: unset;
-        right: -18px;
+        right: -8px;
+        width: 100px;
 
         &:hover {
-            right: -8px;
+            width: 125px;
         }
     }
 }

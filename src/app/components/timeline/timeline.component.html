@@ -1,13 +1,13 @@
 <div class="header timeline-header" (window:keydown.escape)="isRenaming = false">
     <img src="assets/headerframe-left.png" class="left" />
     <img src="assets/headerframe-divider.png" />
-    <div class="crusty-bg">
+    <div class="crusty-bg button-parent">
         <div class="divided-button time-progress">
             <button (click)="processTime(); buttonClick()">{{getTimeDisplay()}}</button>
         </div>
     </div>
     <img src="assets/headerframe-divider.png" />
-    <div class="crusty-bg">
+    <div class="crusty-bg button-parent">
         <div class="divided-button">
             <button (click)="toggleAutomaticProgress(); buttonClick()" *ngIf="getAutomaticProgress()">◼</button>
             <button (click)="toggleAutomaticProgress(); buttonClick()" *ngIf="!getAutomaticProgress()">▶</button>
@@ -17,7 +17,7 @@
     <div class="header-grow crusty-bg">
     </div>
     <img src="assets/headerframe-divider.png" />
-    <div class="crusty-bg">
+    <div class="crusty-bg button-parent">
         <div class="divided-button">
             <button (click)="isRenaming = !isRenaming; buttonClick()">✎</button>
         </div>
@@ -35,13 +35,13 @@
         </mat-select>
     </div>
     <img src="assets/headerframe-divider.png" />
-    <div class="crusty-bg">
+    <div class="crusty-bg button-parent">
         <div class="divided-button">
             <button (click)="newGrid(); buttonClick()">✚</button>
         </div>
     </div>
     <img src="assets/headerframe-divider.png" />
-    <div class="crusty-bg">
+    <div class="crusty-bg button-parent">
         <div class="divided-button">
             <button (click)="deleteGrid(); buttonClick()">✗</button>
         </div>

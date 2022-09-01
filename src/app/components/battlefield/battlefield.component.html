@@ -1,7 +1,8 @@
 <div class="battlefield">
     <div class="hp-container character">
         <div *ngFor="let characterInstance of getCharacterInstances(); let i = index" class="name-bar"
-            (mouseover)="mouseoverUnit($event, characterInstance)" (mouseout)="mouseoutUnit($event, characterInstance)">
+            (mouseover)="mouseoverUnit($event, characterInstance)" (mouseout)="mouseoutUnit($event, characterInstance)"
+            [ngStyle]="{'top.px': i * 48 + 18}">
             <div class="title-bar">
                 <div class="title-name">
                     {{characterInstance.characterInformation.name}}
@@ -53,7 +54,8 @@
     </div>
     <div class="hp-container enemy">
         <div *ngFor="let enemyInstance of getEnemyInstances(); let i = index" class="name-bar"
-            (mouseover)="mouseoverUnit($event, enemyInstance)" (mouseout)="mouseoutUnit($event, enemyInstance)">
+            (mouseover)="mouseoverUnit($event, enemyInstance)" (mouseout)="mouseoutUnit($event, enemyInstance)"
+            [ngStyle]="{'top.px': i * 48 + 18}">
             <div class="title-bar">
                 <div class="title-name">
                     {{enemyInstance.enemyInformation.name}}
@@ -67,15 +69,6 @@
                     </div>
                     <div class="value-bar"
                         [ngStyle]="{'background-size': enemyInstance.hp / enemyInstance.getMaxHP() * 100 + '% 100%'}">
-                        <div class="value-bar-interior"></div>
-                    </div>
-                </div>
-                <div class="value-segment fp">
-                    <div class="value-text">
-                        <div class="value-name">FP</div>
-                        <div class="value-amount">0</div>
-                    </div>
-                    <div class="value-bar">
                         <div class="value-bar-interior"></div>
                     </div>
                 </div>
