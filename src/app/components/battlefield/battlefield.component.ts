@@ -15,7 +15,8 @@ import { EncounterSelectorComponent } from '../dialogs/encounter-selector/encoun
   styleUrls: ['./battlefield.component.less']
 })
 export class BattlefieldComponent implements OnInit {
-  horizontalSpriteDistance = 45;
+  horizontalSpriteDistance = 4;
+  horizontalSpriteBase = -70;
   verticalSpriteDistance = 20;
 
   getCharacterInstances(): Array<CharacterInstance> {
@@ -31,28 +32,28 @@ export class BattlefieldComponent implements OnInit {
 
     style["top"] = (index * this.verticalSpriteDistance) - 25 + "px";
 
-    if (isCharacter) {
-      style["right"] = (index * this.horizontalSpriteDistance) + "px";
-    } else {
-      style["left"] = (index * this.horizontalSpriteDistance) + "px";
-    }
+    style[isCharacter ? "right" : "left"] = "calc(" + ((index + 1) * this.horizontalSpriteDistance) + "vw + " + this.horizontalSpriteBase + "px)";
 
     return style;
   }
 
-  beautify(value: number) {
+  beautify(value: number): string {
     return this.beautifyService.beautify(value, true);
   }
 
-  mouseoverUnit(event: any, hoveredUnit: UnitInstance) {
+  mouseoverUnit(event: any, hoveredUnit: UnitInstance): void {
     this.tooltipService.setUnitTooltip(hoveredUnit, event.toElement ? event.toElement : event.target, .9);
   }
 
-  mouseoutUnit(event: any, hoveredUnit: UnitInstance) {
+  mouseoutUnit(event: any, hoveredUnit: UnitInstance): void {
     this.tooltipService.setUnitTooltip(undefined, undefined, 0);
   }
 
-  enemyClick() {
+  characterClick(instance: CharacterInstance): void {
+    console.log(instance.availableSkills);
+  }
+
+  enemyClick(): void {
     var dialogConfig: MatDialogConfig = {
       autoFocus: true,
       panelClass: "encounter-select-dialog",

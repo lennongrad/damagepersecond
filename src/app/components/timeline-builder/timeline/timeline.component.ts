@@ -1,5 +1,5 @@
 import { Component, OnInit, HostListener } from '@angular/core';
-import { Skill, SkillInfo } from 'src/app/interfaces/skill-information';
+import { Skill, SkillInformation } from 'src/app/interfaces/skill-information';
 import { SoundInformation } from 'src/app/interfaces/sound-information';
 import { SelectedSkillService } from 'src/app/services/selected-skill.service';
 import { PersistentService } from 'src/app/services/persistent.service';
@@ -7,6 +7,7 @@ import { SoundEffectPlayerService } from 'src/app/services/sound-effect-player.s
 import { TimelineService, SkillGrid, SlotIndex } from 'src/app/services/timeline.service';
 import { TooltipService } from 'src/app/services/tooltip.service';
 import * as _ from 'underscore';
+import { UnitInstancesService } from 'src/app/services/unit-instances.service';
 
 @Component({
   selector: 'app-timeline',
@@ -14,8 +15,8 @@ import * as _ from 'underscore';
   styleUrls: ['./timeline.component.less']
 })
 export class TimelineComponent implements OnInit {
-  selectedSkill?: SkillInfo;
-  onSelectSkill(skill?: SkillInfo): void {
+  selectedSkill?: SkillInformation;
+  onSelectSkill(skill?: SkillInformation): void {
     this.selectedSkillService.changeSelectedSkill(skill);
   }
 
@@ -34,11 +35,9 @@ export class TimelineComponent implements OnInit {
   dragBox = { left: -1, right: -1, top: -1, bottom: -1 };
   draggingSkill?: Boolean;
 
-  hoveredTooltipSkill?: SkillInfo;
+  hoveredTooltipSkill?: SkillInformation;
   hoveredElement?: Element;
   hoveredOpacity = 0;
-
-  isRenaming = false;
 
   trackPingNoise: SoundInformation = {
     audioFilename: "tracknoise.mp3",
@@ -59,49 +58,6 @@ export class TimelineComponent implements OnInit {
     replacePrevious: true
   }
 
-  buttonClickNoise: SoundInformation = {
-    audioFilename: "buttonnoise.mp3",
-    playbackRateMin: 4,
-    playbackRateMax: 8,
-    volume: 1,
-    concurrentMaximum: 1,
-    replacePrevious: true
-  }
-
-  processTime(): void {
-    this.timelineService.clickProcess();
-  }
-
-  newGrid(): void {
-    this.timelineService.newGrid();
-  }
-
-  deleteGrid(): void {
-    if (confirm("Are you sure you want to delete the current skill timeline?")) {
-      this.timelineService.deleteGrid(this.timelineService.currentGridName, true);
-    }
-  }
-
-  renameGrid(event: any): void {
-    this.timelineService.renameGrid(event.path[0].value.toUpperCase());
-  }
-
-  changeGrid(name: string): void {
-    this.timelineService.loadGrid(name);
-  }
-
-  toggleAutomaticProgress(): void {
-    this.timelineService.automaticProgress = !this.timelineService.automaticProgress;
-  }
-
-  trackNoise(): void {
-    this.soundEffectPlayer.playSound(this.trackPingNoise)
-  }
-
-  buttonClick(): void {
-    this.soundEffectPlayer.playSound(this.trackPlacementNoise);
-  }
-
   setSkillGrid(skillGrid: SkillGrid): void {
     for (var rowIndex in this.selectedSlots) {
       while (this.selectedSlots[rowIndex].length < skillGrid[0].length) {
@@ -110,80 +66,48 @@ export class TimelineComponent implements OnInit {
     }
   }
 
-  getSkillGrid(): SkillGrid {
-    return this.timelineService.getCurrentSkillGrid();
-  }
-
-  getTimeDisplay(): string {
-    if (this.timelineService.gridTimeMax == 0) {
-      return "EMPTY";
-    }
-    return this.timelineService.currentTime + 1 + "/" + this.timelineService.gridTimeMax + "s";
-  }
-
   getCurrentTime(): number {
     return this.timelineService.currentTime;
   }
 
-  getGridName() {
-    return this.timelineService.currentGridName;
+  getSkillGrid(): SkillGrid {
+    return this.timelineService.getCurrentSkillGrid();
   }
 
-  getAutomaticProgress() {
-    return this.timelineService.automaticProgress;
-  }
-
-  getBigIconsOn(): boolean{
+  getBigIconsOn(): boolean {
     return this.persistentService.bigIconsOn;
   }
 
-  getSlotWidth(): number{
+  getSlotWidth(): number {
     return this.persistentService.bigIconsOn ? 44 : 28;
   }
 
-  getSlotHeight(): number{
+  getSlotHeight(): number {
     return this.persistentService.bigIconsOn ? 44 : 28;
   }
 
-  getGridNames(sorted: boolean = false): Array<string> {
-    if (this.timelineService.savedGridNames == undefined) {
-      return [];
-    }
-    if (sorted) {
-      return _.sortBy(this.timelineService.savedGridNames, (name) => {
-        return name != this.timelineService.currentGridName ? ("z" + name) : " ";
-      });
-    }
-    return this.timelineService.savedGridNames;
-  }
-
-  getSlotStyle(slotIndex: number, rowIndex: number): any {
-    if (this.initialDragIndex == undefined
-      || this.currentDragIndex == undefined
-      || this.dragDisplacement == undefined) {
-      return {};
-    }
-
+  getSlotStyle(slotIndex: number, rowIndex: number, skill: Skill | undefined): any {
     var style: { [klass: string]: any } = {};
+    var associatedCharacter = this.unitInstancesService.characterInstances[rowIndex];
 
-    if (!this.draggingSkill && slotIndex >= this.dragBox.left && slotIndex <= this.dragBox.right
-      && rowIndex >= this.dragBox.top && rowIndex <= this.dragBox.bottom) {
-      style["background-color"] = "rgba(20, 20, 200, .3)";
+    if (this.initialDragIndex != undefined
+      || this.currentDragIndex != undefined
+      || this.dragDisplacement != undefined) {
+      if (!this.draggingSkill && slotIndex >= this.dragBox.left && slotIndex <= this.dragBox.right
+        && rowIndex >= this.dragBox.top && rowIndex <= this.dragBox.bottom) {
+        style["background-color"] = "rgba(20, 20, 200, .3)";
+      }
     }
+
 
     return style;
   }
 
-  getIconStyle(slotIndex: number, rowIndex: number): any {
-    if (this.initialDragIndex == undefined
-      || this.currentDragIndex == undefined
-      || this.dragDisplacement == undefined) {
-      return {};
-    }
-
+  getIconStyle(slotIndex: number, rowIndex: number, skill: Skill): any {
     var style: { [klass: string]: any } = {};
+    var associatedCharacter = this.unitInstancesService.characterInstances[rowIndex];
 
-    if (this.selectedSlots[rowIndex][slotIndex] && this.draggingSkill) {
+    if (this.dragDisplacement != undefined && this.selectedSlots[rowIndex][slotIndex] && this.draggingSkill) {
       var translateX = "translateX(" + (this.dragDisplacement.x * this.getSlotWidth()) + "px)"
       var translateY = "translateY(" + (this.dragDisplacement.y * this.getSlotHeight()) + "px)"
       style["transform"] = translateX + " " + translateY;
@@ -191,6 +115,16 @@ export class TimelineComponent implements OnInit {
     }
 
     return style;
+  }
+
+  slotInvalid(rowIndex: number): boolean{
+    var associatedCharacter = this.unitInstancesService.characterInstances[rowIndex];
+    return this.selectedSkill != undefined && !associatedCharacter.availableSkills.includes(this.selectedSkill);
+  }
+
+  skillInvalid(rowIndex: number, skill: Skill | undefined): boolean{
+    var associatedCharacter = this.unitInstancesService.characterInstances[rowIndex];
+    return skill != undefined && !associatedCharacter.availableSkills.includes(skill.skillInfo);
   }
 
   forEachSelected(callback: (rowIndex: number, slotIndex: number) => void): void {
@@ -386,11 +320,11 @@ export class TimelineComponent implements OnInit {
     this.draggingSkill = undefined;
   }
 
-  mouseoverSlot(event: any, hoveredSkill: SkillInfo) {
+  mouseoverSlot(event: any, hoveredSkill: SkillInformation) {
     this.tooltipService.setSkillTooltip(hoveredSkill, event.toElement ? event.toElement : event.target, 1);
   }
 
-  mouseoutSlot(event: any, hoveredSkill: SkillInfo) {
+  mouseoutSlot(event: any, hoveredSkill: SkillInformation) {
     this.tooltipService.setSkillTooltip(undefined, undefined, 0);
   }
 
@@ -398,6 +332,7 @@ export class TimelineComponent implements OnInit {
     private soundEffectPlayer: SoundEffectPlayerService,
     private timelineService: TimelineService,
     private tooltipService: TooltipService,
+    private unitInstancesService: UnitInstancesService,
     private persistentService: PersistentService) {
     this.selectedSkillService.selectedSkillChange.subscribe(value => this.selectedSkill = value);
     this.timelineService.currentGridChange.subscribe(value => this.setSkillGrid(value));

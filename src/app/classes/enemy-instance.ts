@@ -10,17 +10,20 @@ export class EnemyInstance extends UnitInstance {
         return 0;
     }
 
+    lastDamageReceived = 0;
+
     override receiveDamage(damage: number): number {
         var damageReceived = super.receiveDamage(damage);
 
-        this.unitInstancesService.rewardXP(damageReceived);
+        this.lastDamageReceived = damageReceived;
+        //this.unitInstancesService.rewardXP(damageReceived);
 
         return damageReceived;
     }
 
     override onDie(): void {
         super.onDie();
-        this.unitInstancesService.rewardXP(10);
+        this.unitInstancesService.rewardXP(this.getMaxHP() * .1 + this.lastDamageReceived);
     }
 
     constructor(name: string, public enemyInformation: EnemyInformation, unitInstancesService: UnitInstancesService) {

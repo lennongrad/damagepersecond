@@ -1,0 +1,86 @@
+.feature {
+    position: relative;
+    cursor: pointer;
+
+    &:nth-child(even) {
+        background-color: #132729;
+    }
+
+    &:nth-child(odd) {
+        background-color: #132426;
+    }
+
+    &:hover{
+        filter: brightness(1.3);
+    }
+}
+
+.benefit {
+    padding-left: 4px;
+    height: 25px;
+    line-height: 25px;
+    font-size: 16px;
+
+    img {
+        filter: drop-shadow(1px 1px 2px #008) drop-shadow(-1px -1px 3px #111);
+        margin-right: 3px;
+        vertical-align: text-top;
+        pointer-events: none;
+    }
+
+    .benefit-name{
+        display: inline-block;
+        transition: .1s;
+        transform-origin: 0 50%;
+    }
+
+    &:hover{
+        .benefit-name{
+            transform: scale(105%, 95%);
+            color: #e6ff95;
+        }
+    }
+}
+
+.benefit-name{
+    font-size: 15px;
+    pointer-events: none;
+    .generic &{
+        font-style: italic;
+    }
+}
+
+.exp-cost {
+    position: absolute;
+    right: 6px;
+    top: 5px;
+
+    font-size: 13px;
+    background-image: linear-gradient(#484314, #e6ff95);
+    background-repeat: repeat;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 0 1px #242001) drop-shadow(0 0 1px #242001) drop-shadow(0 0 1px #242001) drop-shadow(0 0 1px #242001);
+
+    border-image: linear-gradient(to left, #484314, #e6ff95) 100% 1;
+
+    pointer-events: none;
+    transition: .1s;
+
+    .feature:hover &{
+        padding-left: 4px;
+    }
+
+    .affordable:not(.learnt) &{
+        top: 4px;
+        border-bottom: 1px solid transparent;
+    }
+
+    .feature.learnt &{
+        .unlearnt{display: none}
+    }
+    .feature:not(.learnt) &{
+        .learnt{display: none}
+    }
+}

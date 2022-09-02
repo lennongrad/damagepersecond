@@ -1,122 +1,4 @@
-@import (reference) "../../app.component.less";
-
-.header {
-    height: 34px;
-    margin-right: 11px;
-    margin-left: 6px;
-    position: relative;
-    display: flex;
-    filter: drop-shadow(0 -2px 3px black);;
-
-    .crusty-bg {
-        height: calc(100% - 12px);
-        padding-top: 6px;
-        padding-bottom: 6px;
-
-        position: relative;
-        background-image: url("~src/assets/headerframe-middle.png");
-        background-repeat: repeat-x;
-    }
-}
-
-.header-grow {
-    flex-grow: 1;
-    height: calc(100% - 15px);
-    padding-top: 7px;
-    padding-bottom: 8px;
-}
-
-.divided-button {
-    position: relative;
-    margin-top: -1px;
-    height: calc(100% + 1px);
-    margin-left: 1px;
-    margin-right: 1px;
-    overflow: hidden;
-    background-color: rgba(240, 240, 200, 0.1);
-    max-width: 25px;
-    width: 3vw;
-
-    &:hover {
-        filter: brightness(0.9);
-    }
-
-    button {
-        height: 100%;
-        background: linear-gradient(#43423E, #31302C);
-        box-shadow: 0 0 5px #222 inset;
-        border: 1px solid #444;
-        filter: drop-shadow(2px 2px 0 black);
-        cursor: pointer;
-
-
-        background-image: linear-gradient(#555555, #CCC);
-        background-size: 100%;
-        background-repeat: repeat;
-        -webkit-background-clip: text;
-        background-clip: text;
-        -webkit-text-fill-color: transparent;
-        text-transform: uppercase;
-        font-weight: bold;
-
-        &:active {
-            transform: translateY(2px);
-            box-shadow: 0 0 4px black inset, 0 -2px 4px black inset;
-        }
-    }
-
-    &.time-progress {
-        max-width: 62px;
-        width: 5vw;
-        button {
-            width: 100%;
-            text-transform: none;
-        }
-    }
-}
-
-.displaced-input {
-    position: absolute;
-    left: 1px;
-    width: calc(100% - 5px);
-    height: calc(100% - 14px);
-    background: linear-gradient(#43423E, #31302C);
-    box-shadow: 0 0 5px #222 inset;
-    border: 1px solid #444;
-    filter: drop-shadow(2px 2px 0 black);
-    cursor: pointer;
-
-    input {
-        width: 100%;
-        height: 100%;
-        padding: 0 0 0 4px;
-
-        background-image: linear-gradient(#555555, #CCC);
-        background-size: 100%;
-        background-repeat: repeat;
-        -webkit-background-clip: text;
-        background-clip: text;
-        -webkit-text-fill-color: transparent;
-        text-transform: uppercase;
-        font-weight: bold;
-        border: none;
-        color: white;
-    }
-
-    input::placeholder {
-        font-size: 10px;
-        font-style: italic;
-    }
-}
-
-
-.name-select {
-    width: 12vw;
-    height: 100%;
-    background-color: black;
-    border-radius: 1px;
-    box-shadow: 0 0 8px #555 inset;
-}
+@import (reference) "variables";
 
 .scroll-container {
     position: relative;
@@ -228,6 +110,16 @@
     &.selected {
         .icon {
             background: linear-gradient(45deg, #22A 10%, #55A)
+        }
+    }
+
+    .invalid-placement &{
+        background-color: rgba(200, 20, 20, .3);
+    }
+
+    &.invalid-position{
+        .icon{
+            background: linear-gradient(45deg, #A22 10%, #A33)
         }
     }
 }

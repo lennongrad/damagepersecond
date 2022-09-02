@@ -1,10 +1,11 @@
-import { Skill, SkillInfo, SkillContext, SkillTargetType, SkillType, SkillSubtype, DamageType } from '../interfaces/skill-information';
+import { Skill, SkillInformation, SkillContext, SkillTargetType, SkillType, SkillSubtype, DamageType } from '../interfaces/skill-information';
 import { StackType, Status, StatusInformation, StatusType } from '../interfaces/status-information';
 import { STATUSES } from './status-list';
 import { CharacterInstance } from '../classes/character-instance';
 import { EnemyInstance } from '../classes/enemy-instance';
 import * as _ from 'underscore';
 import { UnitInstance } from '../classes/unit-instance';
+import { CharacterFeature } from '../interfaces/unit-information';
 
 //skillContext.origin.addStatus({ statusInformation: STATUSES["strength"], degree: 1, duration: 3 })
 function basicDamage(skillContext: SkillContext, baseDamage: number, directRate: number = 0, criticalRate: number = 0) {
@@ -25,22 +26,24 @@ function statusDescription(statusInformation: StatusInformation, increase: strin
      + (duration != 0 ? (" for " + duration + (duration > 1 ? " seconds" : " second")) : "") + "</span>";
 }
 
-export const SKILLS: SkillInfo[] = [
-  {
-    icon: "skill-icons/skill_249.png", name: "Strike", type: SkillType.attack, subtypes: [SkillSubtype.arm],
+export const SKILLS: { [id: string]: SkillInformation } = {
+  "strike": {
+    id: "strike", icon: "skill-icons/skill_249.png", name: "Strike", type: SkillType.attack, subtypes: [SkillSubtype.arm],
     description: "Deal 1 base damage <i class='small'>(50% / 5%)</i> to the closest enemy.",
     flavour: undefined, target: SkillTargetType.firstEnemy,
     effect: (skillContext: SkillContext) => basicDamage(skillContext, 1, 50, 5)
-  }, {
-    icon: "Light-Skills/383.png", name: "Infuse", fpCost: 2, type: SkillType.ability,
+  }, 
+  "infuse": {
+    id: "infuse", icon: "Light-Skills/383.png", name: "Infuse", fpCost: 2, type: SkillType.ability,
     description: "Gain " + statusDescription(STATUSES["strength"], "+2", true, 3) + ".",
     flavour: undefined, target: SkillTargetType.noTarget,
     relevantStatuses: [STATUSES["strength"]],
     effect: (skillContext: SkillContext) => {
       skillContext.origin.addStatus({ statusInformation: STATUSES["strength"], degree: 2, duration: 3, origin: skillContext.origin });
     }
-  }, {
-    icon: "skill-icons/skill_272.png", name: "Bladesong", fpCost: 5, type: SkillType.ability, subtypes: [SkillSubtype.song],
+  }, 
+  "bladesong": {
+    id: "bladesong", icon: "skill-icons/skill_272.png", name: "Bladesong", fpCost: 5, type: SkillType.ability, subtypes: [SkillSubtype.song],
     description: "Gain " + statusDescription(STATUSES["strength"], "+2", true) + " if you have none and " +
       statusDescription(STATUSES["precise"], "+10", true) + " if you have none.",
     flavour: undefined, target: SkillTargetType.noTarget,
@@ -53,8 +56,9 @@ export const SKILLS: SkillInfo[] = [
         skillContext.origin.addStatus({ statusInformation: STATUSES["precise"], degree: 10, origin: skillContext.origin })
       }
     }
-  }, {
-    icon: "skill-icons/skill_261.png", name: "Reckless Attack", fpCost: 1, type: SkillType.ability,
+  }, 
+  "recklessAttack": {
+    id: "recklessAttack", icon: "skill-icons/skill_261.png", name: "Reckless Attack", fpCost: 1, type: SkillType.ability,
     description: "The next time you deal damage, gain a <b class='positive-description'>+100%</b> chance to deal a critical hit.",
     flavour: undefined, target: SkillTargetType.noTarget,
     effect: (skillContext: SkillContext) => {
@@ -71,8 +75,9 @@ export const SKILLS: SkillInfo[] = [
         }
       })
     }
-  }, {
-    icon: "skill-icons/skill_62.png", name: "Slice", type: SkillType.attack, subtypes: [SkillSubtype.sword],
+  }, 
+  "slice": {
+    id:"slice", icon: "skill-icons/skill_62.png", name: "Slice", type: SkillType.attack, subtypes: [SkillSubtype.sword],
     description: "Deal 1 base damage <i class='small'>(30% / 5%)</i> to the closest enemy. " +
       "On a direct or critical hit, target gains " + statusDescription(STATUSES["bleeding"], "+2", true, 5) + ".",
     flavour: undefined, target: SkillTargetType.firstEnemy,
@@ -89,8 +94,9 @@ export const SKILLS: SkillInfo[] = [
         target.playAnimation("Damage");
       })
     }
-  }, {
-    icon: "skill-icons/skill_24.png", name: "Leg Sweep", fpCost: 1, type: SkillType.ability, subtypes: [SkillSubtype.leg],
+  }, 
+  "legSweep": {
+    id: "legSweep", icon: "skill-icons/skill_24.png", name: "Leg Sweep", fpCost: 1, type: SkillType.ability, subtypes: [SkillSubtype.leg],
     description: "Apply " + statusDescription(STATUSES["vulnerable"], "+25", true) + " to the nearest enemy for 3 seconds.",
     flavour: undefined, target: SkillTargetType.firstEnemy,
     relevantStatuses: [STATUSES["vulnerable"]],
@@ -99,8 +105,9 @@ export const SKILLS: SkillInfo[] = [
         unitInstance.addStatus({ statusInformation: STATUSES["vulnerable"], degree: 25, duration: 3, origin: skillContext.origin })
       })
     }
-  }, {
-    icon: "skill-icons/skill_44.png", name: "Flurry of Blows", fpCost: 2, type: SkillType.ability,
+  }, 
+  "flurryOfBlows": {
+    id: "flurryOfBlows",icon: "skill-icons/skill_44.png", name: "Flurry of Blows", fpCost: 2, type: SkillType.ability,
     description: "Gain <b class='positive-description'>+25% direct hit chance</b> and <b class='positive-description'>+25% direct hit damage</b>. "
       + "This effect ends when you do not use an <i>arm</i> or <i>leg</i> skill for a second.",
     flavour: undefined, target: SkillTargetType.noTarget,
@@ -128,8 +135,9 @@ export const SKILLS: SkillInfo[] = [
         }, origin: skillContext.origin
       })
     }
-  }, {
-    icon: "skill-icons/skill_292.png", name: "Rage", fpCost: 3, type: SkillType.ability,
+  }, 
+  "rage": {
+    id: "rage", icon: "skill-icons/skill_292.png", name: "Rage", fpCost: 3, type: SkillType.ability,
     description: "Gain " + statusDescription(STATUSES["strength"], "+1", true) + ", " +
       statusDescription(STATUSES["fierce"], "+15", true) + ", and " +
       statusDescription(STATUSES["brutal"], "+50", true) + ".<br>Whenever you don't use an <i>attack</i> skill for a second, " +
@@ -155,8 +163,9 @@ export const SKILLS: SkillInfo[] = [
         }, origin: skillContext.origin
       })
     }
-  }, {
-    icon: "Light-Skills/329.png", name: "Replenshing Strike", fpCost: 1, type: SkillType.attack, subtypes: [SkillSubtype.arm],
+  }, 
+  "replenishingStrike": {
+    id: "replenishingStrike", icon: "Light-Skills/329.png", name: "Replenshing Strike", fpCost: 1, type: SkillType.attack, subtypes: [SkillSubtype.arm],
     description: "Deal 4 base damage <i class='small'>(50% / 5%)</i> to the closest enemy." +
       "<br>Add 1 second to the duration of each " + statusDescription(STATUSES["strength"], "", true) + ", " +
       statusDescription(STATUSES["deft"], "", true) + ", and " +
@@ -172,8 +181,9 @@ export const SKILLS: SkillInfo[] = [
         }
       })
     }
-  }, {
-    icon: "Light-Skills/690.png", name: "Rounding Kick", type: SkillType.attack, subtypes: [SkillSubtype.leg],
+  }, 
+  "roundingKick": {
+    id: "roundingKick", icon: "Light-Skills/690.png", name: "Rounding Kick", type: SkillType.attack, subtypes: [SkillSubtype.leg],
     description: "Deal 1 base damage <i class='small'>(25% / 5%)</i> to the closest enemy." +
       " If your last two skills were <i>arm</i> skills, the base damage is tripled.",
     flavour: undefined, target: SkillTargetType.firstEnemy,
@@ -186,8 +196,9 @@ export const SKILLS: SkillInfo[] = [
       }
       basicDamage(skillContext, baseDamage, 25, 5);
     }
-  }, {
-    icon: "Light-Skills/597.png", name: "Lightning Kicks", type: SkillType.attack, subtypes: [SkillSubtype.leg], fpCost: 3,
+  }, 
+  "lightningKicks": {
+    id: "lightningKicks", icon: "Light-Skills/597.png", name: "Lightning Kicks", type: SkillType.attack, subtypes: [SkillSubtype.leg], fpCost: 3,
     description: "Deal 1 base damage <i class='small'>(40% / 5%)</i> to the closest enemy three times. ",
     flavour: undefined, target: SkillTargetType.firstEnemy,
     effect: (skillContext: SkillContext) => {
@@ -195,8 +206,9 @@ export const SKILLS: SkillInfo[] = [
       basicDamage(skillContext, 1, 20, 5);
       basicDamage(skillContext, 1, 20, 5);
     }
-  }, {
-    icon: "Light-Skills/491.png", name: "Heavy Swing", type: SkillType.attack, subtypes: [SkillSubtype.sword], fpCost: 2,
+  }, 
+  "heavySwing": {
+    id: "heavySwing", icon: "Light-Skills/491.png", name: "Heavy Swing", type: SkillType.attack, subtypes: [SkillSubtype.sword], fpCost: 2,
     description: "Deal 2 base damage <i class='small'>(30% / 5%)</i> to the closest enemy. " +
       "This damage is affected by " + statusDescription(STATUSES["strength"], "", true) + " an additional time.",
     flavour: undefined, target: SkillTargetType.firstEnemy,
@@ -208,8 +220,9 @@ export const SKILLS: SkillInfo[] = [
       })
       basicDamage(skillContext, 2, 30, 5);
     }
-  }, {
-    icon: "skill-icons/skill_289.png", name: "Concentrate", type: SkillType.ability, fpCost: 1,
+  }, 
+  "concentrate": {
+    id: "concentrate", icon: "skill-icons/skill_289.png", name: "Concentrate", type: SkillType.ability, fpCost: 1,
     description: "Gain " + statusDescription(STATUSES["strength"], "+2", true) + " and " +
       statusDescription(STATUSES["deft"], "+20", true) + ".<br>" + statusDescription(STATUSES["delayed"], "", false, 2) + ".",
     flavour: undefined, target: SkillTargetType.noTarget,
@@ -219,22 +232,25 @@ export const SKILLS: SkillInfo[] = [
       skillContext.origin.addStatus({ statusInformation: STATUSES["deft"], degree: 20, origin: skillContext.origin });
       skillContext.origin.addStatus({ statusInformation: STATUSES["delayed"], duration: 2, origin: skillContext.origin })
     }
-  }, {
-    icon: "skill-icons/skill_64.png", name: "Cleave", type: SkillType.attack, subtypes: [SkillSubtype.sword], fpCost: 1,
+  }, 
+  "cleave": {
+    id: "cleave", icon: "skill-icons/skill_64.png", name: "Cleave", type: SkillType.attack, subtypes: [SkillSubtype.sword], fpCost: 1,
     description: "Deal 1.25 base damage <i class='small'>(25% / 5%)</i> to each enemy.",
     flavour: undefined, target: SkillTargetType.allEnemies,
     effect: (skillContext: SkillContext) => {
       basicDamage(skillContext, 1.25, 25, 5);
     }
-  }, {
-    icon: "Light-Skills/2408.png", name: "Slash", type: SkillType.attack, subtypes: [SkillSubtype.sword],
+  }, 
+  "slash": {
+    id: "slash", icon: "Light-Skills/2408.png", name: "Slash", type: SkillType.attack, subtypes: [SkillSubtype.sword],
     description: "Deal 1.5 base damage <i class='small'>(30% / 5%)</i> to the closest enemy.",
     flavour: undefined, target: SkillTargetType.firstEnemy,
     effect: (skillContext: SkillContext) => {
       basicDamage(skillContext, 2, 30, 5);
     }
-  }, {
-    icon: "Light-Skills/286.png", name: "Enflame Blade", type: SkillType.ability, fpCost: 2,
+  }, 
+  "enflameBlade": {
+    id: "enflameBlade", icon: "Light-Skills/286.png", name: "Enflame Blade", type: SkillType.ability, fpCost: 2,
     description: "<b class='positive-description'>+150% direct hit damage</b> when dealing damage with <i>sword attacks</i>.",
     flavour: undefined, target: SkillTargetType.noTarget,
     effect: (skillContext: SkillContext) => {
@@ -252,8 +268,9 @@ export const SKILLS: SkillInfo[] = [
         }, origin: skillContext.origin
       })
     }
-  }, {
-    icon: "skill-icons/skill_23.png", name: "Blade Flourish", type: SkillType.attack, subtypes: [SkillSubtype.sword],
+  }, 
+  "bladeFlourish": {
+    id: "bladeFlourish", icon: "skill-icons/skill_23.png", name: "Blade Flourish", type: SkillType.attack, subtypes: [SkillSubtype.sword],
     description: "Deal 1.5 base damage <i class='small'>(50% / 10%)</i> to the closest enemy. If you just did three "
     + "<i>sword skills</i>, do this damage three times instead.<br>" + statusDescription(STATUSES["delayed"], "", false, 1) +  ".",
     flavour: undefined, target: SkillTargetType.firstEnemy,
@@ -270,10 +287,5 @@ export const SKILLS: SkillInfo[] = [
 
       skillContext.origin.addStatus({statusInformation: STATUSES["delayed"], duration: 1});
     }
-  },
-];
-
-// always do this last
-for (var i = 0; i < SKILLS.length; i++) {
-  SKILLS[i].id = i;
-}
+  }
+};

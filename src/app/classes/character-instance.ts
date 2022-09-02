@@ -1,12 +1,13 @@
 import { UnitInstance } from "./unit-instance";
-import { CharacterInformation, CharacterSave } from "../interfaces/unit-information";
+import { CharacterFeature, CharacterInformation, CharacterSave } from "../interfaces/unit-information";
 import { UnitInstancesService } from "../services/unit-instances.service";
-import { Skill, SkillContext, SkillTargetType } from "../interfaces/skill-information";
+import { Skill, SkillContext, SkillInformation, SkillTargetType } from "../interfaces/skill-information";
 import * as _ from 'underscore';
-import { Status } from "../interfaces/status-information";
 
 export class CharacterInstance extends UnitInstance {
     permanentData!: CharacterSave;
+
+    genericFeatures: Array<CharacterFeature> = [];
 
     currentDamageDealt = 0;
     finalDamages = Array<number>();
@@ -33,18 +34,33 @@ export class CharacterInstance extends UnitInstance {
         return totalDamage / length;
     }
 
+    availableSkills = Array<SkillInformation>();
+    updateAvailableSkills() {
+        this.availableSkills = this.characterInformation.defaultSkills;
+
+        this.getFeatureList().forEach((feature: CharacterFeature) => {
+            if (feature.skillUnlocked != undefined && this.permanentData.learntFeatures.has(feature.skillUnlocked.id)) {
+                this.availableSkills.push(feature.skillUnlocked);
+            }
+        })
+    }
+
+    getFeatureList(): Array<CharacterFeature>{
+        return this.characterInformation.characterFeatures.concat(this.genericFeatures);
+    }
+
+    canAffordFeature(feature: CharacterFeature): boolean {
+        return this.permanentData.experience >= feature.expCost;
+    }
+
+    hasLearntFeature(feature: CharacterFeature): boolean {
+        return this.permanentData.learntFeatures.has(this.getFeatureID(feature));
+    }
+
     recentSkillsCount(predicate: (skill: Skill, skillContext: SkillContext) => boolean, distance: number): number {
         return _.reduceRight(this.recentlyUsedSkills, (total, usedSkill, index) => {
             return total + ((predicate(usedSkill.skill, usedSkill.skillContext) && index < distance) ? 1 : 0);
         }, 0)
-        /*
-        var total = 0;
-        this.recentlyUsedSkills.forEach((used: {skill: Skill, skillContext: SkillContext}, index: number) => {
-            if(predicate(used.skill, used.skillContext) && true){
-                total += 1;
-            }
-        })
-        return total;*/
     }
 
     recentSkillsAll(predicate: (skill: Skill, skillContext: SkillContext) => boolean, distance: number): boolean {
@@ -53,6 +69,27 @@ export class CharacterInstance extends UnitInstance {
 
     recentSkillsNone(predicate: (skill: Skill, skillContext: SkillContext) => boolean, distance: number): boolean {
         return this.recentSkillsCount(predicate, distance) == 0;
+    }
+
+    getFeatureID(feature: CharacterFeature): string {
+        if (feature.skillUnlocked != undefined) {
+            return feature.skillUnlocked.id;
+        }
+        if (feature.traitUnlocked != undefined) {
+            return feature.traitUnlocked.id;
+        }
+        return "";
+    }
+
+    buyFeature(feature: CharacterFeature): void {
+        if (this.getFeatureList().includes(feature)
+            && !this.hasLearntFeature(feature)
+            && this.canAffordFeature(feature)) {
+            this.permanentData.learntFeatures.add(this.getFeatureID(feature));
+            this.addXP(-feature.expCost);
+            this.updateAvailableSkills();
+            this.saveData();
+        }
     }
 
     addXP(amount: number): void {
@@ -69,8 +106,9 @@ export class CharacterInstance extends UnitInstance {
         if (loadedData != undefined) {
             this.permanentData = loadedData;
         } else {
-            this.permanentData = { experience: 0 };
+            this.permanentData = { experience: 0, learntFeatures: new Set<string>() };
         }
+        this.updateAvailableSkills();
     }
 
     registerDamage(damage: number): void {
@@ -78,6 +116,10 @@ export class CharacterInstance extends UnitInstance {
     }
 
     useSkill(skill: Skill) {
+        if(!this.availableSkills.includes(skill.skillInfo)){
+            return;
+        }
+
         var targets = Array<UnitInstance>();
         switch (skill.skillInfo.target) {
             case SkillTargetType.allButSelf:
@@ -156,9 +198,10 @@ export class CharacterInstance extends UnitInstance {
 
     constructor(name: string,
         public characterInformation: CharacterInformation,
-        unitInstancesService: UnitInstancesService) {
+        unitInstancesService: UnitInstancesService,
+        genericFeatures: Array<CharacterFeature>) {
         super(name, characterInformation, unitInstancesService);
-
+        this.genericFeatures = genericFeatures;
         this.loadData();
     }
 }

@@ -2,11 +2,10 @@ import { Injectable } from '@angular/core';
 import { CharacterInstance } from '../classes/character-instance';
 import { EnemyInstance } from '../classes/enemy-instance';
 import { UnitInstance } from '../classes/unit-instance';
-import { CHARACTERS } from '../data/character-list';
-import { ENCOUNTERS, ENEMIES } from '../data/enemy-list';
+import { CHARACTERS, GENERIC_FEATURES } from '../data/character-list';
+import { ENCOUNTERS } from '../data/enemy-list';
 import { CharacterSave } from '../interfaces/unit-information';
 import { SaveService } from './save.service';
-import { TimelineService } from './timeline.service';
 import { EncounterInformation } from '../interfaces/unit-information';
 
 @Injectable({
@@ -14,9 +13,9 @@ import { EncounterInformation } from '../interfaces/unit-information';
 })
 export class UnitInstancesService {
   characterInstances: Array<CharacterInstance> = [
-    new CharacterInstance("A", CHARACTERS["eirika"], this),
-    new CharacterInstance("B", CHARACTERS["archer"], this),
-    new CharacterInstance("C", CHARACTERS["wizard"], this)
+    new CharacterInstance("A", CHARACTERS["eirika"], this, GENERIC_FEATURES),
+    new CharacterInstance("B", CHARACTERS["archer"], this, GENERIC_FEATURES),
+    new CharacterInstance("C", CHARACTERS["wizard"], this, GENERIC_FEATURES)
   ]
 
   enemyInstances!: Array<EnemyInstance>;
@@ -32,7 +31,11 @@ export class UnitInstancesService {
   }
 
   saveData(character: CharacterInstance): void {
-    var data = JSON.stringify(character.permanentData)
+    var dataStore: any = {};
+    dataStore["experience"] = character.permanentData.experience;
+    dataStore["learntFeature"] = Array.from(character.permanentData.learntFeatures);
+
+    var data = JSON.stringify(dataStore)
     this.saveService.saveData("character-" + character.characterInformation.name, data);
   }
 
@@ -41,7 +44,12 @@ export class UnitInstancesService {
 
     if(dataString != null){
       try{
-        return JSON.parse(dataString) as CharacterSave;
+        var baseData = JSON.parse(dataString);
+        var modifiedData : CharacterSave = {
+          experience: baseData.experience,
+          learntFeatures: new Set<string>(baseData.learntFeature)
+        };
+        return modifiedData;
       } catch{
         return undefined;
       }

@@ -148,7 +148,7 @@ export class TimelineService {
 
   setDefaultGrid(): void {
     this.currentSkillGrid = Array<Array<Skill | undefined>>(3).fill([]).map(() => new Array());
-    this.setGridMax(40);
+    this.setGridMax(20);
   }
 
   // modify these to be safer

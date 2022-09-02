@@ -2,6 +2,7 @@
     <div class="hp-container character">
         <div *ngFor="let characterInstance of getCharacterInstances(); let i = index" class="name-bar"
             (mouseover)="mouseoverUnit($event, characterInstance)" (mouseout)="mouseoutUnit($event, characterInstance)"
+            (click)="characterClick(characterInstance)"
             [ngStyle]="{'top.px': i * 48 + 18}">
             <div class="title-bar">
                 <div class="title-name">
@@ -41,7 +42,7 @@
             [AnimationDetails]="characterInstance.getAnimationDetails()" [isDead]="!characterInstance.isAlive()"
             [AnimationSubject]="characterInstance.animationChange" [TickSubject]="characterInstance.tickChange"
             [ngStyle]="getSpriteStyle(true, i)" (mouseover)="mouseoverUnit($event, characterInstance)"
-            (mouseout)="mouseoutUnit($event, characterInstance)" (click)="characterInstance.receiveDamage(1)">
+            (mouseout)="mouseoutUnit($event, characterInstance)" (click)="characterClick(characterInstance)">
         </app-animated-sprite>
     </div>
     <div class="sprite-container enemy">

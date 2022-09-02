@@ -1,0 +1,28 @@
+<div class="scroll-container">
+    <div class="timeline-scroll" appHorizontalScroll>
+        <table class="timeline" [class.dragging]="initialDragIndex != undefined" [class.big-icons]="getBigIconsOn()"
+            [class.placing]="selectedSkill != undefined" (window:keydown.delete)="deleteSelection()"
+            (window:keydown.shift.d)="duplicateSelection()" (window:keydown.a)="selectAll()"
+            (window:keydown.arrowup)="moveSelection({x: 0, y: -1})"
+            (window:keydown.arrowdown)="moveSelection({x: 0, y: 1})"
+            (window:keydown.arrowleft)="moveSelection({x: -1, y: 0})"
+            (window:keydown.arrowright)="moveSelection({x: 1, y: 0})">
+            <tr *ngFor="let row of this.getSkillGrid(); index as rowIndex" [class.invalid-placement]="slotInvalid(rowIndex)" >
+                <td class="slot" type="button" *ngFor="let skill of row; index as slotIndex"
+                    (click)="clickSlot(slotIndex, rowIndex, $event)" draggable="true"
+                    (dragstart)="onDragStart(slotIndex, rowIndex, $event)" [ngStyle]="getSlotStyle(slotIndex, rowIndex, skill)"
+                    (dragover)="onDragOver(slotIndex, rowIndex, $event)" (dragend)="onDragEnd($event)"
+                    [class.invalid-position]="skillInvalid(rowIndex, skill)"
+                    [class.time]="getCurrentTime() == slotIndex" [class.selected]="selectedSlots[rowIndex][slotIndex]">
+                    <div class="select-beam"></div>
+                    <div [ngStyle]="getIconStyle(slotIndex, rowIndex, skill)" *ngIf="skill != undefined" class="icon"
+                        (mouseover)="mouseoverSlot($event, skill.skillInfo)"
+                        (mouseout)="mouseoutSlot($event, skill.skillInfo)">
+                        <img src="assets/{{skill.skillInfo.icon}}" />
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div class="scroll-border"></div>
+</div>

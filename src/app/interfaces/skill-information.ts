@@ -52,11 +52,11 @@ export interface SkillContext {
 }
 
 export interface Skill {
-    skillInfo: SkillInfo
+    skillInfo: SkillInformation
 }
 
-export interface SkillInfo {
-    id?: number,
+export interface SkillInformation {
+    id: string,
     icon: string,
     name: string,
     type: SkillType,

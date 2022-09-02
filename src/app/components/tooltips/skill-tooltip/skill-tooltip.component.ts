@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, SimpleChanges, ViewChild, ElementRef, HostListener } from '@angular/core';
-import { SkillInfo, SkillSubtype } from 'src/app/interfaces/skill-information';
+import { SkillInformation, SkillSubtype } from 'src/app/interfaces/skill-information';
 import { StatusType } from 'src/app/interfaces/status-information';
 import { TooltipService } from 'src/app/services/tooltip.service';
 
@@ -11,7 +11,7 @@ import { TooltipService } from 'src/app/services/tooltip.service';
 export class SkillTooltipComponent implements OnInit {
   @ViewChild('tooltipbox') tooltipBox!: ElementRef;
 
-  hoveredSkill?: SkillInfo;
+  hoveredSkill?: SkillInformation;
   element?: Element;
   opacity = 1;
 

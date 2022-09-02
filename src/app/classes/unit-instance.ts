@@ -4,7 +4,7 @@ import { UnitInformation } from "../interfaces/unit-information";
 import { AnimationDetails } from "../interfaces/animation-information";
 import * as _ from 'underscore';
 import { UnitInstancesService } from "../services/unit-instances.service";
-import { DamageType, Skill, SkillContext } from "../interfaces/skill-information";
+import { DamageType, SkillContext } from "../interfaces/skill-information";
 
 export abstract class UnitInstance {
     animationChange = new Subject<string>();

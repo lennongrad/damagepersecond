@@ -1,4 +1,4 @@
-@import (reference) "../../app.component.less";
+@import (reference) "variables";
 
 .battlefield {
     position: relative;
@@ -36,15 +36,16 @@ app-animated-sprite {
     image-rendering: initial;
     padding-top: 19px;
     left: -1px;
-    min-width: 200px;
     z-index: 2;
 
     &.character {
         background: linear-gradient(to right, rgba(0, 0, 0, 65%) -5%, rgba(0, 0, 0, 35%) 70%, transparent);
+        min-width: 200px;
     }
 
     &.enemy {
-        background: linear-gradient(to left, rgba(0, 0, 0, 65%) -5%, rgba(0, 0, 0, 35%) 70%, transparent);
+        background: linear-gradient(to left, rgba(0, 0, 0, 65%) -5%, rgba(0, 0, 0, 35%) 70%, transparent);    
+        min-width: 120px;
     }
 }
 

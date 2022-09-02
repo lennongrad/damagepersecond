@@ -1,0 +1,19 @@
+<div id="feature-holder">
+    <div class="feature" *ngFor="let feature of getFeatures(); let i = index" 
+    [class.affordable]="isFeatureAffordable(feature)" [class.learnt]="isFeatureLearnt(feature)"
+    (click)="clickFeature(feature)" [class.generic]="feature.isGeneric">
+        <div class="exp-cost">
+            <span class="unlearnt">{{beautify(feature.expCost)}} XP.</span>
+            <span class="learnt">LEARNT</span>
+        </div>
+        <div class="benefit skill" *ngIf="feature.skillUnlocked != undefined" 
+        (mouseover)="mouseoverSkill($event, feature.skillUnlocked)" (mouseout)="mouseoutSkill()">
+            <img src="assets/{{feature.skillUnlocked!.icon}}"/>
+            <span class="benefit-name">{{feature.skillUnlocked.name}}</span>
+        </div>
+        <div class="benefit trait" *ngIf="feature.traitUnlocked != undefined">
+            <img src="assets/{{feature.traitUnlocked!.icon}}"/>
+            <span class="benefit-name">{{feature.traitUnlocked.name}}</span>
+        </div>
+    </div>
+</div>

@@ -1,16 +1,4 @@
-@small-font-size: 13px;
-@large-font-size: 18px;
-@top-bar-height: 40px;
-
-@icon-width: 16px;
-@icon-padding: 5px;
-@icon-margins: 1px;
-@slot-width: @icon-width + @icon-padding * 2 + @icon-margins * 2;
-
-@icon-width-big: 32px;
-@icon-padding-big: 4px;
-@icon-margins-big: 2px;
-@slot-width-big: @icon-width-big + @icon-padding-big * 2 + @icon-margins-big * 2;
+@import (reference) "variables";
 
 #main-body {
     left: 0;
@@ -46,11 +34,6 @@
     width: calc(90% - 250px);
     height: calc(100% - @top-bar-height);
     overflow-x: hidden;
-}
-
-.float-animation {
-    animation: float .7s infinite ease-in-out;
-    transform-origin: 50% 100%;
 }
 
 .tooltip {

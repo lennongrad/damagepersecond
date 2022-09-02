@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { SkillInfo } from 'src/app/interfaces/skill-information';
+import { SkillInformation } from 'src/app/interfaces/skill-information';
 import { SelectedSkillService } from 'src/app/services/selected-skill.service';
 import { AvailableSkillsService } from 'src/app/services/available-skills.service';
 import { SoundInformation } from 'src/app/interfaces/sound-information';
@@ -15,10 +15,10 @@ import { SaveService } from 'src/app/services/save.service';
   styleUrls: ['./skill-selector.component.less']
 })
 export class SkillSelectorComponent implements OnInit {
-  pinnedSkills = Array<SkillInfo>();
-  recentlyUsedSkills = Array<SkillInfo>();
+  pinnedSkills = Array<SkillInformation>();
+  recentlyUsedSkills = Array<SkillInformation>();
 
-  hoveredTooltipSkill?: SkillInfo;
+  hoveredTooltipSkill?: SkillInformation;
   hoveredElement?: Element;
   hoveredOpacity = 0;
 
@@ -28,19 +28,20 @@ export class SkillSelectorComponent implements OnInit {
     playbackRateMax: 8,
     volume: 1,
     concurrentMaximum: 1,
-    replacePrevious: true
+    replacePrevious: true,
+    timeSinceLast: 100
   }
 
   bigIconsOn(): boolean {
     return this.settingsService.bigIconsOn;
   }
 
-  getQuickSkills(): Array<SkillInfo> {
+  getQuickSkills(): Array<SkillInformation> {
     return this.pinnedSkills.concat(this.recentlyUsedSkills);
   }
 
-  selectedSkill?: SkillInfo;
-  onClick(event: any, skill: SkillInfo): void {
+  selectedSkill?: SkillInformation;
+  onClick(event: any, skill: SkillInformation): void {
     if (event.shiftKey) {
       this.onPin(skill);
     } else {
@@ -50,7 +51,7 @@ export class SkillSelectorComponent implements OnInit {
     this.soundEffectPlayer.playSound(this.buttonClickNoise);
   }
 
-  onPin(skill: SkillInfo): void {
+  onPin(skill: SkillInformation): void {
     if (_.contains(this.pinnedSkills, skill)) {
       this.pinnedSkills = _.without(this.pinnedSkills, skill);
       this.recentlyUsedSkills.unshift(skill);
@@ -64,7 +65,7 @@ export class SkillSelectorComponent implements OnInit {
     this.saveService.saveData("pinned-skills", data);
   }
 
-  onSelect(skill: SkillInfo): void {
+  onSelect(skill: SkillInformation): void {
     if (this.selectedSkill == skill) {
       this.selectedSkillService.changeSelectedSkill(undefined);
     } else {
@@ -72,7 +73,7 @@ export class SkillSelectorComponent implements OnInit {
     }
   }
 
-  skillUsed(skill: SkillInfo): void {
+  skillUsed(skill: SkillInformation): void {
     this.recentlyUsedSkills.sort((x, y) => x.id == skill.id ? -1 : (y.id == skill.id ? 1 : 0));
   }
 
@@ -86,30 +87,30 @@ export class SkillSelectorComponent implements OnInit {
 
   updateSkills(): void {
     var allSkills = this.availableSkillsService.getSkills();
-    var savedPinnedSkills: Array<number>;
+    var savedPinnedSkills: Array<string>;
     
     var dataString = this.saveService.getData("pinned-skills");
     try{
-      savedPinnedSkills = JSON.parse(dataString) as Array<number>;
+      savedPinnedSkills = JSON.parse(dataString) as Array<string>;
     } catch { 
       // set to default value because could not load
       savedPinnedSkills = [];
     }
     
-    allSkills.forEach((skill) => {
-      if (skill.id != undefined && savedPinnedSkills.includes(skill.id)) {
-        this.pinnedSkills.push(skill);
+    Object.keys(allSkills).forEach((skillID) => {
+      if (savedPinnedSkills.includes(skillID)) {
+        this.pinnedSkills.push(allSkills[skillID]);
       } else {
-        this.recentlyUsedSkills.push(skill);
+        this.recentlyUsedSkills.push(allSkills[skillID]);
       }
     })
   }
 
-  mouseoverSkill(event: any, hoveredSkill: SkillInfo) {
+  mouseoverSkill(event: any, hoveredSkill: SkillInformation) {
     this.tooltipService.setSkillTooltip(hoveredSkill, event.toElement ? event.toElement : event.target, 1);
   }
 
-  mouseoutSkill(event: any, hoveredSkill: SkillInfo) {
+  mouseoutSkill(event: any, hoveredSkill: SkillInformation) {
     this.tooltipService.setSkillTooltip(undefined, undefined, 0);
   }
 
