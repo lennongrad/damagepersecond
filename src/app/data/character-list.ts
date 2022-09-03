@@ -17,6 +17,8 @@ export const CHARACTERS: { [id: string]: CharacterInformation } = {
             { expCost: 1100, skillUnlocked: SKILLS["bladesong"] },
         ],
         animation: {
+            portraitOffsetX: -52,
+            portraitOffsetY: -60,
             imageURL: "eirika-body.png",
             shadowImageURL: "eirika-shadow.png",
             sheetWidth: 8,
@@ -60,6 +62,8 @@ export const CHARACTERS: { [id: string]: CharacterInformation } = {
 
         ],
         animation: {
+            portraitOffsetX: -48,
+            portraitOffsetY: -62,
             imageURL: "archer-body.png",
             shadowImageURL: "archer-shadow.png",
             sheetWidth: 8,
@@ -111,6 +115,8 @@ export const CHARACTERS: { [id: string]: CharacterInformation } = {
 
         ],
         animation: {
+            portraitOffsetX: -76,
+            portraitOffsetY: -58,
             imageURL: "wizard-body.png",
             shadowImageURL: "wizard-shadow.png",
             sheetWidth: 8,
@@ -168,7 +174,7 @@ export const GENERIC_FEATURES: Array<CharacterFeature> = [
     { expCost: 250, isGeneric: true, skillUnlocked: SKILLS["flurryOfBlows"]},
     { expCost: 500, isGeneric: true, skillUnlocked: SKILLS["rage"]},
     { expCost: 350, isGeneric: true, skillUnlocked: SKILLS["replenishingStrike"]},
-    { expCost: 400, isGeneric: true, skillUnlocked: SKILLS["roundingKick"]},
+    { expCost: 400, isGeneric: true, skillUnlocked: SKILLS["turningKick"]},
     { expCost: 650, isGeneric: true, skillUnlocked: SKILLS["lightningKicks"]},
     { expCost: 1000, isGeneric: true, skillUnlocked: SKILLS["concentrate"]}
 ]

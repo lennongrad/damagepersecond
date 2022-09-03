@@ -25,7 +25,11 @@
     white-space: nowrap;
     background: linear-gradient(rgba(0, 0, 0, 25%) 100%, transparent), url("~src/assets/trackslot.png");
     background-position: 1px 1px;
-    background-size: 30px;
+    background-size: @slot-width;
+
+    &.big-icons{
+        background-size: @slot-width-big;
+    }
 
     &::-webkit-scrollbar {
         background-color: #AAA;
@@ -56,7 +60,7 @@
     border-top: 1px solid #352F2F;
     border-bottom: 1px solid #3F3B38;
 
-    &.big-icons {
+    .big-icons & {
         background-size: @slot-width-big;
     }
 

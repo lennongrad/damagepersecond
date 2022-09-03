@@ -1,5 +1,7 @@
 export interface AnimationDetails{
     imageURL: string,
+    portraitOffsetX?: number,
+    portraitOffsetY?: number,
     shadowImageURL?: string,
     horizontalDisplacement?: number,
     sheetWidth: number,

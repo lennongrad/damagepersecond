@@ -1,3 +1,4 @@
+import { getRtlScrollAxisType } from "@angular/cdk/platform";
 import { CharacterInstance } from "../classes/character-instance";
 import { EnemyInstance } from "../classes/enemy-instance";
 import { UnitInstance } from "../classes/unit-instance";
@@ -14,12 +15,12 @@ export enum SkillTargetType {
     firstCharacter = "FIRST-CHARACTER"
 }
 
-export enum SkillType{
+export enum SkillType {
     attack = "ATTACK",
     ability = "ABILITY"
 }
 
-export enum SkillSubtype{
+export enum SkillSubtype {
     // attacks
     arm = "ARM",
     leg = "LEG",
@@ -29,7 +30,7 @@ export enum SkillSubtype{
     song = "SONG"
 }
 
-export enum DamageType{
+export enum DamageType {
     normal = "NORMAL",
     direct = "DIRECT",
     critical = "CRITICAL"
@@ -43,7 +44,7 @@ export interface SkillContext {
     baseDamageAddition: number,
     damageMultiplier: number,
     fpMultiplier: number,
-    directRateAddition:  number,
+    directRateAddition: number,
     criticalRateAddition: number,
     directDamageAddition: number,
     criticalDamageAddition: number,
@@ -67,4 +68,24 @@ export interface SkillInformation {
     effect: (skillContext: SkillContext) => void,
     description: string | (() => string),
     relevantStatuses?: Array<StatusInformation>
+}
+
+export function getType(skill: SkillInformation): string{
+    var baseString = "";
+
+    if (skill != undefined) {
+        baseString = skill.type.toLowerCase();
+        baseString = baseString.charAt(0).toUpperCase() + baseString.slice(1);
+
+        if (skill.subtypes != undefined) {
+            baseString += " – ";
+            skill.subtypes.forEach((subtype: SkillSubtype) => {
+                var subtypeString = subtype.toLowerCase();
+                subtypeString = subtypeString.charAt(0).toUpperCase() + subtypeString.slice(1);
+                baseString += subtypeString + " ";
+            })
+        }
+    }
+
+    return baseString;
 }

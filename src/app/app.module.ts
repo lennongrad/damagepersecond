@@ -27,6 +27,8 @@ import { SettingsDialogComponent } from './components/dialogs/settings-dialog/se
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { TimelineHeaderComponent } from './components/timeline-builder/timeline-header/timeline-header.component';
 import { FeatureListComponent } from './components/sidebar/feature-list/feature-list.component';
+import { SkillListComponent } from './components/sidebar/skill-list/skill-list.component';
+import { CharacterViewComponent } from './components/sidebar/character-view/character-view.component';
 
 @NgModule({
   declarations: [
@@ -46,7 +48,9 @@ import { FeatureListComponent } from './components/sidebar/feature-list/feature-
     TopbarComponent,
     SettingsDialogComponent,
     TimelineHeaderComponent,
-    FeatureListComponent
+    FeatureListComponent,
+    SkillListComponent,
+    CharacterViewComponent
   ],
   imports: [
     BrowserModule,

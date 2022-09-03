@@ -28,8 +28,7 @@ export class FeatureListComponent implements OnInit {
   }
 
   getSelectedCharacter(): CharacterInstance {
-    // placeholder
-    return this.unitInstancesService.characterInstances[0];
+    return this.unitInstancesService.selectedCharacter;
   }
 
   beautify(value: number): string {

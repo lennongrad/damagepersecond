@@ -1,6 +1,6 @@
 <div class="scroll-container">
-    <div class="timeline-scroll" appHorizontalScroll>
-        <table class="timeline" [class.dragging]="initialDragIndex != undefined" [class.big-icons]="getBigIconsOn()"
+    <div class="timeline-scroll" appHorizontalScroll [class.big-icons]="getBigIconsOn()">
+        <table class="timeline" [class.dragging]="initialDragIndex != undefined" 
             [class.placing]="selectedSkill != undefined" (window:keydown.delete)="deleteSelection()"
             (window:keydown.shift.d)="duplicateSelection()" (window:keydown.a)="selectAll()"
             (window:keydown.arrowup)="moveSelection({x: 0, y: -1})"

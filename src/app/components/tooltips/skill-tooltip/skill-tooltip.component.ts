@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, SimpleChanges, ViewChild, ElementRef, HostListener } from '@angular/core';
-import { SkillInformation, SkillSubtype } from 'src/app/interfaces/skill-information';
+import { getType, SkillInformation, SkillSubtype } from 'src/app/interfaces/skill-information';
 import { StatusType } from 'src/app/interfaces/status-information';
 import { TooltipService } from 'src/app/services/tooltip.service';
 
@@ -57,23 +57,10 @@ export class SkillTooltipComponent implements OnInit {
   }
   
   getType(): string{
-    var baseString = "";
-
     if(this.hoveredSkill != undefined){
-      baseString = this.hoveredSkill.type.toLowerCase();
-      baseString = baseString.charAt(0).toUpperCase() + baseString.slice(1);
-
-      if(this.hoveredSkill.subtypes != undefined){
-        baseString += " – ";
-        this.hoveredSkill.subtypes.forEach((subtype: SkillSubtype) => {
-          var subtypeString = subtype.toLowerCase();
-          subtypeString = subtypeString.charAt(0).toUpperCase() + subtypeString.slice(1);
-          baseString += subtypeString + " ";
-        })
-      }
+      return getType(this.hoveredSkill);
     }
-
-    return baseString;
+    return "";
   }
 
   constructor(private tooltipService: TooltipService) { 

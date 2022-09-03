@@ -1,0 +1,19 @@
+<div class="view-selectors">
+    <div class="view-selector">
+        <div class="character-image" [ngStyle]="getPortraitStyle()"></div>
+        <span>Stats</span>
+    </div>
+    <div class="view-selector" (click)="setView('skill')">
+        <img src="assets/riposte.png">
+        <span>Skills</span>
+    </div>
+    <div class="view-selector" (click)="setView('feature')">
+        <img src="assets/read.png">
+        <span>Read</span>
+    </div>
+</div>
+
+<div id="views">
+    <app-skill-list *ngIf="activeView == 'skill'"></app-skill-list>
+    <app-feature-list *ngIf="activeView == 'feature'"></app-feature-list>
+</div>

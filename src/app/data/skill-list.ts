@@ -182,8 +182,8 @@ export const SKILLS: { [id: string]: SkillInformation } = {
       })
     }
   }, 
-  "roundingKick": {
-    id: "roundingKick", icon: "Light-Skills/690.png", name: "Rounding Kick", type: SkillType.attack, subtypes: [SkillSubtype.leg],
+  "turningKick": {
+    id: "turningKick", icon: "Light-Skills/690.png", name: "Turning Kick", type: SkillType.attack, subtypes: [SkillSubtype.leg],
     description: "Deal 1 base damage <i class='small'>(25% / 5%)</i> to the closest enemy." +
       " If your last two skills were <i>arm</i> skills, the base damage is tripled.",
     flavour: undefined, target: SkillTargetType.firstEnemy,

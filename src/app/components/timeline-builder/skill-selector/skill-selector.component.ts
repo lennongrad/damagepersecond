@@ -22,6 +22,8 @@ export class SkillSelectorComponent implements OnInit {
   hoveredElement?: Element;
   hoveredOpacity = 0;
 
+  selectedSkill?: SkillInformation;
+
   buttonClickNoise: SoundInformation = {
     audioFilename: "buttonnoise.mp3",
     playbackRateMin: 4,
@@ -40,7 +42,6 @@ export class SkillSelectorComponent implements OnInit {
     return this.pinnedSkills.concat(this.recentlyUsedSkills);
   }
 
-  selectedSkill?: SkillInformation;
   onClick(event: any, skill: SkillInformation): void {
     if (event.shiftKey) {
       this.onPin(skill);
@@ -60,9 +61,7 @@ export class SkillSelectorComponent implements OnInit {
       this.pinnedSkills.push(skill);
     }
 
-    var pinnedIDs = _.map(this.pinnedSkills, skill => skill.id != undefined ? skill.id : -1);
-    var data = JSON.stringify(pinnedIDs)
-    this.saveService.saveData("pinned-skills", data);
+    this.saveUsedSkills();
   }
 
   onSelect(skill: SkillInformation): void {
@@ -74,7 +73,26 @@ export class SkillSelectorComponent implements OnInit {
   }
 
   skillUsed(skill: SkillInformation): void {
-    this.recentlyUsedSkills.sort((x, y) => x.id == skill.id ? -1 : (y.id == skill.id ? 1 : 0));
+    if (this.recentlyUsedSkills.includes(skill)) {
+      this.recentlyUsedSkills.sort((x, y) => x.id == skill.id ? -1 : (y.id == skill.id ? 1 : 0));
+    } else if (!this.pinnedSkills.includes(skill)) {
+      this.recentlyUsedSkills.unshift(skill);
+      if (this.recentlyUsedSkills.length > 20) {
+        this.recentlyUsedSkills.pop();
+      }
+    }
+
+    this.saveUsedSkills();
+  }
+  
+  saveUsedSkills(): void{
+    var pinnedIDs = _.map(this.pinnedSkills, skill => skill.id != undefined ? skill.id : -1);
+    var data = JSON.stringify(pinnedIDs)
+    this.saveService.saveData("pinned-skills", data);
+
+    var recentIDs = _.map(this.recentlyUsedSkills, skill => skill.id != undefined ? skill.id : -1);
+    var data = JSON.stringify(recentIDs)
+    this.saveService.saveData("recent-skills", data);
   }
 
   keycodeSelect(keycode: number): void {
@@ -87,23 +105,24 @@ export class SkillSelectorComponent implements OnInit {
 
   updateSkills(): void {
     var allSkills = this.availableSkillsService.getSkills();
-    var savedPinnedSkills: Array<string>;
-    
-    var dataString = this.saveService.getData("pinned-skills");
-    try{
-      savedPinnedSkills = JSON.parse(dataString) as Array<string>;
-    } catch { 
-      // set to default value because could not load
-      savedPinnedSkills = [];
-    }
-    
-    Object.keys(allSkills).forEach((skillID) => {
-      if (savedPinnedSkills.includes(skillID)) {
-        this.pinnedSkills.push(allSkills[skillID]);
-      } else {
-        this.recentlyUsedSkills.push(allSkills[skillID]);
-      }
-    })
+
+    try {
+      var savedPinnedSkills = JSON.parse(this.saveService.getData("pinned-skills")) as Array<string>;
+      savedPinnedSkills.forEach((skillID) => {
+        if(allSkills[skillID] != undefined){
+          this.pinnedSkills.push(allSkills[skillID]);
+        }
+      })
+    } catch { }
+
+    try {
+      var recentSkills = JSON.parse(this.saveService.getData("recent-skills")) as Array<string>;
+      recentSkills.forEach((skillID) => {
+        if(allSkills[skillID] != undefined && !this.pinnedSkills.includes(allSkills[skillID])){
+          this.recentlyUsedSkills.push(allSkills[skillID]);
+        }
+      })
+    } catch { }
   }
 
   mouseoverSkill(event: any, hoveredSkill: SkillInformation) {

@@ -36,7 +36,7 @@ export class CharacterInstance extends UnitInstance {
 
     availableSkills = Array<SkillInformation>();
     updateAvailableSkills() {
-        this.availableSkills = this.characterInformation.defaultSkills;
+        this.availableSkills = [...this.characterInformation.defaultSkills];
 
         this.getFeatureList().forEach((feature: CharacterFeature) => {
             if (feature.skillUnlocked != undefined && this.permanentData.learntFeatures.has(feature.skillUnlocked.id)) {

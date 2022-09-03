@@ -21,7 +21,13 @@ export class UnitInstancesService {
   enemyInstances!: Array<EnemyInstance>;
   selectedEncounter!: EncounterInformation;
 
-  forEachUnit(callback: (unit: UnitInstance) => void): void{
+  selectedCharacter = this.characterInstances[0];
+
+  selectCharacter(character: CharacterInstance): void {
+    this.selectedCharacter = character;
+  }
+
+  forEachUnit(callback: (unit: UnitInstance) => void): void {
     this.characterInstances.forEach(character => callback(character));
     this.enemyInstances.forEach(enemy => callback(enemy));
   }
@@ -42,38 +48,38 @@ export class UnitInstancesService {
   loadData(character: CharacterInstance): CharacterSave | undefined {
     var dataString = this.saveService.getData("character-" + character.characterInformation.name);
 
-    if(dataString != null){
-      try{
+    if (dataString != null) {
+      try {
         var baseData = JSON.parse(dataString);
-        var modifiedData : CharacterSave = {
+        var modifiedData: CharacterSave = {
           experience: baseData.experience,
           learntFeatures: new Set<string>(baseData.learntFeature)
         };
         return modifiedData;
-      } catch{
+      } catch {
         return undefined;
       }
-    } else{
+    } else {
       return undefined;
     }
   }
 
-  rewardXP(amount: number): void{
+  rewardXP(amount: number): void {
     this.characterInstances.forEach(character => {
       character.addXP(amount);
     })
   }
 
-  loadSavedEncounter(): void{
+  loadSavedEncounter(): void {
     var savedEncounter: string | undefined = this.saveService.getData("encounter-name");
-    if(savedEncounter == null){
+    if (savedEncounter == null) {
       savedEncounter = undefined;
     }
     this.loadEncounter(savedEncounter);
   }
 
-  loadEncounter(name?: string): void{
-    if(name != undefined && ENCOUNTERS.hasOwnProperty(name)){
+  loadEncounter(name?: string): void {
+    if (name != undefined && ENCOUNTERS.hasOwnProperty(name)) {
       this.selectedEncounter = ENCOUNTERS[name]
     } else {
       this.selectedEncounter = ENCOUNTERS["training"];
@@ -86,7 +92,7 @@ export class UnitInstancesService {
     this.saveService.saveData("encounter-name", this.selectedEncounter.id);
   }
 
-  constructor(private saveService: SaveService) { 
+  constructor(private saveService: SaveService) {
     this.loadSavedEncounter();
   }
 }

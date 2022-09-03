@@ -50,7 +50,7 @@ export class BattlefieldComponent implements OnInit {
   }
 
   characterClick(instance: CharacterInstance): void {
-    console.log(instance.availableSkills);
+    this.unitInstancesService.selectCharacter(instance);
   }
 
   enemyClick(): void {

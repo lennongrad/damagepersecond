@@ -1,0 +1,15 @@
+<table>
+    <tr class="header">
+        <th (click)="selectSort('name')" colspan=2>Name</th>
+        <th (click)="selectSort('type')">Type</th>
+        <th (click)="selectSort('subtype')">Subtype</th>
+        <th (click)="selectSort('fp')">FP</th>
+    </tr>
+    <tr *ngFor="let skill of getSkills()" (mouseover)="mouseoverSkill($event, skill)" (mouseout)="mouseoutSkill()"
+    (click)="clickSkill(skill)" [class.selected]="selectedSkill == skill">
+        <td class="icon"><img src="assets/{{skill.icon}}"/></td>
+        <td class="name">{{skill.name}}</td>
+        <td class="type" colspan=2>{{getType(skill)}}</td>
+        <td class="fp">{{skill.fpCost}}<span *ngIf="skill.fpCost != undefined" class="fp-title">FP</span></td>
+    </tr>
+</table>
