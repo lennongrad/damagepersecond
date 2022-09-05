@@ -29,6 +29,8 @@ import { TimelineHeaderComponent } from './components/timeline-builder/timeline-
 import { FeatureListComponent } from './components/sidebar/feature-list/feature-list.component';
 import { SkillListComponent } from './components/sidebar/skill-list/skill-list.component';
 import { CharacterViewComponent } from './components/sidebar/character-view/character-view.component';
+import { StatsListComponent } from './components/sidebar/stats-list/stats-list.component';
+import { TextTooltipComponent } from './components/tooltips/text-tooltip/text-tooltip.component';
 
 @NgModule({
   declarations: [
@@ -50,7 +52,9 @@ import { CharacterViewComponent } from './components/sidebar/character-view/char
     TimelineHeaderComponent,
     FeatureListComponent,
     SkillListComponent,
-    CharacterViewComponent
+    CharacterViewComponent,
+    StatsListComponent,
+    TextTooltipComponent
   ],
   imports: [
     BrowserModule,

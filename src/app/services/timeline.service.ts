@@ -1,10 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Subject, interval, Subscription } from 'rxjs';
-import { Skill, SkillContext, SkillTargetType } from '../interfaces/skill-information';
+import { Skill } from '../interfaces/skill-information';
 import { SaveService } from './save.service';
 import { AvailableSkillsService } from './available-skills.service';
-import { CharacterInstance } from '../classes/character-instance';
-import { UnitInstance } from '../classes/unit-instance';
 import { UnitInstancesService } from './unit-instances.service';
 import * as _ from 'underscore';
 
@@ -276,5 +274,6 @@ export class TimelineService {
   constructor(private saveService: SaveService, private availableSkillService: AvailableSkillsService,
     private unitInstancesService: UnitInstancesService) {
     this.subscription = this.timeSource.subscribe(time => this.eachMillisecond(time));
+    this.unitInstancesService.unitChangeSubject.subscribe(() => this.resetTime(true));
   }
 }

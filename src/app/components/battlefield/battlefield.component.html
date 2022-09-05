@@ -2,7 +2,7 @@
     <div class="hp-container character">
         <div *ngFor="let characterInstance of getCharacterInstances(); let i = index" class="name-bar"
             (mouseover)="mouseoverUnit($event, characterInstance)" (mouseout)="mouseoutUnit($event, characterInstance)"
-            (click)="characterClick(characterInstance)"
+            (click)="characterClick(characterInstance)" [class.selected-character]="isSelected(characterInstance)"
             [ngStyle]="{'top.px': i * 48 + 18}">
             <div class="title-bar">
                 <div class="title-name">

@@ -19,6 +19,10 @@ export class BattlefieldComponent implements OnInit {
   horizontalSpriteBase = -70;
   verticalSpriteDistance = 20;
 
+  isSelected(character: CharacterInstance): boolean{
+    return this.unitInstancesService.selectedCharacter == character;
+  }
+
   getCharacterInstances(): Array<CharacterInstance> {
     return this.unitInstancesService.characterInstances;
   }

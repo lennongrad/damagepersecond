@@ -1,5 +1,6 @@
 import { UnitInstance } from "../classes/unit-instance"
 import { Skill, SkillContext } from "./skill-information"
+import { BaseStatTypes } from "./unit-information"
 
 export enum StackType{
     keepBoth = "KEEP-BOTH",
@@ -21,6 +22,8 @@ export interface Status{
     origin?: UnitInstance
 }
 
+//type predicateFunction<t> = {priority: number, function: t} | t;
+
 export interface StatusInformation{
     id: string,
     name: string,
@@ -32,6 +35,7 @@ export interface StatusInformation{
     onDamageDeal?: (status: Status, skillContext: SkillContext, host: UnitInstance, target: UnitInstance) => void,
     onDamageDone?: (status: Status, skillContext: SkillContext, host: UnitInstance, target: UnitInstance) => void,
     onDamageReceive?: (status: Status, skillContext: SkillContext, host: UnitInstance, target: UnitInstance) => void,
-    onTimeIncrement?: (status: Status, host: UnitInstance) => void
-    onNoSkill?: (status: Status, host: UnitInstance) => void
+    onTimeIncrement?: (status: Status, host: UnitInstance) => void,
+    onNoSkill?: (status: Status, host: UnitInstance) => void,
+    onCheckStat?: (status: Status, host: UnitInstance, stat: BaseStatTypes, current: number) => number
 }

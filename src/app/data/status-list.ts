@@ -2,16 +2,21 @@ import { CharacterInstance } from "../classes/character-instance";
 import { UnitInstance } from "../classes/unit-instance";
 import { SkillContext } from "../interfaces/skill-information";
 import { StackType, Status, StatusInformation, StatusType } from "../interfaces/status-information";
+import { BaseStatTypes } from "../interfaces/unit-information";
 
 export const STATUSES: { [id: string]: StatusInformation; } = {
     "strength": {
         id: "strength", name: "Strength", icon: 'skill-icons/skill_203.png',
         stackType: StackType.keepBoth, type: StatusType.buff,
         description: (status: Status | undefined) => {
-            return "Increases damage dealt per attack by <b class='positive-description'>+" + (status != undefined ? status.degree : "X") + "</b>."
+            return "Modifies your effective <b>STR</b> stat by <b class='positive-description'>+" + 
+            (status != undefined ? status.degree : "X") + "</b>, increasing the amount of damage you deal with <i>physical</i> attack skill."
         },
-        onDamageDeal: (status: Status, skillContext: SkillContext, origin: UnitInstance, target: UnitInstance) => {
-            skillContext.baseDamageAddition += status.degree ? status.degree : 0;
+        onCheckStat: (status: Status, host: UnitInstance, stat: BaseStatTypes, current: number) => {
+            if(stat == BaseStatTypes.strength && status.degree != undefined){
+                return current + status.degree;
+            }
+            return current;
         }
     },
     "fierce": {

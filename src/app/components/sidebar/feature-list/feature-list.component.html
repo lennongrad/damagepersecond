@@ -3,7 +3,7 @@
     [class.affordable]="isFeatureAffordable(feature)" [class.learnt]="isFeatureLearnt(feature)"
     (click)="clickFeature(feature)" [class.generic]="feature.isGeneric">
         <div class="exp-cost">
-            <span class="unlearnt">{{beautify(feature.expCost)}} XP.</span>
+            <span class="unlearnt">{{beautify(getFeatureCost(feature))}} XP.</span>
             <span class="learnt">LEARNT</span>
         </div>
         <div class="benefit skill" *ngIf="feature.skillUnlocked != undefined" 

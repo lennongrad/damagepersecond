@@ -1,0 +1,15 @@
+<h3>BASE STATS</h3>
+<div class="stats-holder">
+    <div class="stat" *ngFor="let stat of baseStatTypes" [class.affordable]="isStatAffordable(stat)" (click)="clickStat(stat)"
+    (mouseover)="mouseoverStat($event, stat)" (mouseout)="mouseoutStat()">
+        <div class="stat-name">
+            {{statNames[stat]}}
+        </div>
+        <div class="stat-value">{{getStat(stat)}}<span class="stat-modifier" *ngIf="showModifier(stat)">({{getModifier(stat)}})</span></div>
+        <div class="exp-cost">
+            <span class="unlearnt">({{beautify(getStatCost(stat))}} XP.)</span>
+        </div>
+    </div>
+</div>
+
+<h3>TRAITS</h3>

@@ -15,8 +15,7 @@ import * as _ from 'underscore';
 export class FeatureListComponent implements OnInit {
 
   getFeatures(): Array<CharacterFeature> {
-    var baseList = this.getSelectedCharacter().getFeatureList();
-    return _.sortBy(baseList, 'expCost');
+    return this.getSelectedCharacter().getFeatureList();
   }
 
   isFeatureAffordable(feature: CharacterFeature): boolean {
@@ -25,6 +24,10 @@ export class FeatureListComponent implements OnInit {
 
   isFeatureLearnt(feature: CharacterFeature): boolean {
     return this.getSelectedCharacter().hasLearntFeature(feature);
+  }
+
+  getFeatureCost(feature: CharacterFeature): number{
+    return this.getSelectedCharacter().getFeatureCost(feature);
   }
 
   getSelectedCharacter(): CharacterInstance {

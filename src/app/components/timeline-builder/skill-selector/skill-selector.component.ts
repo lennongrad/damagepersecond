@@ -4,10 +4,10 @@ import { SelectedSkillService } from 'src/app/services/selected-skill.service';
 import { AvailableSkillsService } from 'src/app/services/available-skills.service';
 import { SoundInformation } from 'src/app/interfaces/sound-information';
 import { SoundEffectPlayerService } from 'src/app/services/sound-effect-player.service';
-import * as _ from 'underscore';
 import { TooltipService } from 'src/app/services/tooltip.service';
 import { PersistentService } from 'src/app/services/persistent.service';
 import { SaveService } from 'src/app/services/save.service';
+import * as _ from 'underscore';
 
 @Component({
   selector: 'app-skill-selector',

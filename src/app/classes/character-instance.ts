@@ -1,13 +1,16 @@
 import { UnitInstance } from "./unit-instance";
-import { CharacterFeature, CharacterInformation, CharacterSave } from "../interfaces/unit-information";
+import { BaseStatTypes, CharacterFeature, CharacterInformation, CharacterSave, TraitInformation } from "../interfaces/unit-information";
 import { UnitInstancesService } from "../services/unit-instances.service";
-import { Skill, SkillContext, SkillInformation, SkillTargetType } from "../interfaces/skill-information";
+import { Skill, SkillContext, SkillInformation, SkillSubtype, SkillTargetType } from "../interfaces/skill-information";
 import * as _ from 'underscore';
 
 export class CharacterInstance extends UnitInstance {
     permanentData!: CharacterSave;
 
-    genericFeatures: Array<CharacterFeature> = [];
+    featureList: Array<CharacterFeature> = [];
+
+    availableSkills = Array<SkillInformation>();
+    activeTraits = Array<TraitInformation>();
 
     currentDamageDealt = 0;
     finalDamages = Array<number>();
@@ -15,11 +18,36 @@ export class CharacterInstance extends UnitInstance {
     recentlyUsedSkills = Array<{ skill: Skill, skillContext: SkillContext }>();
 
     getMaxHP(): number {
-        return this.characterInformation.baseMaxHP;
+        return this.getStat(BaseStatTypes.constitution);
     }
     getMaxFP(): number {
-        return this.characterInformation.baseMaxFP;
+        return this.getStat(BaseStatTypes.poise);
     }
+    getCarryingCapacity(): number {
+        return this.getStat(BaseStatTypes.endurance);
+    }
+
+    getStat(stat: BaseStatTypes, includeStatuses: boolean = true): number {
+        var base = this.characterInformation.baseStats[stat];
+        base += this.permanentData.statBonuses[stat];
+
+        if (includeStatuses) {
+            this.forEachStatus((status) => {
+                if (status.statusInformation.onCheckStat != undefined) {
+
+                    base = status.statusInformation.onCheckStat(status, this, stat, base);
+                }
+            })
+        }
+
+        return base;
+    }
+
+    getStatModifier(stat: BaseStatTypes, includeStatuses: boolean = true): number{
+        var baseStat = this.getStat(stat, includeStatuses);
+        return baseStat / 4;
+    }
+
     getXP(): number {
         return this.permanentData.experience;
     }
@@ -34,23 +62,48 @@ export class CharacterInstance extends UnitInstance {
         return totalDamage / length;
     }
 
-    availableSkills = Array<SkillInformation>();
-    updateAvailableSkills() {
+    updateFeatureBonuses() {
         this.availableSkills = [...this.characterInformation.defaultSkills];
+        this.activeTraits = [];
 
         this.getFeatureList().forEach((feature: CharacterFeature) => {
             if (feature.skillUnlocked != undefined && this.permanentData.learntFeatures.has(feature.skillUnlocked.id)) {
                 this.availableSkills.push(feature.skillUnlocked);
             }
+            if (feature.traitUnlocked != undefined && this.permanentData.learntFeatures.has(feature.traitUnlocked.id)) {
+                this.activeTraits.push(feature.traitUnlocked);
+            }
         })
     }
 
-    getFeatureList(): Array<CharacterFeature>{
-        return this.characterInformation.characterFeatures.concat(this.genericFeatures);
+    getStatCost(stat: BaseStatTypes): number {
+        return 40 * Math.pow(1.5, (this.permanentData.statBonuses[stat] + 1));
+    }
+
+    canAffordStat(stat: BaseStatTypes): boolean {
+        return this.getXP() >= this.getStatCost(stat);
+    }
+
+    buyStat(stat: BaseStatTypes): void {
+        if (this.canAffordStat(stat)) {
+            this.permanentData.experience -= this.getStatCost(stat);
+            this.permanentData.statBonuses[stat] += 1;
+            this.unitInstancesService.saveData(this, true);
+        }
+    }
+
+    getFeatureList(): Array<CharacterFeature> {
+        return this.featureList;//this.characterInformation.characterFeatures.concat(this.genericFeatures);
+    }
+
+    getFeatureCost(feature: CharacterFeature): number {
+        var index = _.indexOf(this.getFeatureList(), feature);
+        var baseCost = 40 * Math.pow(1.5, (index + 1));
+        return Math.floor(baseCost / 10) * 10// + feature.expCost;
     }
 
     canAffordFeature(feature: CharacterFeature): boolean {
-        return this.permanentData.experience >= feature.expCost;
+        return this.permanentData.experience >= this.getFeatureCost(feature);
     }
 
     hasLearntFeature(feature: CharacterFeature): boolean {
@@ -87,17 +140,13 @@ export class CharacterInstance extends UnitInstance {
             && this.canAffordFeature(feature)) {
             this.permanentData.learntFeatures.add(this.getFeatureID(feature));
             this.addXP(-feature.expCost);
-            this.updateAvailableSkills();
-            this.saveData();
+            this.updateFeatureBonuses();
+            this.unitInstancesService.saveData(this, true);
         }
     }
 
     addXP(amount: number): void {
         this.permanentData.experience += amount;
-        this.saveData();
-    }
-
-    saveData(): void {
         this.unitInstancesService.saveData(this);
     }
 
@@ -106,9 +155,13 @@ export class CharacterInstance extends UnitInstance {
         if (loadedData != undefined) {
             this.permanentData = loadedData;
         } else {
-            this.permanentData = { experience: 0, learntFeatures: new Set<string>() };
+            this.permanentData = {
+                experience: 0, learntFeatures: new Set<string>(), statBonuses: {
+                    CON: 0, POI: 0, END: 0, STR: 0, DEX: 0, INT: 0
+                }
+            };
         }
-        this.updateAvailableSkills();
+        this.updateFeatureBonuses();
     }
 
     registerDamage(damage: number): void {
@@ -116,7 +169,7 @@ export class CharacterInstance extends UnitInstance {
     }
 
     useSkill(skill: Skill) {
-        if(!this.availableSkills.includes(skill.skillInfo)){
+        if (!this.availableSkills.includes(skill.skillInfo)) {
             return;
         }
 
@@ -177,7 +230,16 @@ export class CharacterInstance extends UnitInstance {
 
     override dealDamage(skillContext: SkillContext, target: UnitInstance, baseDamage: number,
         directRate: number = 0, criticalRate: number = 0): number {
-        var damageDealt = super.dealDamage(skillContext, target, baseDamage, directRate, criticalRate);
+        var modifiedBaseDamage = baseDamage;
+        if(skillContext.skill.skillInfo.subtypes?.includes(SkillSubtype.physical)){
+            modifiedBaseDamage += this.getStatModifier(BaseStatTypes.strength);
+        }else if(skillContext.skill.skillInfo.subtypes?.includes(SkillSubtype.finesse)){
+            modifiedBaseDamage += this.getStatModifier(BaseStatTypes.dexterity);
+        }else if(skillContext.skill.skillInfo.subtypes?.includes(SkillSubtype.magical)){
+            modifiedBaseDamage += this.getStatModifier(BaseStatTypes.intelligence);
+        }
+
+        var damageDealt = super.dealDamage(skillContext, target, modifiedBaseDamage, directRate, criticalRate);
 
         this.registerDamage(damageDealt);
 
@@ -201,7 +263,23 @@ export class CharacterInstance extends UnitInstance {
         unitInstancesService: UnitInstancesService,
         genericFeatures: Array<CharacterFeature>) {
         super(name, characterInformation, unitInstancesService);
-        this.genericFeatures = genericFeatures;
+
+        var smallerLength = Math.min(genericFeatures.length, characterInformation.characterFeatures.length);
+        for(var i = 0; i < smallerLength; i++){
+            this.featureList.push(characterInformation.characterFeatures[i]);
+            this.featureList.push(genericFeatures[i]);
+        }
+        characterInformation.characterFeatures.forEach((feature, index) => {
+            if(index >= smallerLength){
+                this.featureList.push(feature);
+            }
+        })
+        genericFeatures.forEach((feature, index) => {
+            if(index >= smallerLength){
+                this.featureList.push(feature);
+            }
+        })
+
         this.loadData();
     }
 }

@@ -7,6 +7,8 @@ import { ENCOUNTERS } from '../data/enemy-list';
 import { CharacterSave } from '../interfaces/unit-information';
 import { SaveService } from './save.service';
 import { EncounterInformation } from '../interfaces/unit-information';
+import * as _ from 'underscore';
+import { Subject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -21,10 +23,13 @@ export class UnitInstancesService {
   enemyInstances!: Array<EnemyInstance>;
   selectedEncounter!: EncounterInformation;
 
-  selectedCharacter = this.characterInstances[0];
+  selectedCharacter!: CharacterInstance;
+
+  unitChangeSubject = new Subject<void>();
 
   selectCharacter(character: CharacterInstance): void {
     this.selectedCharacter = character;
+    this.saveService.saveData("selected-character", this.selectedCharacter.name);
   }
 
   forEachUnit(callback: (unit: UnitInstance) => void): void {
@@ -36,13 +41,18 @@ export class UnitInstancesService {
     this.forEachUnit((unit) => unit.reset());
   }
 
-  saveData(character: CharacterInstance): void {
+  saveData(character: CharacterInstance, resetTimeline: boolean = false): void {
     var dataStore: any = {};
     dataStore["experience"] = character.permanentData.experience;
     dataStore["learntFeature"] = Array.from(character.permanentData.learntFeatures);
+    dataStore["statBonuses"] = character.permanentData.statBonuses;
 
     var data = JSON.stringify(dataStore)
     this.saveService.saveData("character-" + character.characterInformation.name, data);
+
+    if(resetTimeline){
+      this.unitChangeSubject.next();
+    }
   }
 
   loadData(character: CharacterInstance): CharacterSave | undefined {
@@ -53,7 +63,8 @@ export class UnitInstancesService {
         var baseData = JSON.parse(dataString);
         var modifiedData: CharacterSave = {
           experience: baseData.experience,
-          learntFeatures: new Set<string>(baseData.learntFeature)
+          learntFeatures: new Set<string>(baseData.learntFeature),
+          statBonuses: baseData.statBonuses
         };
         return modifiedData;
       } catch {
@@ -70,19 +81,11 @@ export class UnitInstancesService {
     })
   }
 
-  loadSavedEncounter(): void {
-    var savedEncounter: string | undefined = this.saveService.getData("encounter-name");
-    if (savedEncounter == null) {
-      savedEncounter = undefined;
-    }
-    this.loadEncounter(savedEncounter);
-  }
-
   loadEncounter(name?: string): void {
     if (name != undefined && ENCOUNTERS.hasOwnProperty(name)) {
       this.selectedEncounter = ENCOUNTERS[name]
     } else {
-      this.selectedEncounter = ENCOUNTERS["training"];
+      this.selectedEncounter = ENCOUNTERS["soldiers"];
     }
     this.enemyInstances = [
       new EnemyInstance("A", this.selectedEncounter.enemies[0], this),
@@ -90,9 +93,25 @@ export class UnitInstancesService {
       new EnemyInstance("C", this.selectedEncounter.enemies[2], this)
     ]
     this.saveService.saveData("encounter-name", this.selectedEncounter.id);
+    this.unitChangeSubject.next();
   }
 
   constructor(private saveService: SaveService) {
-    this.loadSavedEncounter();
+    try {
+      this.loadEncounter(this.saveService.getData("encounter-name") as string);
+    } catch {
+      this.loadEncounter(undefined);
+    }
+
+    try{
+      var selectedCharacterName = this.saveService.getData("selected-character") as string;
+      var attemptSelected = _.find(this.characterInstances, (character) => character.name == selectedCharacterName);
+      if(attemptSelected == undefined){
+        throw new Error();
+      }
+      this.selectedCharacter = attemptSelected;
+    } catch{
+      this.selectedCharacter = this.characterInstances[0];
+    }
   }
 }

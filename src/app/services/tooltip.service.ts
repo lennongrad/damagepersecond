@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { UnitInstance } from '../classes/unit-instance';
 import { SkillTooltipComponent } from '../components/tooltips/skill-tooltip/skill-tooltip.component';
+import { TextTooltipComponent } from '../components/tooltips/text-tooltip/text-tooltip.component';
 import { UnitTooltipComponent } from '../components/tooltips/unit-tooltip/unit-tooltip.component';
 import { SkillInformation } from '../interfaces/skill-information';
 import { UnitInformation } from '../interfaces/unit-information';
@@ -11,6 +12,7 @@ import { UnitInformation } from '../interfaces/unit-information';
 export class TooltipService {
   skillTooltip?: SkillTooltipComponent;
   unitTooltip?: UnitTooltipComponent;
+  textTooltip?: TextTooltipComponent;
 
   setSkillTooltip(skill: SkillInformation | undefined, element: Element | undefined, opacity: number){
     if(this.skillTooltip != undefined){
@@ -27,6 +29,15 @@ export class TooltipService {
       this.unitTooltip.element = element;
       this.unitTooltip.opacity = opacity;
       this.unitTooltip.update();
+    }
+  }
+
+  setTextTooltip(text: string, element: Element | undefined, opacity: number){
+    if(this.textTooltip != undefined){
+      this.textTooltip.text = text;
+      this.textTooltip.element = element;
+      this.textTooltip.opacity = opacity;
+      this.textTooltip.update();
     }
   }
 

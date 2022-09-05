@@ -21,10 +21,17 @@ export enum SkillType {
 }
 
 export enum SkillSubtype {
+    physical = "PHYSICAL",
+    magical = "MAGICAL",
+    finesse = "FINESSE",
+
     // attacks
+    // physical attacks
     arm = "ARM",
     leg = "LEG",
     sword = "SWORD",
+    // finesse attacks
+    bow = "BOW",
 
     // abilities
     song = "SONG"

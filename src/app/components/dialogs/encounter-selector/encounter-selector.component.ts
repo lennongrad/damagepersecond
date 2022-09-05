@@ -19,7 +19,6 @@ export class EncounterSelectorComponent implements OnInit {
   constructor(
     private dialogRef: MatDialogRef<EncounterSelectorComponent>,
     private unitInstancesService: UnitInstancesService,
-    private timelineService: TimelineService,
     @Inject(MAT_DIALOG_DATA) public data: { description?: string }) {
   }
 
@@ -34,7 +33,6 @@ export class EncounterSelectorComponent implements OnInit {
 
   clickEncounter(encounterID: string){
     this.unitInstancesService.loadEncounter(encounterID);
-    this.timelineService.resetTime();
     this.close();
   }
 

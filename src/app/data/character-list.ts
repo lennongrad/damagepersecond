@@ -5,7 +5,14 @@ import { TRAITS } from "./trait-list";
 
 export const CHARACTERS: { [id: string]: CharacterInformation } = {
     "eirika": {
-        id: "eirika", name: "Eirika", baseMaxHP: 10, baseMaxFP: 10,
+        id: "eirika", name: "Eirika", baseStats: {
+            CON: 10,
+            POI: 10,
+            END: 1,
+            STR: 2,
+            DEX: 0,
+            INT: 1
+        },
         defaultSkills: [SKILLS["strike"]],
         characterFeatures: [
             { expCost: 40, skillUnlocked: SKILLS["slash"] },
@@ -56,7 +63,14 @@ export const CHARACTERS: { [id: string]: CharacterInformation } = {
             }]
         }
     }, "archer": {
-        id: "archer", name: "Archer", baseMaxHP: 8, baseMaxFP: 8,
+        id: "archer", name: "Archer", baseStats: {
+            CON: 8,
+            POI: 8,
+            END: 1,
+            STR: 1,
+            DEX: 3,
+            INT: 0
+        },
         defaultSkills: [SKILLS["strike"]],
         characterFeatures: [
 
@@ -109,7 +123,14 @@ export const CHARACTERS: { [id: string]: CharacterInformation } = {
             }]
         }
     }, "wizard": {
-        id: "wizard", name: "Wizard", baseMaxHP: 5, baseMaxFP: 13,
+        id: "wizard", name: "Wizard", baseStats: {
+            CON: 5,
+            POI: 13,
+            END: 1,
+            STR: 0,
+            DEX: 1,
+            INT: 3
+        },
         defaultSkills: [SKILLS["strike"]],
         characterFeatures: [
 

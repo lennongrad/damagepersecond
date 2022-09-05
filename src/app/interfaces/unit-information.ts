@@ -10,12 +10,29 @@ export interface EncounterInformation{
 export interface UnitInformation{
     id: string,
     name: string,
-    baseMaxHP: number,
     animation: AnimationDetails
 }
 
+export enum BaseStatTypes {
+    constitution = "CON",
+    poise = "POI",
+    endurance = "END",
+    strength = "STR",
+    dexterity = "DEX",
+    intelligence = "INT"
+}
+
+export interface StatArray {
+    CON: number,
+    POI: number,
+    END: number,
+    STR: number,
+    DEX: number,
+    INT: number
+}
+
 export interface CharacterInformation extends UnitInformation{
-    baseMaxFP: number,
+    baseStats: StatArray,
     characterFeatures: Array<CharacterFeature>,
     defaultSkills: Array<SkillInformation>
 }
@@ -34,9 +51,12 @@ export interface TraitInformation{
     description: string
 }
 
-export interface EnemyInformation extends UnitInformation{}
+export interface EnemyInformation extends UnitInformation{
+    baseMaxHP: number
+}
 
 export interface CharacterSave {
     experience: number,
-    learntFeatures: Set<string>
+    learntFeatures: Set<string>,
+    statBonuses: StatArray
 }

@@ -1,0 +1,33 @@
+@import (reference) "variables";
+:host{
+    transition: opacity .05s;
+    width: 100vw;
+    position: absolute;
+    z-index: 3;
+}
+
+.tooltip{
+    position: fixed;
+
+    width: 250px;
+    background-color: #111;
+
+    font-size: @small-font-size;
+    color: #eee;
+    white-space: pre-wrap;
+
+    background: linear-gradient(135deg, rgba(40, 40, 40, .5), rgba(0,0,0,.5) 24%), url('~src/assets/checkerboard.png') 0px/50px, #000;
+    background-size: 50px 50px;
+    animation: MOVE-SQUARE-BG 5s linear infinite;
+    
+    padding: 4px 8px;
+    margin: 4px;
+    border: 6px solid transparent;
+    border-image: url("~src/assets/frame.png") 26 round;
+    border-radius: 2px;
+    box-shadow: 0px 0px 1px 2px rgb(0 0 0 / 50%), 0px 2px 4px rgb(0 0 0 / 25%), 0px 0px 6px 1px rgb(0 0 0 / 50%) inset;
+
+    pointer-events: none;
+
+    transition: .1s left, .1s top;
+}

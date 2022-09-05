@@ -4,7 +4,7 @@ import { UnitInformation } from "../interfaces/unit-information";
 import { AnimationDetails } from "../interfaces/animation-information";
 import * as _ from 'underscore';
 import { UnitInstancesService } from "../services/unit-instances.service";
-import { DamageType, SkillContext } from "../interfaces/skill-information";
+import { DamageType, Skill, SkillContext } from "../interfaces/skill-information";
 
 export abstract class UnitInstance {
     animationChange = new Subject<string>();
@@ -176,5 +176,5 @@ export abstract class UnitInstance {
         return;
     }
 
-    constructor(name: string, public information: UnitInformation, public unitInstancesService: UnitInstancesService) { }
+    constructor(public name: string, public information: UnitInformation, public unitInstancesService: UnitInstancesService) { }
 }

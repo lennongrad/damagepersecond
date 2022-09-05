@@ -1,6 +1,7 @@
 import { animation } from '@angular/animations';
 import { Component, OnInit } from '@angular/core';
 import { CharacterInstance } from 'src/app/classes/character-instance';
+import { SaveService } from 'src/app/services/save.service';
 import { UnitInstancesService } from 'src/app/services/unit-instances.service';
 
 @Component({
@@ -9,7 +10,7 @@ import { UnitInstancesService } from 'src/app/services/unit-instances.service';
   styleUrls: ['./character-view.component.less']
 })
 export class CharacterViewComponent implements OnInit {
-  activeView = "skill";
+  activeView!: string;
   
   getSelectedCharacter(): CharacterInstance{
     return this.unitInstancesService.selectedCharacter;
@@ -34,11 +35,21 @@ export class CharacterViewComponent implements OnInit {
 
   setView(newView: string): void{
     this.activeView = newView;
+    this.saveService.saveData("last-character-view", this.activeView);
   }
 
-  constructor(private unitInstancesService: UnitInstancesService) { }
+  constructor(private unitInstancesService: UnitInstancesService,
+    private saveService: SaveService) { }
 
   ngOnInit(): void {
+    try{
+      this.activeView = this.saveService.getData("last-character-view") as string;
+      if(this.activeView == ""){
+        throw new Error();
+      }
+    } catch{
+      this.activeView = "skill";
+    }
   }
 
 }
