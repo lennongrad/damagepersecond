@@ -8,6 +8,9 @@
     <div class="dpr" *ngIf="getDPR() > 0">
         <b>DPS</b>: {{getDPR()}}
     </div>
+    <div class="xps" *ngIf="getXPS() != -1">
+        <b>XP/S</b>: {{getXPS()}}
+    </div>
     <div class="status-info" *ngIf="hoveredUnit != undefined">
         <div class="status-type" *ngFor="let type of [StatusType.buff, StatusType.debuff, StatusType.neutral]"
             [class.buff]="type == StatusType.buff" [class.debuff]="type == StatusType.debuff"

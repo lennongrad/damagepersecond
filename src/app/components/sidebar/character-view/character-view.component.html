@@ -7,6 +7,10 @@
         <img src="assets/riposte.png">
         <span>Skills</span>
     </div>
+    <div class="view-selector" (click)="setView('equipment')">
+        <img src="assets/plastron.png">
+        <span>Equip</span>
+    </div>
     <div class="view-selector" (click)="setView('feature')">
         <img src="assets/read.png">
         <span>Learn</span>
@@ -16,5 +20,6 @@
 <div id="views">
     <app-stats-list *ngIf="activeView == 'stats'"></app-stats-list>
     <app-skill-list *ngIf="activeView == 'skill'"></app-skill-list>
+    <app-equipment *ngIf="activeView == 'equipment'"></app-equipment>
     <app-feature-list *ngIf="activeView == 'feature'"></app-feature-list>
 </div>

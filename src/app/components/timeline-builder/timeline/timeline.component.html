@@ -1,20 +1,20 @@
 <div class="scroll-container">
     <div class="timeline-scroll" appHorizontalScroll [class.big-icons]="getBigIconsOn()">
-        <table class="timeline" [class.dragging]="initialDragIndex != undefined" 
+        <div class="select-beam" [ngStyle]="{'left.px': getSlotWidth() * getCurrentTime(), 'opacity': getCurrentTime() == -1 ? 0 : 1}"></div>
+        <table class="timeline" [class.dragging]="initialDragIndex != undefined"
             [class.placing]="selectedSkill != undefined" (window:keydown.delete)="deleteSelection()"
             (window:keydown.shift.d)="duplicateSelection()" (window:keydown.a)="selectAll()"
             (window:keydown.arrowup)="moveSelection({x: 0, y: -1})"
             (window:keydown.arrowdown)="moveSelection({x: 0, y: 1})"
             (window:keydown.arrowleft)="moveSelection({x: -1, y: 0})"
             (window:keydown.arrowright)="moveSelection({x: 1, y: 0})">
-            <tr *ngFor="let row of this.getSkillGrid(); index as rowIndex" [class.invalid-placement]="slotInvalid(rowIndex)" >
+            <tr *ngFor="let row of this.getSkillGrid(); index as rowIndex"
+                [class.invalid-placement]="slotInvalid(rowIndex)">
                 <td class="slot" type="button" *ngFor="let skill of row; index as slotIndex"
                     (click)="clickSlot(slotIndex, rowIndex, $event)" draggable="true"
-                    (dragstart)="onDragStart(slotIndex, rowIndex, $event)" [ngStyle]="getSlotStyle(slotIndex, rowIndex, skill)"
+                    (dragstart)="onDragStart(slotIndex, rowIndex, $event)"
                     (dragover)="onDragOver(slotIndex, rowIndex, $event)" (dragend)="onDragEnd($event)"
-                    [class.invalid-position]="skillInvalid(rowIndex, skill)"
-                    [class.time]="getCurrentTime() == slotIndex" [class.selected]="selectedSlots[rowIndex][slotIndex]">
-                    <div class="select-beam"></div>
+                    [class.invalid-position]="skillInvalid(rowIndex, skill)"  [class.selected]="selectedSlots[rowIndex][slotIndex]">
                     <div [ngStyle]="getIconStyle(slotIndex, rowIndex, skill)" *ngIf="skill != undefined" class="icon"
                         (mouseover)="mouseoverSlot($event, skill.skillInfo)"
                         (mouseout)="mouseoutSlot($event, skill.skillInfo)">

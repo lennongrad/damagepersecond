@@ -1,3 +1,4 @@
 <div id="main">
-    <app-character-view></app-character-view>
+    <app-character-view *ngIf="getSelected() =='character'"></app-character-view>
+    <app-store *ngIf="getSelected() =='store'"></app-store>
 </div>

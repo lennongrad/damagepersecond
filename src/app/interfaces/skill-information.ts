@@ -1,6 +1,4 @@
-import { getRtlScrollAxisType } from "@angular/cdk/platform";
 import { CharacterInstance } from "../classes/character-instance";
-import { EnemyInstance } from "../classes/enemy-instance";
 import { UnitInstance } from "../classes/unit-instance";
 import { StatusInformation } from "./status-information";
 

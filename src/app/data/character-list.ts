@@ -6,12 +6,12 @@ import { TRAITS } from "./trait-list";
 export const CHARACTERS: { [id: string]: CharacterInformation } = {
     "eirika": {
         id: "eirika", name: "Eirika", baseStats: {
-            CON: 10,
-            POI: 10,
-            END: 1,
-            STR: 2,
-            DEX: 0,
-            INT: 1
+            CON: 5,
+            POI: 5,
+            END: 5,
+            STR: 6,
+            DEX: 5,
+            INT: 4
         },
         defaultSkills: [SKILLS["strike"]],
         characterFeatures: [
@@ -64,12 +64,12 @@ export const CHARACTERS: { [id: string]: CharacterInformation } = {
         }
     }, "archer": {
         id: "archer", name: "Archer", baseStats: {
-            CON: 8,
-            POI: 8,
-            END: 1,
-            STR: 1,
-            DEX: 3,
-            INT: 0
+            CON: 4,
+            POI: 4,
+            END: 4,
+            STR: 6,
+            DEX: 8,
+            INT: 4
         },
         defaultSkills: [SKILLS["strike"]],
         characterFeatures: [
@@ -124,12 +124,12 @@ export const CHARACTERS: { [id: string]: CharacterInformation } = {
         }
     }, "wizard": {
         id: "wizard", name: "Wizard", baseStats: {
-            CON: 5,
-            POI: 13,
-            END: 1,
-            STR: 0,
-            DEX: 1,
-            INT: 3
+            CON: 3,
+            POI: 7,
+            END: 3,
+            STR: 3,
+            DEX: 6,
+            INT: 8
         },
         defaultSkills: [SKILLS["strike"]],
         characterFeatures: [
@@ -190,12 +190,12 @@ export const CHARACTERS: { [id: string]: CharacterInformation } = {
 
 export const GENERIC_FEATURES: Array<CharacterFeature> = [
     { expCost: 30, isGeneric: true, skillUnlocked: SKILLS["infuse"]},
-    { expCost: 100, isGeneric: true, skillUnlocked: SKILLS["recklessAttack"]},
-    { expCost: 100, isGeneric: true, skillUnlocked: SKILLS["legSweep"]},
-    { expCost: 250, isGeneric: true, skillUnlocked: SKILLS["flurryOfBlows"]},
-    { expCost: 500, isGeneric: true, skillUnlocked: SKILLS["rage"]},
-    { expCost: 350, isGeneric: true, skillUnlocked: SKILLS["replenishingStrike"]},
-    { expCost: 400, isGeneric: true, skillUnlocked: SKILLS["turningKick"]},
     { expCost: 650, isGeneric: true, skillUnlocked: SKILLS["lightningKicks"]},
+    { expCost: 100, isGeneric: true, skillUnlocked: SKILLS["recklessAttack"]},
+    { expCost: 400, isGeneric: true, skillUnlocked: SKILLS["turningKick"]},
+    { expCost: 250, isGeneric: true, skillUnlocked: SKILLS["flurryOfBlows"]},
+    { expCost: 350, isGeneric: true, skillUnlocked: SKILLS["replenishingStrike"]},
+    { expCost: 100, isGeneric: true, skillUnlocked: SKILLS["legSweep"]},
+    { expCost: 500, isGeneric: true, skillUnlocked: SKILLS["rage"]},
     { expCost: 1000, isGeneric: true, skillUnlocked: SKILLS["concentrate"]}
 ]

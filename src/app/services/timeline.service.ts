@@ -100,7 +100,7 @@ export class TimelineService {
   insertSkill(slotIndex: number, rowIndex: number, skill: Skill | undefined): SlotIndex {
     var currentIndex = slotIndex;
     var movingSkill = skill;
-    while (this.getCurrentSkillGrid()[rowIndex][currentIndex] != undefined) {
+    while (this.getCurrentSkillGrid()[rowIndex][currentIndex] != undefined && currentIndex < 29) {
       var nextSkill = this.getCurrentSkillGrid()[rowIndex][currentIndex];
       this.getCurrentSkillGrid()[rowIndex][currentIndex] = movingSkill;
       movingSkill = nextSkill;
@@ -120,7 +120,7 @@ export class TimelineService {
 
   setGridMax(newMax: number): void {
     for (var rowIndex in this.getCurrentSkillGrid()) {
-      while (this.getCurrentSkillGrid()[rowIndex].length < newMax) {
+      while (this.getCurrentSkillGrid()[rowIndex].length < Math.min(30, newMax)) {
         this.getCurrentSkillGrid()[rowIndex].push(undefined);
       }
     }

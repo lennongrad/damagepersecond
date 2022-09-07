@@ -1,8 +1,9 @@
 import { UnitInstance } from "./unit-instance";
-import { BaseStatTypes, CharacterFeature, CharacterInformation, CharacterSave, TraitInformation } from "../interfaces/unit-information";
+import { CharacterFeature, CharacterInformation, CharacterSave, TraitInformation } from "../interfaces/unit-information";
 import { UnitInstancesService } from "../services/unit-instances.service";
 import { Skill, SkillContext, SkillInformation, SkillSubtype, SkillTargetType } from "../interfaces/skill-information";
 import * as _ from 'underscore';
+import { BaseStatTypes } from "../interfaces/stat-information";
 
 export class CharacterInstance extends UnitInstance {
     permanentData!: CharacterSave;
@@ -15,16 +16,19 @@ export class CharacterInstance extends UnitInstance {
     currentDamageDealt = 0;
     finalDamages = Array<number>();
 
+    currentXPGained = 0;
+    finalXP = Array<number>();;
+
     recentlyUsedSkills = Array<{ skill: Skill, skillContext: SkillContext }>();
 
     getMaxHP(): number {
-        return this.getStat(BaseStatTypes.constitution);
+        return this.getStat(BaseStatTypes.constitution) * 2;
     }
     getMaxFP(): number {
-        return this.getStat(BaseStatTypes.poise);
+        return this.getStat(BaseStatTypes.poise) * 2;
     }
     getCarryingCapacity(): number {
-        return this.getStat(BaseStatTypes.endurance);
+        return this.getStat(BaseStatTypes.endurance) * 2;
     }
 
     getStat(stat: BaseStatTypes, includeStatuses: boolean = true): number {
@@ -45,7 +49,7 @@ export class CharacterInstance extends UnitInstance {
 
     getStatModifier(stat: BaseStatTypes, includeStatuses: boolean = true): number{
         var baseStat = this.getStat(stat, includeStatuses);
-        return baseStat / 4;
+        return (baseStat - 5) / 5;
     }
 
     getXP(): number {
@@ -60,6 +64,16 @@ export class CharacterInstance extends UnitInstance {
             totalDamage = this.currentDamageDealt;
         }
         return totalDamage / length;
+    }
+    getXPS(length: number): number{
+        var totalXP = 0;
+        if (this.finalXP.length > 0) {
+            totalXP = _.reduce(this.finalXP, (memo, num) => memo + num) as number;
+            totalXP /= this.finalXP.length;
+        } else {
+            totalXP = this.currentXPGained;
+        }
+        return totalXP / length;
     }
 
     updateFeatureBonuses() {
@@ -98,7 +112,7 @@ export class CharacterInstance extends UnitInstance {
 
     getFeatureCost(feature: CharacterFeature): number {
         var index = _.indexOf(this.getFeatureList(), feature);
-        var baseCost = 40 * Math.pow(1.5, (index + 1));
+        var baseCost = 30 * Math.pow(2, (index + 1));
         return Math.floor(baseCost / 10) * 10// + feature.expCost;
     }
 
@@ -147,6 +161,7 @@ export class CharacterInstance extends UnitInstance {
 
     addXP(amount: number): void {
         this.permanentData.experience += amount;
+        this.currentXPGained += amount;
         this.unitInstancesService.saveData(this);
     }
 
@@ -250,6 +265,8 @@ export class CharacterInstance extends UnitInstance {
         super.reset();
         this.finalDamages.push(this.currentDamageDealt);
         this.currentDamageDealt = 0;
+        this.finalXP.push(this.currentXPGained);
+        this.currentXPGained = 0;
         this.recentlyUsedSkills = [];
     }
 
@@ -279,6 +296,8 @@ export class CharacterInstance extends UnitInstance {
                 this.featureList.push(feature);
             }
         })
+
+        this.featureList = _.sortBy(this.featureList, (feature) => this.getFeatureCost(feature));
 
         this.loadData();
     }

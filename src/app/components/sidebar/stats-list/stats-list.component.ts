@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { BaseStatTypes } from 'src/app/interfaces/unit-information';
+import { BaseStatTypes, StatDescriptions, StatNames, StatTypeArray } from 'src/app/interfaces/stat-information';
 import { BeautifyService } from 'src/app/services/beautify.service';
+import { SoundEffectPlayerService } from 'src/app/services/sound-effect-player.service';
 import { TooltipService } from 'src/app/services/tooltip.service';
 import { UnitInstancesService } from 'src/app/services/unit-instances.service';
 
@@ -10,32 +11,8 @@ import { UnitInstancesService } from 'src/app/services/unit-instances.service';
   styleUrls: ['./stats-list.component.less']
 })
 export class StatsListComponent implements OnInit {
-  public baseStatTypes = [
-    BaseStatTypes.constitution, 
-    BaseStatTypes.poise, 
-    BaseStatTypes.endurance, 
-    BaseStatTypes.strength, 
-    BaseStatTypes.dexterity, 
-    BaseStatTypes.intelligence
-  ];
-
-  public statNames: {[statID: string]: string} = {
-    "CON": "Constitution",
-    "POI": "Poise",
-    "END": "Endurance",
-    "STR": "Strength",
-    "DEX": "Dexterity",
-    "INT": "Intelligence"
-  }
-
-  public statDescriptions: {[statID: string]: string} = {
-    "CON": "Determines your maximum HP and thus how much damage you can take.",
-    "POI": "Determines your maximum FP and thus how many special skills you can use.",
-    "END": "Determines your carrying capacity and thus how many pieces of equipment you can handle.",
-    "STR": "Your <b>STR</b> modifier is added each time you damage an enemy with a <i>physical</i> attack skill.",
-    "DEX": "Your <b>DEX</b> modifier is added each time you damage an enemy with a <i>finesse</i> attack skill.",
-    "INT": "Your <b>INT</b> modifier is added each time you damage an enemy with a <i>magical</i> attack skill.",
-  }
+  statNames = StatNames;
+  statTypeArray = StatTypeArray;
 
   showModifier(stat: BaseStatTypes): boolean{
     return [BaseStatTypes.strength, BaseStatTypes.dexterity, BaseStatTypes.intelligence].includes(stat);
@@ -67,10 +44,11 @@ export class StatsListComponent implements OnInit {
 
   clickStat(stat: BaseStatTypes): void{
     this.unitInstancesService.selectedCharacter.buyStat(stat);
+    this.soundPlayerService.playSound(this.soundPlayerService.buttonClickNoise);
   }
 
   mouseoverStat(event: any, stat: BaseStatTypes): void {
-    this.tooltipService.setTextTooltip(this.statDescriptions[stat], event.toElement ? event.toElement : event.target, 1);
+    this.tooltipService.setTextTooltip(StatDescriptions[stat], event.toElement ? event.toElement : event.target, 1);
   }
 
   mouseoutStat(): void {
@@ -79,7 +57,8 @@ export class StatsListComponent implements OnInit {
 
   constructor(private unitInstancesService: UnitInstancesService,
     private beautifyService: BeautifyService,
-    private tooltipService: TooltipService) { }
+    private tooltipService: TooltipService,
+    private soundPlayerService: SoundEffectPlayerService) { }
 
   ngOnInit(): void {
   }

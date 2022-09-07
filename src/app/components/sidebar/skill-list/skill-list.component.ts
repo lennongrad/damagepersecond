@@ -18,16 +18,6 @@ export class SkillListComponent implements OnInit {
   sortBy?: string;
   ascending = true;
 
-  buttonClickNoise: SoundInformation = {
-    audioFilename: "buttonnoise.mp3",
-    playbackRateMin: 4,
-    playbackRateMax: 8,
-    volume: 1,
-    concurrentMaximum: 1,
-    replacePrevious: true,
-    timeSinceLast: 100
-  }
-
   selectSort(sortType: string): void{
     if(this.sortBy == sortType){
       this.ascending = !this.ascending;
@@ -59,7 +49,7 @@ export class SkillListComponent implements OnInit {
     } else {
       this.selectedSkillService.changeSelectedSkill(skill);
     }
-    this.soundPlayerService.playSound(this.buttonClickNoise);
+    this.soundPlayerService.playSound(this.soundPlayerService.buttonClickNoise);
   }
 
   mouseoverSkill(event: any, hoveredSkill: SkillInformation): void {

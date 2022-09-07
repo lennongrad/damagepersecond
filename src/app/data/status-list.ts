@@ -1,8 +1,8 @@
 import { CharacterInstance } from "../classes/character-instance";
 import { UnitInstance } from "../classes/unit-instance";
 import { SkillContext } from "../interfaces/skill-information";
+import { BaseStatTypes } from "../interfaces/stat-information";
 import { StackType, Status, StatusInformation, StatusType } from "../interfaces/status-information";
-import { BaseStatTypes } from "../interfaces/unit-information";
 
 export const STATUSES: { [id: string]: StatusInformation; } = {
     "strength": {

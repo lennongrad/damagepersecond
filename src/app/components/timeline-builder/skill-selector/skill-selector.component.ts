@@ -5,7 +5,7 @@ import { AvailableSkillsService } from 'src/app/services/available-skills.servic
 import { SoundInformation } from 'src/app/interfaces/sound-information';
 import { SoundEffectPlayerService } from 'src/app/services/sound-effect-player.service';
 import { TooltipService } from 'src/app/services/tooltip.service';
-import { PersistentService } from 'src/app/services/persistent.service';
+import { SettingsService } from 'src/app/services/settings.service';
 import { SaveService } from 'src/app/services/save.service';
 import * as _ from 'underscore';
 
@@ -139,7 +139,7 @@ export class SkillSelectorComponent implements OnInit {
     private soundEffectPlayer: SoundEffectPlayerService,
     private tooltipService: TooltipService,
     private saveService: SaveService,
-    private settingsService: PersistentService) {
+    private settingsService: SettingsService) {
 
     this.selectedSkillService.selectedSkillChange.subscribe(value => this.selectedSkill = value);
     this.selectedSkillService.skillUsed.subscribe(value => this.skillUsed(value));

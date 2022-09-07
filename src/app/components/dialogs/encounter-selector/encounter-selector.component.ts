@@ -16,12 +16,6 @@ export class EncounterSelectorComponent implements OnInit {
 
   horizontalSpriteDistance = 40;
 
-  constructor(
-    private dialogRef: MatDialogRef<EncounterSelectorComponent>,
-    private unitInstancesService: UnitInstancesService,
-    @Inject(MAT_DIALOG_DATA) public data: { description?: string }) {
-  }
-
   getSpriteStyle(index: number): any {
     var style: { [klass: string]: any } = {};
 
@@ -31,15 +25,41 @@ export class EncounterSelectorComponent implements OnInit {
     return style;
   }
 
-  clickEncounter(encounterID: string){
+  getStars(count: number): string {
+    var baseString = "";
+    for(var i = 0; i < 5; i++){
+      if(i < count){
+        baseString += "✭";
+      } else {
+        baseString += "☆";
+      }
+    }
+    return baseString;
+  }
+
+  clickEncounter(encounterID: string): void {
     this.unitInstancesService.loadEncounter(encounterID);
     this.close();
+  }
+
+  isActiveDifficulty(difficulty: number): boolean{
+    return difficulty == this.unitInstancesService.enemyDifficulty;
+  }
+
+  clickDifficulty(difficulty: number): void{
+    this.unitInstancesService.loadEncounter(undefined, difficulty);
+  }
+
+  constructor(
+    private dialogRef: MatDialogRef<EncounterSelectorComponent>,
+    private unitInstancesService: UnitInstancesService,
+    @Inject(MAT_DIALOG_DATA) public data: { description?: string }) {
   }
 
   ngOnInit(): void {
   }
 
-  close() {
+  close(): void {
     this.dialogRef.close();
   }
 }

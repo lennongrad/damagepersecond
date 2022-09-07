@@ -1,5 +1,6 @@
 import { AnimationDetails } from "./animation-information"
 import { SkillInformation as SkillInformation } from "./skill-information"
+import { StatArray } from "./stat-information"
 
 export interface EncounterInformation{
     id: string,
@@ -11,24 +12,6 @@ export interface UnitInformation{
     id: string,
     name: string,
     animation: AnimationDetails
-}
-
-export enum BaseStatTypes {
-    constitution = "CON",
-    poise = "POI",
-    endurance = "END",
-    strength = "STR",
-    dexterity = "DEX",
-    intelligence = "INT"
-}
-
-export interface StatArray {
-    CON: number,
-    POI: number,
-    END: number,
-    STR: number,
-    DEX: number,
-    INT: number
 }
 
 export interface CharacterInformation extends UnitInformation{

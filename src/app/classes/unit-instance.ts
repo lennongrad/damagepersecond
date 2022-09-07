@@ -1,5 +1,5 @@
 import { Subject } from "rxjs";
-import { StatusInformation, Status, StatusType, StackType } from "../interfaces/status-information";
+import { Status, StatusType, StackType } from "../interfaces/status-information";
 import { UnitInformation } from "../interfaces/unit-information";
 import { AnimationDetails } from "../interfaces/animation-information";
 import * as _ from 'underscore';

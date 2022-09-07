@@ -26,6 +26,8 @@ export class UnitTooltipComponent implements OnInit {
   @HostListener('document:keyup', ['$event'])
   onKeyDown(event: KeyboardEvent) { this.pressedKeys[event.key] = false; }
 
+  startTime = new Date().getTime();
+
   readonly StatusType = StatusType;
 
   // calculated so that the tooltip is not offscreen
@@ -67,6 +69,13 @@ export class UnitTooltipComponent implements OnInit {
   getDPR(): number {
     if (this.hoveredUnit != undefined && this.hoveredUnit instanceof CharacterInstance) {
       return Math.floor(100 * this.hoveredUnit.getDPR(this.timelineService.getTimelineLength())) / 100;
+    }
+    return -1;
+  }
+
+  getXPS(): number{
+    if (this.hoveredUnit != undefined && this.hoveredUnit instanceof CharacterInstance) {
+      return Math.floor(100 * this.hoveredUnit.getXPS(this.timelineService.getTimelineLength())) / 100;
     }
     return -1;
   }

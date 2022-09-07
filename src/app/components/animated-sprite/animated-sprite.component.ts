@@ -167,13 +167,12 @@ export class AnimatedSpriteComponent implements OnInit {
   }
 
   addTick(value: number | true): void {
+   
     if(value === true){
       this.activeTicks = [];
     } else {
       this.activeTicks = _.forEach(this.activeTicks, tick => { 
-        if(tick.time < this.tickTimeToComplete / 6){
-          tick.time += this.tickTimeToComplete / 18; 
-        }
+        tick.time += this.tickTimeToComplete / 6; 
       });
       
       this.activeTicks.push({ value: value, time: 0 });

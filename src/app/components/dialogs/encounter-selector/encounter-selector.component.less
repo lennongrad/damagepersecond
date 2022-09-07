@@ -28,3 +28,29 @@
         position: relative;
     }
 }
+
+.difficulty{
+    display: inline-block;
+    width: 75px;
+    height: 18px;
+    padding: 4px;
+    margin: 2px;
+
+    line-height: 18px;
+    font-size: 18px;
+    color: white;
+    cursor: pointer;
+
+    border: 6px solid transparent;
+    border-image: url("~src/assets/frame.png") 26 round;
+    border-radius: 2px;
+    background-color: #111;
+
+    &.is-active{
+        filter: brightness(1.9);
+    }
+
+    &:hover{
+        filter: brightness(1.2);
+    }
+}

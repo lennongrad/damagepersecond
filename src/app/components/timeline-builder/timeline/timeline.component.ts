@@ -2,7 +2,7 @@ import { Component, OnInit, HostListener } from '@angular/core';
 import { Skill, SkillInformation } from 'src/app/interfaces/skill-information';
 import { SoundInformation } from 'src/app/interfaces/sound-information';
 import { SelectedSkillService } from 'src/app/services/selected-skill.service';
-import { PersistentService } from 'src/app/services/persistent.service';
+import { SettingsService } from 'src/app/services/settings.service';
 import { SoundEffectPlayerService } from 'src/app/services/sound-effect-player.service';
 import { TimelineService, SkillGrid, SlotIndex } from 'src/app/services/timeline.service';
 import { TooltipService } from 'src/app/services/tooltip.service';
@@ -88,7 +88,6 @@ export class TimelineComponent implements OnInit {
 
   getSlotStyle(slotIndex: number, rowIndex: number, skill: Skill | undefined): any {
     var style: { [klass: string]: any } = {};
-    var associatedCharacter = this.unitInstancesService.characterInstances[rowIndex];
 
     if (this.initialDragIndex != undefined
       || this.currentDragIndex != undefined
@@ -105,7 +104,6 @@ export class TimelineComponent implements OnInit {
 
   getIconStyle(slotIndex: number, rowIndex: number, skill: Skill): any {
     var style: { [klass: string]: any } = {};
-    var associatedCharacter = this.unitInstancesService.characterInstances[rowIndex];
 
     if (this.dragDisplacement != undefined && this.selectedSlots[rowIndex][slotIndex] && this.draggingSkill) {
       var translateX = "translateX(" + (this.dragDisplacement.x * this.getSlotWidth()) + "px)"
@@ -333,7 +331,7 @@ export class TimelineComponent implements OnInit {
     private timelineService: TimelineService,
     private tooltipService: TooltipService,
     private unitInstancesService: UnitInstancesService,
-    private persistentService: PersistentService) {
+    private persistentService: SettingsService) {
     this.selectedSkillService.selectedSkillChange.subscribe(value => this.selectedSkill = value);
     this.timelineService.currentGridChange.subscribe(value => this.setSkillGrid(value));
   }

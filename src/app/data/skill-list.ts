@@ -280,7 +280,7 @@ export const SKILLS: { [id: string]: SkillInformation } = {
     id: "bladeFlourish", icon: "skill-icons/skill_23.png", name: "Blade Flourish", type: SkillType.attack, 
     subtypes: [SkillSubtype.physical, SkillSubtype.sword],
     description: "Deal 1.5 base damage <i class='small'>(50% / 10%)</i> to the closest enemy. If you just did three "
-      + "<i>sword skills</i>, do this damage three times instead.<br>" + statusDescription(STATUSES["delayed"], "", false, 1) + ".",
+      + "<i>sword</i> skills, do this damage three times instead.<br>" + statusDescription(STATUSES["delayed"], "", false, 1) + ".",
     flavour: undefined, target: SkillTargetType.firstEnemy,
     relevantStatuses: [STATUSES["delayed"]],
     effect: (skillContext: SkillContext) => {

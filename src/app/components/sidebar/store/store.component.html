@@ -1,0 +1,10 @@
+<table id="item-holder">
+    <tr class="item" *ngFor="let item of getItems(); let i = index" [class.affordable]="isItemAffordable(item)"
+        (mouseover)="mouseoverItem($event, item)" (mouseout)="mouseoutItem()"
+        (click)="clickItem(item)">
+        <td class="icon"><img src="assets/{{item.icon}}" /></td>
+        <td class="name">{{item.name}}<span class="owned"> (x{{itemsOwned(item)}})</span></td>
+        <td class="type">{{getTypes(item)}}</td>
+        <td class="cost">{{getItemCost(item)}} GP.</td>
+    </tr>
+</table>

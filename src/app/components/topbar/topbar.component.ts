@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
+import { BeautifyService } from 'src/app/services/beautify.service';
+import { InventoryService } from 'src/app/services/inventory.service';
+import { UnitInstancesService } from 'src/app/services/unit-instances.service';
 import { SettingsDialogComponent } from '../dialogs/settings-dialog/settings-dialog.component';
 
 @Component({
@@ -8,8 +11,11 @@ import { SettingsDialogComponent } from '../dialogs/settings-dialog/settings-dia
   styleUrls: ['./topbar.component.less']
 })
 export class TopbarComponent implements OnInit {
+  selectTab(tab: string): void {
+    this.unitInstancesService.selectTab(tab);
+  }
 
-  openSettings(): void{
+  openSettings(): void {
     var dialogConfig: MatDialogConfig = {
       autoFocus: true,
       panelClass: "dialog-panel",
@@ -20,7 +26,14 @@ export class TopbarComponent implements OnInit {
     this.dialogService.open(SettingsDialogComponent, dialogConfig);
   }
 
-  constructor(private dialogService: MatDialog) { }
+  getGold(): string {
+    return this.beautifyService.beautify(this.inventoryService.gold, true);
+  }
+
+  constructor(private dialogService: MatDialog,
+    private inventoryService: InventoryService,
+    private unitInstancesService: UnitInstancesService,
+    private beautifyService: BeautifyService) { }
 
   ngOnInit(): void {
   }

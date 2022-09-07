@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { CharacterInstance } from 'src/app/classes/character-instance';
 import { SkillInformation } from 'src/app/interfaces/skill-information';
+import { SoundInformation } from 'src/app/interfaces/sound-information';
 import { CharacterFeature } from 'src/app/interfaces/unit-information';
 import { BeautifyService } from 'src/app/services/beautify.service';
+import { SoundEffectPlayerService } from 'src/app/services/sound-effect-player.service';
 import { TooltipService } from 'src/app/services/tooltip.service';
 import { UnitInstancesService } from 'src/app/services/unit-instances.service';
 import * as _ from 'underscore';
@@ -13,6 +15,7 @@ import * as _ from 'underscore';
   styleUrls: ['./feature-list.component.less']
 })
 export class FeatureListComponent implements OnInit {
+
 
   getFeatures(): Array<CharacterFeature> {
     return this.getSelectedCharacter().getFeatureList();
@@ -40,6 +43,7 @@ export class FeatureListComponent implements OnInit {
 
   clickFeature(feature: CharacterFeature): void {
     this.getSelectedCharacter().buyFeature(feature);
+    this.soundPlayerService.playSound(this.soundPlayerService.buttonClickNoise);
   }
 
   mouseoverSkill(event: any, hoveredSkill: SkillInformation): void {
@@ -52,7 +56,8 @@ export class FeatureListComponent implements OnInit {
 
   constructor(private unitInstancesService: UnitInstancesService,
     private tooltipService: TooltipService,
-    private beautifyService: BeautifyService) { }
+    private beautifyService: BeautifyService,
+    private soundPlayerService: SoundEffectPlayerService) { }
 
   ngOnInit(): void {
   }

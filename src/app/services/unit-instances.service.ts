@@ -9,6 +9,7 @@ import { SaveService } from './save.service';
 import { EncounterInformation } from '../interfaces/unit-information';
 import * as _ from 'underscore';
 import { Subject } from 'rxjs';
+import { InventoryService } from './inventory.service';
 
 @Injectable({
   providedIn: 'root'
@@ -22,14 +23,22 @@ export class UnitInstancesService {
 
   enemyInstances!: Array<EnemyInstance>;
   selectedEncounter!: EncounterInformation;
+  enemyDifficulty: number = 1;
 
   selectedCharacter!: CharacterInstance;
+  selectedTab!: string;
 
   unitChangeSubject = new Subject<void>();
 
   selectCharacter(character: CharacterInstance): void {
     this.selectedCharacter = character;
+    this.selectTab("character");
     this.saveService.saveData("selected-character", this.selectedCharacter.name);
+  }
+
+  selectTab(tab: string): void {
+    this.selectedTab = tab;
+    this.saveService.saveData("selected-tab", tab);
   }
 
   forEachUnit(callback: (unit: UnitInstance) => void): void {
@@ -50,7 +59,7 @@ export class UnitInstancesService {
     var data = JSON.stringify(dataStore)
     this.saveService.saveData("character-" + character.characterInformation.name, data);
 
-    if(resetTimeline){
+    if (resetTimeline) {
       this.unitChangeSubject.next();
     }
   }
@@ -79,39 +88,55 @@ export class UnitInstancesService {
     this.characterInstances.forEach(character => {
       character.addXP(amount);
     })
+    this.inventoryService.addGold(amount);
   }
 
-  loadEncounter(name?: string): void {
+  loadEncounter(name?: string, difficulty?: number): void {
     if (name != undefined && ENCOUNTERS.hasOwnProperty(name)) {
       this.selectedEncounter = ENCOUNTERS[name]
-    } else {
+    } else if (this.selectedEncounter == undefined) {
       this.selectedEncounter = ENCOUNTERS["soldiers"];
     }
+
+    if (difficulty != undefined) {
+      this.enemyDifficulty = difficulty;
+    }
+
     this.enemyInstances = [
-      new EnemyInstance("A", this.selectedEncounter.enemies[0], this),
-      new EnemyInstance("B", this.selectedEncounter.enemies[1], this),
-      new EnemyInstance("C", this.selectedEncounter.enemies[2], this)
+      new EnemyInstance("A", this.selectedEncounter.enemies[0], this, this.enemyDifficulty),
+      new EnemyInstance("B", this.selectedEncounter.enemies[1], this, this.enemyDifficulty),
+      new EnemyInstance("C", this.selectedEncounter.enemies[2], this, this.enemyDifficulty)
     ]
     this.saveService.saveData("encounter-name", this.selectedEncounter.id);
     this.unitChangeSubject.next();
   }
 
-  constructor(private saveService: SaveService) {
+  constructor(private saveService: SaveService, private inventoryService: InventoryService) {
     try {
       this.loadEncounter(this.saveService.getData("encounter-name") as string);
     } catch {
       this.loadEncounter(undefined);
     }
 
-    try{
+    try {
       var selectedCharacterName = this.saveService.getData("selected-character") as string;
       var attemptSelected = _.find(this.characterInstances, (character) => character.name == selectedCharacterName);
-      if(attemptSelected == undefined){
+      if (attemptSelected == undefined) {
         throw new Error();
       }
       this.selectedCharacter = attemptSelected;
-    } catch{
+    } catch {
       this.selectedCharacter = this.characterInstances[0];
+    }
+
+    try {
+      var tabName = this.saveService.getData("selected-tab");
+      if(tabName == "" || tabName == undefined){
+        throw new Error();
+      }
+      this.selectedTab = tabName;
+    } catch {
+      this.selectedTab = "character";
     }
   }
 }

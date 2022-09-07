@@ -1,0 +1,9 @@
+<table id="equipment-holder">
+    <tr class="equipment" *ngFor="let equipment of getEquipment(); let i = index;" (mouseover)="mouseoverEquipment($event, equipment)"
+        (mouseout)="mouseoutEquipment()" (click)="clickEquipment(equipment)">
+        <td class="icon"><img src="assets/{{equipment.icon}}" /></td>
+        <td class="name">{{equipment.name}}<span class="owned"> ({{equipmentOwned(equipment)}})</span></td>
+        <td class="type">{{getTypes(equipment)}}</td>
+        <td class="weight">{{equipment.weight}} lbs.</td>
+    </tr>
+</table>

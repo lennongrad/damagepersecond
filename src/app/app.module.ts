@@ -31,6 +31,8 @@ import { SkillListComponent } from './components/sidebar/skill-list/skill-list.c
 import { CharacterViewComponent } from './components/sidebar/character-view/character-view.component';
 import { StatsListComponent } from './components/sidebar/stats-list/stats-list.component';
 import { TextTooltipComponent } from './components/tooltips/text-tooltip/text-tooltip.component';
+import { EquipmentComponent } from './components/sidebar/equipment/equipment.component';
+import { StoreComponent } from './components/sidebar/store/store.component';
 
 @NgModule({
   declarations: [
@@ -54,7 +56,9 @@ import { TextTooltipComponent } from './components/tooltips/text-tooltip/text-to
     SkillListComponent,
     CharacterViewComponent,
     StatsListComponent,
-    TextTooltipComponent
+    TextTooltipComponent,
+    EquipmentComponent,
+    StoreComponent
   ],
   imports: [
     BrowserModule,

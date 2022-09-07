@@ -1,6 +1,6 @@
 import { UnitInstance } from "../classes/unit-instance"
 import { Skill, SkillContext } from "./skill-information"
-import { BaseStatTypes } from "./unit-information"
+import { BaseStatTypes } from "./stat-information"
 
 export enum StackType{
     keepBoth = "KEEP-BOTH",

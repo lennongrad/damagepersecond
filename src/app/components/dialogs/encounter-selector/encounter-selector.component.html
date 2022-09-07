@@ -1,3 +1,10 @@
+<div class="difficulty-holder">
+    <div class="difficulty" *ngFor="let count of [1,2,3,4,5]" [class.is-active]="isActiveDifficulty(count)"
+    (click)="clickDifficulty(count)">
+        {{getStars(count)}}
+    </div>
+</div>
+
 <div class="animation-holder" *ngFor="let encounter of encounterList | keyvalue"
     (click)="clickEncounter(encounter.key)">
     <app-animated-sprite *ngFor="let enemy of encounter.value.enemies; let i = index" [AnimationDetails]="enemy.animation"

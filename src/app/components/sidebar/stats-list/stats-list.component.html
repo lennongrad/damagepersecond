@@ -1,6 +1,6 @@
 <h3>BASE STATS</h3>
 <div class="stats-holder">
-    <div class="stat" *ngFor="let stat of baseStatTypes" [class.affordable]="isStatAffordable(stat)" (click)="clickStat(stat)"
+    <div class="stat" *ngFor="let stat of statTypeArray" [class.affordable]="isStatAffordable(stat)" (click)="clickStat(stat)"
     (mouseover)="mouseoverStat($event, stat)" (mouseout)="mouseoutStat()">
         <div class="stat-name">
             {{statNames[stat]}}

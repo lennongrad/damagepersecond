@@ -81,15 +81,6 @@
                 background-color: rgba(0, 0, 100, .3);
             }
         }
-
-        .slot.time {
-            filter: brightness(1.6);
-            border-radius: 3px;
-
-            .select-beam {
-                opacity: 1;
-            }
-        }
     }
 }
 
@@ -130,12 +121,18 @@
 
 .select-beam {
     position: absolute;
-    width: 100%;
-    height: 100%;
+    width: @slot-width;
+    height: calc(@slot-width * 3);
     background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.44) 45% 55%, transparent);
-    opacity: 0;
     transition: 0.075s;
     pointer-events: none;
+    z-index: 2;
+    transform: translate(6px, 4px);
+
+    .big-icons &{
+        width: @slot-width-big;
+        height: calc(@slot-width-big * 3);
+    }
 }
 
 .icon {

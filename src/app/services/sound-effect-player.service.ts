@@ -9,6 +9,16 @@ import { interval, Subscription } from 'rxjs';
 export class SoundEffectPlayerService {
   noisesPlaying: Record<string, Array<any>> = {};
   timeSinceLast: Record<string, number> = {};
+  
+  buttonClickNoise: SoundInformation = {
+    audioFilename: "buttonnoise.mp3",
+    playbackRateMin: 4,
+    playbackRateMax: 8,
+    volume: 1,
+    concurrentMaximum: 1,
+    replacePrevious: true,
+    timeSinceLast: 100
+  }
 
   timeSource = interval(1);
   subscription?: Subscription;
