@@ -3,7 +3,7 @@
         <th (click)="selectSort('name')" colspan=2>Name</th>
         <th (click)="selectSort('type')">Type</th>
         <th (click)="selectSort('weight')">Wgt.</th>
-        <th (click)="selectSort('cost')">Cost</th>
+        <th class="cost-header" (click)="selectSort('cost')">Cost</th>
     </tr>
     <tr class="item" *ngFor="let item of getItems(); let i = index" [class.affordable]="isItemAffordable(item)"
         (mouseover)="mouseoverItem($event, item)" (mouseout)="mouseoutItem()"
@@ -12,6 +12,6 @@
         <td class="name">{{item.name}}<span class="owned"> (x{{itemsOwned(item)}})</span></td>
         <td class="type">{{getTypes(item)}}</td>
         <td class="weight">{{getWeight(item)}}</td>
-        <td class="cost">{{getItemCost(item)}} GP.</td>
+        <td class="cost"><span>{{getItemCost(item)}} GP.</span></td>
     </tr>
 </table>

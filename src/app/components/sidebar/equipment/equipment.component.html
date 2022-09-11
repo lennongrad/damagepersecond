@@ -24,14 +24,15 @@
     <tr class="header">
         <th (click)="selectSort('name')" colspan=2>Name</th>
         <th (click)="selectSort('type')">Type</th>
-        <th (click)="selectSort('weight')">Wgt.</th>
+        <th class="weight-header" (click)="selectSort('weight')">Wgt.</th>
     </tr>
     <tr class="equipment" *ngFor="let equipment of getEquipment(); let i = index;"
         (mouseover)="mouseoverEquipment($event, equipment)" (mouseout)="mouseoutEquipment()"
-        (click)="clickEquipment(equipment)" [class.equipped]="isEquipped(equipment)">
+        (click)="clickEquipment(equipment)" [class.equipped]="isEquipped(equipment)"
+        [class.wearable]="canEquip(equipment)">
         <td class="icon"><img src="assets/{{equipment.icon}}" /></td>
         <td class="name">{{equipment.name}}<span class="owned"> ({{equipmentOwned(equipment)}})</span></td>
         <td class="type">{{getTypes(equipment)}}</td>
-        <td class="weight">{{equipment.weight}} lbs.</td>
+        <td class="weight"><span>{{equipment.weight}} lbs.</span></td>
     </tr>
 </table>

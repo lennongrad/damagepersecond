@@ -1,3 +1,5 @@
+@import (reference) "variables";
+
 #bar {
     display: flex;
     background: linear-gradient(#1A2633, #091221);
@@ -45,22 +47,23 @@
 }
 
 .value-display {
-    height: 30px;
+    height: calc(@top-bar-height - 10px);
     padding: 0 7px 0 5px;
     line-height: 28px;
     font-size: 20px;
 
     img {
-        width: 20px;
-        height: 20px;
-        vertical-align: middle;
+        width: calc(@top-bar-height - 20px);
+        height: calc(@top-bar-height - 20px);
+        vertical-align: text-bottom;
+        margin-bottom: 2px;
         margin-right: 5px;
     }
 
     span{
         display: inline-block;
-        height: 20px;
-        line-height: 20px;
+        height: calc(@top-bar-height - 20px);
+        line-height: calc(@top-bar-height - 20px);
         vertical-align: middle;
     }
 }
@@ -71,16 +74,16 @@
     line-height: 0;
 
     img {
-        width: 22px;
-        height: 22px;
+        width: calc(@top-bar-height - 18px);
+        height: calc(@top-bar-height - 18px);
         pointer-events: none;
     }
 }
 
 #title{
-    height: 34px;
-    font-size: 24px;
-    line-height: 34px;
+    height: calc(@top-bar-height - 4px);
+    font-size: 30px;
+    line-height: calc(@top-bar-height - 4px);
     font-weight: bold;
     filter: drop-shadow(0 0 2px black);
     background-image: linear-gradient(#CCC, #777);
@@ -90,4 +93,22 @@
     background-clip: text;
     -webkit-text-fill-color: transparent;
     text-transform: uppercase;
+}
+
+#gold-amount-container{
+    display: inline-block;
+    height: calc(@top-bar-height - 10px);
+
+    div{
+        margin: 0;
+        height: 15px;
+    }
+
+    #gold-amount{
+        font-size: 16px;
+    }
+
+    #gold-ps{
+        font-size: 14px;
+    }
 }

@@ -51,6 +51,10 @@ export class UnitInstancesService {
     this.forEachUnit((unit) => unit.reset());
   }
 
+  areAliveEnemies(): boolean {
+    return _.some(this.enemyInstances, (enemy) => enemy.isAlive());
+  }
+
   saveCharacterData(character: CharacterInstance, resetTimeline: boolean = false): void {
     var dataStore: any = {};
     dataStore["experience"] = character.permanentData.experience;
@@ -105,18 +109,24 @@ export class UnitInstancesService {
       this.enemyDifficulty = difficulty;
     }
 
-    this.enemyInstances = [
-      new EnemyInstance("A", this.selectedEncounter.enemies[0], this, this.enemyDifficulty),
-      new EnemyInstance("B", this.selectedEncounter.enemies[1], this, this.enemyDifficulty),
-      new EnemyInstance("C", this.selectedEncounter.enemies[2], this, this.enemyDifficulty)
-    ]
+    if (this.enemyInstances == undefined) {
+      this.enemyInstances = [
+        new EnemyInstance("A", this.selectedEncounter.enemies[0], this),
+        new EnemyInstance("B", this.selectedEncounter.enemies[1], this),
+        new EnemyInstance("C", this.selectedEncounter.enemies[2], this)
+      ]
+    }
+
+    this.enemyInstances.forEach((enemy, index) => enemy.reconfigure(this.selectedEncounter.enemies[index], this.enemyDifficulty));
+
     this.saveService.saveData("encounter-name", this.selectedEncounter.id);
+    this.saveService.saveData("enemy-difficulty", this.enemyDifficulty.toString());
     this.unitChangeSubject.next();
   }
 
-  loadSavedData(): void{
+  loadSavedData(): void {
     try {
-      this.loadEncounter(this.saveService.getData("encounter-name") as string);
+      this.loadEncounter(this.saveService.getData("encounter-name") as string, Number(this.saveService.getData("enemy-difficulty")));
     } catch {
       this.loadEncounter(undefined);
     }
@@ -134,7 +144,7 @@ export class UnitInstancesService {
 
     try {
       var tabName = this.saveService.getData("selected-tab");
-      if(tabName == "" || tabName == undefined){
+      if (tabName == "" || tabName == undefined) {
         throw new Error();
       }
       this.selectedTab = tabName;

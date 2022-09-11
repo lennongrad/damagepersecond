@@ -17,11 +17,11 @@ export class CharacterInstance extends UnitInstance {
     availableSkills = Array<SkillInformation>();
     activeTraits = Array<TraitInformation>();
 
-    currentDamageDealt = 0;
+    currentDamageDealt?: number;
     finalDamages = Array<number>();
 
-    currentXPGained = 0;
-    finalXP = Array<number>();;
+    currentXPGained?: number;
+    finalXP = Array<number>();
 
     recentlyUsedSkills = Array<{ skill: Skill, skillContext: SkillContext }>();
 
@@ -32,7 +32,7 @@ export class CharacterInstance extends UnitInstance {
         return this.getStat(BaseStatTypes.poise) * 2;
     }
     getCarryingCapacity(): number {
-        return this.getStat(BaseStatTypes.endurance) * 2;
+        return this.getStat(BaseStatTypes.endurance);
     }
 
     getEquippedItems(): Array<Equipment> {
@@ -99,7 +99,7 @@ export class CharacterInstance extends UnitInstance {
         if (this.finalDamages.length > 0) {
             totalDamage = _.reduce(this.finalDamages, (memo, num) => memo + num) as number;
             totalDamage /= this.finalDamages.length;
-        } else {
+        } else if(this.currentDamageDealt != undefined) {
             totalDamage = this.currentDamageDealt;
         }
         return totalDamage / length;
@@ -109,7 +109,7 @@ export class CharacterInstance extends UnitInstance {
         if (this.finalXP.length > 0) {
             totalXP = _.reduce(this.finalXP, (memo, num) => memo + num) as number;
             totalXP /= this.finalXP.length;
-        } else {
+        } else if(this.currentXPGained != undefined) {
             totalXP = this.currentXPGained;
         }
         return totalXP / length;
@@ -130,7 +130,7 @@ export class CharacterInstance extends UnitInstance {
     }
 
     getStatCost(stat: BaseStatTypes): number {
-        return 40 * Math.pow(1.5, (this.permanentData.statBonuses[stat] + 1));
+        return 40 * Math.pow(1.6, (this.permanentData.statBonuses[stat] + 1));
     }
 
     canAffordStat(stat: BaseStatTypes): boolean {
@@ -200,7 +200,12 @@ export class CharacterInstance extends UnitInstance {
 
     addXP(amount: number): void {
         this.permanentData.experience += amount;
+
+        if(this.currentXPGained == undefined){
+            this.currentXPGained = 0;
+        }
         this.currentXPGained += amount;
+
         this.unitInstancesService.saveCharacterData(this);
     }
 
@@ -219,6 +224,9 @@ export class CharacterInstance extends UnitInstance {
     }
 
     registerDamage(damage: number): void {
+        if(this.currentDamageDealt == undefined){
+            this.currentDamageDealt = 0;
+        }
         this.currentDamageDealt += damage;
     }
 
@@ -302,9 +310,15 @@ export class CharacterInstance extends UnitInstance {
 
     override reset(): void {
         super.reset();
-        this.finalDamages.push(this.currentDamageDealt);
+
+        if(this.currentDamageDealt != undefined){
+            this.finalDamages.push(this.currentDamageDealt);
+        }
+        if(this.currentXPGained != undefined){
+            this.finalXP.push(this.currentXPGained);
+        }
+
         this.currentDamageDealt = 0;
-        this.finalXP.push(this.currentXPGained);
         this.currentXPGained = 0;
         this.recentlyUsedSkills = [];
     }
@@ -312,6 +326,7 @@ export class CharacterInstance extends UnitInstance {
     override completeReset(): void {
         super.completeReset();
         this.finalDamages = [];
+        this.finalXP = [];
     }
 
     constructor(name: string,

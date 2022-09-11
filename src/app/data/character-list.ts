@@ -8,7 +8,7 @@ export const CHARACTERS: { [id: string]: CharacterInformation } = {
         id: "eirika", name: "Eirika", baseStats: {
             CON: 5,
             POI: 5,
-            END: 5,
+            END: 3,
             STR: 6,
             DEX: 5,
             INT: 4
@@ -66,7 +66,7 @@ export const CHARACTERS: { [id: string]: CharacterInformation } = {
         id: "archer", name: "Archer", baseStats: {
             CON: 4,
             POI: 4,
-            END: 4,
+            END: 2,
             STR: 6,
             DEX: 8,
             INT: 4

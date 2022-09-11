@@ -1,4 +1,4 @@
-<div #tooltipbox class="tooltip" [ngStyle]="{'top.px': topOffset, 'left.px': leftOffset, 'opacity': opacity}">
+<div #tooltipbox class="tooltip" [ngStyle]="{'top.px': topOffset - 20, 'left.px': leftOffset, 'opacity': opacity}">
     <div class="header" *ngIf="hoveredItem != undefined">
         <div class="weight" *ngIf="getWeight() != 0">
             {{getWeight()}} <span class="weight-name">lbs.</span>

@@ -1,8 +1,11 @@
 <div id="bar">
     <div class="bar-section" id="left-section">
-        <div class="value-display"  (click)="selectTab('store')">
+        <div class="value-display" (click)="selectTab('store')">
             <img src="assets/metal-disc.png"/>
-            <span>{{getGold()}}</span>
+            <div id="gold-amount-container">
+                <div id="gold-amount">{{getGold()}}</div>
+                <div id="gold-ps">{{getGoldPerSecond()}}/s</div>
+            </div>
         </div>
     </div>
     <div class="bar-section" id="middle-section">

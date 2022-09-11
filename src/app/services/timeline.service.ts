@@ -5,6 +5,7 @@ import { SaveService } from './save.service';
 import { AvailableSkillsService } from './available-skills.service';
 import { UnitInstancesService } from './unit-instances.service';
 import * as _ from 'underscore';
+import { InventoryService } from './inventory.service';
 
 export type SkillGrid = Array<Array<Skill | undefined>>
 export interface SlotIndex { x: number, y: number };
@@ -57,11 +58,13 @@ export class TimelineService {
 
   resetTime(completeReset: boolean = true) {
     this.unitInstancesService.resetUnits();
+    this.inventoryService.resetTime();
 
     this.currentTime = -1;
     if (completeReset) {
       this.automaticProgress = false;
-      this.unitInstancesService.forEachUnit((unit) => unit.completeReset())
+      this.unitInstancesService.forEachUnit((unit) => unit.completeReset());
+      this.inventoryService.completeReset();
     } else {
       this.processTime();
     }
@@ -74,7 +77,7 @@ export class TimelineService {
       }
       this.currentTime = this.currentTime + 1;
 
-      if (this.currentTime < this.gridTimeMax) {
+      if (this.currentTime < this.gridTimeMax && this.unitInstancesService.areAliveEnemies()) {
         for (var rowIndex in this.getCurrentSkillGrid()) {
           var origin = this.unitInstancesService.characterInstances[rowIndex];
           var skill = this.getCurrentSkillGrid()[rowIndex][this.currentTime];
@@ -95,6 +98,10 @@ export class TimelineService {
     }
 
     this.timeSinceLastProcess = 0;
+  }
+
+  getTimeScale(): number{
+    return .185;
   }
 
   insertSkill(slotIndex: number, rowIndex: number, skill: Skill | undefined): SlotIndex {
@@ -184,7 +191,7 @@ export class TimelineService {
       gridNameModifier = (parseInt(gridNameModifier) + 1).toString();
     }
 
-    if(!duplicate){
+    if (!duplicate) {
       this.setDefaultGrid();
     }
     this.saveGrid("UNTITLED" + gridNameModifier);
@@ -273,8 +280,10 @@ export class TimelineService {
     this.lastDate = Date.now();
   }
 
-  constructor(private saveService: SaveService, private availableSkillService: AvailableSkillsService,
-    private unitInstancesService: UnitInstancesService) {
+  constructor(private saveService: SaveService,
+    private availableSkillService: AvailableSkillsService,
+    private unitInstancesService: UnitInstancesService,
+    private inventoryService: InventoryService) {
     this.subscription = this.timeSource.subscribe(time => this.eachMillisecond(time));
     this.unitInstancesService.unitChangeSubject.subscribe(() => this.resetTime(true));
   }

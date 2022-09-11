@@ -88,6 +88,10 @@ export class EquipmentComponent implements OnInit {
     return "";
   }
 
+  canEquip(equipment: Equipment): boolean{
+    return this.getSelectedCharacter().canEquip(equipment);
+  }
+
   mouseoverStat(event: any, stat: BaseStatTypes): void {
     this.tooltipService.setTextTooltip(StatDescriptions[stat],  event.toElement ? event.toElement : event.target, 1);
   }
@@ -97,11 +101,11 @@ export class EquipmentComponent implements OnInit {
   }
 
   mouseoverEquipment(event: any, equipment: Equipment): void{
-    this.tooltipService.setItemTooltip(equipment, event.toElement ? event.toElement : event.target, 1);
+    this.tooltipService.setItemTooltip(equipment, event.toElement ? event.toElement.parentElement : event.target.parentElement, 1);
   }
 
   mouseoutEquipment(): void{
-    //this.tooltipService.setItemTooltip(undefined, undefined, 0);
+    this.tooltipService.setItemTooltip(undefined, undefined, 0);
   }
 
   clickEquipment(equipment: Equipment): void {

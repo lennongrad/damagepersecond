@@ -60,7 +60,7 @@ export class StoreComponent implements OnInit {
   }
 
   mouseoverItem(event: any, item: Item): void{
-    this.tooltipService.setItemTooltip(item, event.toElement ? event.toElement : event.target, 1);
+    this.tooltipService.setItemTooltip(item, event.toElement ? event.toElement.parentElement : event.target.parentElement, 1);
   }
 
   mouseoutItem(): void{

@@ -120,14 +120,25 @@ tr.header{
     }
 }
 
+.icon{
+    img{
+        pointer-events: none;
+    }
+}
+
 .owned {
     font-size: 12px;
+    pointer-events: none;
 }
 
 .type {
     width: 100px;
     text-align: center;
     font-size: 12px;
+}
+
+.weight-header{
+    text-align: right;
 }
 
 .weight {
@@ -141,6 +152,11 @@ tr.header{
     background-clip: text;
     -webkit-text-fill-color: transparent;
     filter: drop-shadow(0 0 1px #242001) drop-shadow(0 0 1px #242001) drop-shadow(0 0 1px #242001) drop-shadow(0 0 1px #242001);
+
+    .wearable & span{
+        border-image: linear-gradient(to left, #66A, #CCC) 100% 1;
+        border-bottom: 1px solid transparent;
+    }
 
     .fp-title {
         font-size: 12px;

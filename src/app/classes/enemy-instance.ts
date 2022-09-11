@@ -27,12 +27,17 @@ export class EnemyInstance extends UnitInstance {
     override onDie(): void {
         super.onDie();
 
-        var rewardedExp = this.getMaxHP() * .1 + 25 * (this.difficulty - 1) + this.lastDamageReceived;
+        var rewardedExp = this.getMaxHP() * .1 + 5 * (this.difficulty);
         this.unitInstancesService.rewardXP(Math.floor(rewardedExp));
     }
 
-    constructor(name: string, public enemyInformation: EnemyInformation, unitInstancesService: UnitInstancesService, assignedDifficulty: number) {
-        super(name, enemyInformation, unitInstancesService);
+    reconfigure(newInformation: EnemyInformation, assignedDifficulty: number){
+        this.enemyInformation = newInformation;
+        this.information = newInformation;
         this.difficulty = assignedDifficulty;
+    }
+
+    constructor(name: string, public enemyInformation: EnemyInformation, unitInstancesService: UnitInstancesService) {
+        super(name, enemyInformation, unitInstancesService);
     }
 }

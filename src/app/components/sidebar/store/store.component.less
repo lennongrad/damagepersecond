@@ -63,8 +63,15 @@ tr.header{
     }
 }
 
+.icon{
+    img{
+        pointer-events: none;
+    }
+}
+
 .owned{
     font-size: 12px;
+    pointer-events: none;
 }
 
 .type{
@@ -77,6 +84,10 @@ tr.header{
     text-align: center;
 }
 
+.cost-header{
+    text-align: right;
+}
+
 .cost{
     text-align: right;
     font-size: 14px;
@@ -87,6 +98,11 @@ tr.header{
     background-clip: text;
     -webkit-text-fill-color: transparent;
     filter: drop-shadow(0 0 1px #242001) drop-shadow(0 0 1px #242001) drop-shadow(0 0 1px #242001) drop-shadow(0 0 1px #242001);
+
+    .affordable & span{
+        border-image: linear-gradient(to left, #66A, #CCC) 100% 1;
+        border-bottom: 1px solid transparent;
+    }
 
     .fp-title{
         font-size: 12px;

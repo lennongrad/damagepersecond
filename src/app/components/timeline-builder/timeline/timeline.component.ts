@@ -309,7 +309,9 @@ export class TimelineComponent implements OnInit {
   }
 
   mouseoverSlot(event: any, hoveredSkill: SkillInformation) {
-    this.tooltipService.setSkillTooltip(hoveredSkill, event.toElement ? event.toElement : event.target, 1);
+    if(!this.pressedKeys["Control"]){
+      this.tooltipService.setSkillTooltip(hoveredSkill, event.toElement ? event.toElement : event.target, 1);
+    }
   }
 
   mouseoutSlot(event: any, hoveredSkill: SkillInformation) {
