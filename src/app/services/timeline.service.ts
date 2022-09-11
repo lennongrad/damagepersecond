@@ -171,7 +171,7 @@ export class TimelineService {
     }
   }
 
-  newGrid(): void {
+  newGrid(duplicate: boolean = false): void {
     if (this.savedGridNames == undefined) {
       this.savedGridNames = [];
     }
@@ -184,7 +184,9 @@ export class TimelineService {
       gridNameModifier = (parseInt(gridNameModifier) + 1).toString();
     }
 
-    this.setDefaultGrid();
+    if(!duplicate){
+      this.setDefaultGrid();
+    }
     this.saveGrid("UNTITLED" + gridNameModifier);
     this.currentGridName = "UNTITLED" + gridNameModifier;
   }

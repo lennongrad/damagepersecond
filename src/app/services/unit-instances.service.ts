@@ -10,15 +10,16 @@ import { EncounterInformation } from '../interfaces/unit-information';
 import * as _ from 'underscore';
 import { Subject } from 'rxjs';
 import { InventoryService } from './inventory.service';
+import { EQUIPMENT } from '../data/item-list';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UnitInstancesService {
   characterInstances: Array<CharacterInstance> = [
-    new CharacterInstance("A", CHARACTERS["eirika"], this, GENERIC_FEATURES),
-    new CharacterInstance("B", CHARACTERS["archer"], this, GENERIC_FEATURES),
-    new CharacterInstance("C", CHARACTERS["wizard"], this, GENERIC_FEATURES)
+    new CharacterInstance("A", CHARACTERS["eirika"], this, this.inventoryService, GENERIC_FEATURES),
+    new CharacterInstance("B", CHARACTERS["archer"], this, this.inventoryService, GENERIC_FEATURES),
+    new CharacterInstance("C", CHARACTERS["wizard"], this, this.inventoryService, GENERIC_FEATURES)
   ]
 
   enemyInstances!: Array<EnemyInstance>;
@@ -50,11 +51,12 @@ export class UnitInstancesService {
     this.forEachUnit((unit) => unit.reset());
   }
 
-  saveData(character: CharacterInstance, resetTimeline: boolean = false): void {
+  saveCharacterData(character: CharacterInstance, resetTimeline: boolean = false): void {
     var dataStore: any = {};
     dataStore["experience"] = character.permanentData.experience;
     dataStore["learntFeature"] = Array.from(character.permanentData.learntFeatures);
     dataStore["statBonuses"] = character.permanentData.statBonuses;
+    dataStore["equippedItems"] = _.map(character.permanentData.equippedItems, item => item.id);
 
     var data = JSON.stringify(dataStore)
     this.saveService.saveData("character-" + character.characterInformation.name, data);
@@ -64,7 +66,7 @@ export class UnitInstancesService {
     }
   }
 
-  loadData(character: CharacterInstance): CharacterSave | undefined {
+  loadCharacterData(character: CharacterInstance): CharacterSave | undefined {
     var dataString = this.saveService.getData("character-" + character.characterInformation.name);
 
     if (dataString != null) {
@@ -73,7 +75,8 @@ export class UnitInstancesService {
         var modifiedData: CharacterSave = {
           experience: baseData.experience,
           learntFeatures: new Set<string>(baseData.learntFeature),
-          statBonuses: baseData.statBonuses
+          statBonuses: baseData.statBonuses,
+          equippedItems: _.map(baseData.equippedItems, id => EQUIPMENT[id])
         };
         return modifiedData;
       } catch {
@@ -111,7 +114,7 @@ export class UnitInstancesService {
     this.unitChangeSubject.next();
   }
 
-  constructor(private saveService: SaveService, private inventoryService: InventoryService) {
+  loadSavedData(): void{
     try {
       this.loadEncounter(this.saveService.getData("encounter-name") as string);
     } catch {
@@ -138,5 +141,10 @@ export class UnitInstancesService {
     } catch {
       this.selectedTab = "character";
     }
+  }
+
+  constructor(private saveService: SaveService, private inventoryService: InventoryService) {
+    this.inventoryService.unitInstancesService = this;
+    this.loadSavedData();
   }
 }

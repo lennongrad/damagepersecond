@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { EQUIPMENT, ITEMS } from '../data/item-list';
 import { Equipment, Item, ItemType } from '../interfaces/item-information';
 import { SaveService } from './save.service';
+import { UnitInstancesService } from './unit-instances.service';
 import * as _ from 'underscore';
 
 @Injectable({
@@ -10,6 +11,8 @@ import * as _ from 'underscore';
 export class InventoryService {
   gold!: number;
   ownedItems!: Map<string, number>;
+
+  unitInstancesService!: UnitInstancesService;
 
   addGold(amount: number): void{
     this.gold += amount;
@@ -33,6 +36,16 @@ export class InventoryService {
 
   getOwnedEquipmentList(): Array<Equipment>{
     return _.filter(this.getOwnedItemList(), item => item.itemType == ItemType.equipment) as Array<Equipment>;
+  }
+
+  getUnequippedEquipment(equipment: Equipment): number{
+    var base = this.getItemCount(equipment);
+    this.unitInstancesService.characterInstances.forEach(character => {
+      if(character.isEquipped(equipment)){
+        base -= 1;
+      }
+    })
+    return base;
   }
 
   canAffordItem(item: Item): boolean{

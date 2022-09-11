@@ -75,21 +75,19 @@ export interface SkillInformation {
     relevantStatuses?: Array<StatusInformation>
 }
 
-export function getType(skill: SkillInformation): string{
+export function getType(skill: SkillInformation): string {
     var baseString = "";
 
-    if (skill != undefined) {
-        baseString = skill.type.toLowerCase();
-        baseString = baseString.charAt(0).toUpperCase() + baseString.slice(1);
+    baseString = skill.type.toLowerCase();
+    baseString = baseString.charAt(0).toUpperCase() + baseString.slice(1);
 
-        if (skill.subtypes != undefined) {
-            baseString += " – ";
-            skill.subtypes.forEach((subtype: SkillSubtype) => {
-                var subtypeString = subtype.toLowerCase();
-                subtypeString = subtypeString.charAt(0).toUpperCase() + subtypeString.slice(1);
-                baseString += subtypeString + " ";
-            })
-        }
+    if (skill.subtypes != undefined) {
+        baseString += " – ";
+        skill.subtypes.forEach((subtype: SkillSubtype) => {
+            var subtypeString = subtype.toLowerCase();
+            subtypeString = subtypeString.charAt(0).toUpperCase() + subtypeString.slice(1);
+            baseString += subtypeString + " ";
+        })
     }
 
     return baseString;

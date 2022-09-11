@@ -43,7 +43,7 @@ export class FeatureListComponent implements OnInit {
 
   clickFeature(feature: CharacterFeature): void {
     this.getSelectedCharacter().buyFeature(feature);
-    this.soundPlayerService.playSound(this.soundPlayerService.buttonClickNoise);
+    this.soundEffectPlayer.playSound(this.soundEffectPlayer.trackPingNoise);
   }
 
   mouseoverSkill(event: any, hoveredSkill: SkillInformation): void {
@@ -57,7 +57,7 @@ export class FeatureListComponent implements OnInit {
   constructor(private unitInstancesService: UnitInstancesService,
     private tooltipService: TooltipService,
     private beautifyService: BeautifyService,
-    private soundPlayerService: SoundEffectPlayerService) { }
+    private soundEffectPlayer: SoundEffectPlayerService) { }
 
   ngOnInit(): void {
   }

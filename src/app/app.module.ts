@@ -33,6 +33,7 @@ import { StatsListComponent } from './components/sidebar/stats-list/stats-list.c
 import { TextTooltipComponent } from './components/tooltips/text-tooltip/text-tooltip.component';
 import { EquipmentComponent } from './components/sidebar/equipment/equipment.component';
 import { StoreComponent } from './components/sidebar/store/store.component';
+import { ItemTooltipComponent } from './components/tooltips/item-tooltip/item-tooltip.component';
 
 @NgModule({
   declarations: [
@@ -58,7 +59,8 @@ import { StoreComponent } from './components/sidebar/store/store.component';
     StatsListComponent,
     TextTooltipComponent,
     EquipmentComponent,
-    StoreComponent
+    StoreComponent,
+    ItemTooltipComponent
   ],
   imports: [
     BrowserModule,

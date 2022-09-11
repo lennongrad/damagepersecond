@@ -1,21 +1,21 @@
 import { StatBonuses } from "./stat-information"
 
-export interface Item{
+export interface Item {
     itemType: ItemType,
     id: string,
     name: string,
     icon: string,
     description?: string,
-    flavor?: string, 
+    flavor?: string,
     cost: number
 }
 
-export enum ItemType{
+export enum ItemType {
     equipment = "EQUIPMENT",
     consumable = "CONSUMABLE"
 }
 
-export enum EquipmentType{
+export enum EquipmentType {
     sword = "SWORD",
     bow = "BOW",
     staff = "STAFF",
@@ -24,7 +24,12 @@ export enum EquipmentType{
     shield = "SHIELD"
 }
 
-export const EquipmentTypeNames: {[type: string]: string} = {
+export const ItemTypeNames: { [type: string]: string } = {
+    "EQUIPMENT": "Equipment",
+    "CONSUMABLE": "Consumable"
+}
+
+export const EquipmentTypeNames: { [type: string]: string } = {
     "SWORD": "Sword",
     "BOW": "Bow",
     "STAFF": "Staff",
@@ -33,8 +38,19 @@ export const EquipmentTypeNames: {[type: string]: string} = {
     "SHIELD": "Shield"
 }
 
-export interface Equipment extends Item{
+export interface Equipment extends Item {
     weight: number,
     statBonuses: StatBonuses,
     equipmentType: EquipmentType
+}
+
+export function getItemType(item: Item): string {
+    var baseString: string = ItemTypeNames[item.itemType];
+
+    var equipment = item as Equipment;
+    if (equipment.equipmentType != undefined) {
+        baseString = baseString + " - " + EquipmentTypeNames[equipment.equipmentType];
+    }
+
+    return baseString;
 }

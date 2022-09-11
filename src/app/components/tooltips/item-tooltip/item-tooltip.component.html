@@ -1,0 +1,27 @@
+<div #tooltipbox class="tooltip" [ngStyle]="{'top.px': topOffset, 'left.px': leftOffset, 'opacity': opacity}">
+    <div class="header" *ngIf="hoveredItem != undefined">
+        <div class="weight" *ngIf="getWeight() != 0">
+            {{getWeight()}} <span class="weight-name">lbs.</span>
+        </div>
+        <div class="icon">
+            <img src="assets/{{hoveredItem!.icon}}" />
+        </div>
+        <div class="title">
+            <span class="name">{{hoveredItem!.name}}</span><br>
+            <span class="type">{{getType()}}</span>
+        </div>
+    </div>
+    <div class="divider" *ngIf="getBonuses() != []"></div>
+    <div class="bonuses" *ngIf="getBonuses() != []">
+        <div class="bonus" *ngFor="let bonus of getBonuses()" 
+        [class.negative-description]="bonus.negative"
+        [class.positive-description]="!bonus.negative">
+            <b>{{bonus.statName}}</b>:{{bonus.value}}
+        </div>
+    </div>
+    <div class="divider" *ngIf="hoveredItem != undefined && hoveredItem.description != undefined"></div>
+    <div class="description" [class.show-status-names]="pressedKeys['Shift']" *ngIf="hoveredItem != undefined"
+        [innerHTML]="hoveredItem.description"></div>
+    <div class="flavour" *ngIf="hoveredItem != undefined && hoveredItem.flavor != undefined">
+        "{{hoveredItem.flavor}}"</div>
+</div>

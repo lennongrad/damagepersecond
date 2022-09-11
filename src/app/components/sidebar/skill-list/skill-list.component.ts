@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { getType, SkillInformation } from 'src/app/interfaces/skill-information';
-import { SoundInformation } from 'src/app/interfaces/sound-information';
 import { SelectedSkillService } from 'src/app/services/selected-skill.service';
 import { SoundEffectPlayerService } from 'src/app/services/sound-effect-player.service';
 import { TooltipService } from 'src/app/services/tooltip.service';
@@ -49,7 +48,7 @@ export class SkillListComponent implements OnInit {
     } else {
       this.selectedSkillService.changeSelectedSkill(skill);
     }
-    this.soundPlayerService.playSound(this.soundPlayerService.buttonClickNoise);
+    this.soundEffectPlayer.playSound(this.soundEffectPlayer.trackPingNoise);
   }
 
   mouseoverSkill(event: any, hoveredSkill: SkillInformation): void {
@@ -67,7 +66,7 @@ export class SkillListComponent implements OnInit {
   constructor(private unitInstanceService: UnitInstancesService,
     private selectedSkillService: SelectedSkillService,
     private tooltipService: TooltipService,
-    private soundPlayerService: SoundEffectPlayerService) { }
+    private soundEffectPlayer: SoundEffectPlayerService) { }
 
   ngOnInit(): void {
     this.selectedSkillService.selectedSkillChange.subscribe(value => this.selectedSkill = value);

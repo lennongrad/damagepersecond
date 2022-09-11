@@ -2,13 +2,14 @@
     <img src="assets/headerframe-left.png" class="left" />
     <img src="assets/headerframe-divider.png" />
     <div class="crusty-bg button-parent">
-        <div class="divided-button time-progress">
+        <div class="divided-button time-progress"
+            (mouseover)="mouseoverText($event, 'Click to progress time by one second.')" (mouseout)="mouseoutText()">
             <button (click)="processTime(); buttonClick()">{{getTimeDisplay()}}</button>
         </div>
     </div>
     <img src="assets/headerframe-divider.png" />
     <div class="crusty-bg button-parent">
-        <div class="divided-button">
+        <div class="divided-button" (mouseover)="mouseoverText($event, 'Toggle automatic progression of timeline.')" (mouseout)="mouseoutText()">
             <button (click)="toggleAutomaticProgress(); buttonClick()" *ngIf="getAutomaticProgress()">◼</button>
             <button (click)="toggleAutomaticProgress(); buttonClick()" *ngIf="!getAutomaticProgress()">▶</button>
         </div>
@@ -18,12 +19,12 @@
     </div>
     <img src="assets/headerframe-divider.png" />
     <div class="crusty-bg">
-        <div class="divided-button">
+        <div class="divided-button" (mouseover)="mouseoverText($event, 'Rename current timeline.')" (mouseout)="mouseoutText()">
             <button (click)="isRenaming = !isRenaming; buttonClick()">✎</button>
         </div>
     </div>
     <img src="assets/headerframe-divider.png" />
-    <div class="crusty-bg">
+    <div class="crusty-bg" (mouseover)="mouseoverText($event, 'Select from among saved timelines.')" (mouseout)="mouseoutText()">
         <div class="displaced-input" style="z-index: 2" *ngIf="isRenaming">
             <input type="text" placeholder="Type here..." (keydown)="trackNoise()" FocusAndSelect
                 [value]="getGridName()" (keydown.enter)="renameGrid($event); isRenaming = false; buttonClick()">
@@ -36,13 +37,20 @@
     </div>
     <img src="assets/headerframe-divider.png" />
     <div class="crusty-bg">
-        <div class="divided-button">
+        <div class="divided-button" (mouseover)="mouseoverText($event, 'Duplicate current timeline.')"
+            (mouseout)="mouseoutText()">
+            <button (click)="duplicateGrid(); buttonClick()">%</button>
+        </div>
+    </div>
+    <img src="assets/headerframe-divider.png" />
+    <div class="crusty-bg">
+        <div class="divided-button" (mouseover)="mouseoverText($event, 'Create a new blank timeline.')" (mouseout)="mouseoutText()">
             <button (click)="newGrid(); buttonClick()">✚</button>
         </div>
     </div>
     <img src="assets/headerframe-divider.png" />
     <div class="crusty-bg">
-        <div class="divided-button">
+        <div class="divided-button" (mouseover)="mouseoverText($event, 'Delete the current timeline.')" (mouseout)="mouseoutText()">
             <button (click)="deleteGrid(); buttonClick()">✗</button>
         </div>
     </div>

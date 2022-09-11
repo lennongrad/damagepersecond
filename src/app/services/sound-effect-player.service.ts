@@ -20,6 +20,16 @@ export class SoundEffectPlayerService {
     timeSinceLast: 100
   }
 
+  trackPingNoise: SoundInformation = {
+    audioFilename: "tracknoise.mp3",
+    playbackRateMin: 3,
+    playbackRateMax: 4,
+    volume: .5,
+    concurrentMaximum: 6,
+    replacePrevious: true,
+    timeSinceLast: 100
+  }
+
   timeSource = interval(1);
   subscription?: Subscription;
   lastDate = Date.now();

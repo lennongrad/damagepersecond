@@ -1,10 +1,93 @@
-#equipment-holder{
+h3 {
+    width: 100%;
+    margin: 5px;
+    font-weight: 300;
+    border-bottom: 1px solid white;
+}
+
+h3#equipment-header{
+    margin-bottom: 0;
+    margin-left: 0;
+    padding-left: 4px;
+}
+
+#header {
+    display: flex;
+}
+
+#stats-display {
+    max-width: 150px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: stretch;
+}
+
+.stat {
+    min-width: 60px;
+    padding: 2px;
+    background-color: #0f1c1e;
+
+    &:hover{
+        filter: brightness(1.5);
+    }
+
+    b,
+    span {
+        pointer-events: none;
+    }
+
+    span{
+        font-family: "Comic Mono";
+    }
+}
+
+#carry-display {
+    flex-grow: 1;
+    padding-right: 10px;
+}
+
+#capacity, #capacity-visual{
+    text-align: center;
+    background-image: linear-gradient(#66A, #CCC);
+    background-size: 100%;
+    background-repeat: repeat;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 0 1px #242001) drop-shadow(0 0 1px #242001) drop-shadow(0 0 1px #242001) drop-shadow(0 0 1px #242001);
+}
+
+#capacity {
+    font-size: 28px;
+}
+
+#capacity-visual{
+    line-height: 10px;
+    font-size: 14px;
+}
+
+#equipment-holder {
     width: 100%;
     border-spacing: 0;
 }
 
-.equipment{
+tr.header{
+    font-size: 14px;
+
+    th{
+        background-color: #142932;
+        cursor: pointer;
+        
+        &:hover{
+            filter: brightness(.8);
+        }
+    }
+}
+
+.equipment {
     cursor: pointer;
+
     &:nth-child(even) {
         background-color: #132729;
     }
@@ -13,32 +96,43 @@
         background-color: #132426;
     }
 
-    &:hover{
+    &:hover {
         filter: brightness(1.2);
+    }
+
+    &.equipped {
+        filter: brightness(1.6) contrast(.9);
     }
 }
 
-.name{
+.icon{
+    width: 24px;
+}
+
+.name {
     font-size: 14px;
     transition: .1s;
     transform-origin: 0 50%;
-    tr:hover &{
+
+    tr:hover & {
         transform: scale(105%, 95%);
         color: #e6ff95;
     }
 }
 
-.owned{
+.owned {
     font-size: 12px;
 }
 
-.type{
+.type {
+    width: 100px;
     text-align: center;
     font-size: 12px;
 }
 
-.weight{
+.weight {
     text-align: right;
+    width: 50px;
     font-size: 14px;
     background-image: linear-gradient(#66A, #CCC);
     background-size: 100%;
@@ -48,7 +142,7 @@
     -webkit-text-fill-color: transparent;
     filter: drop-shadow(0 0 1px #242001) drop-shadow(0 0 1px #242001) drop-shadow(0 0 1px #242001) drop-shadow(0 0 1px #242001);
 
-    .fp-title{
+    .fp-title {
         font-size: 12px;
         margin-left: 2px;
     }

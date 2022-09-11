@@ -39,16 +39,6 @@ export class TimelineComponent implements OnInit {
   hoveredElement?: Element;
   hoveredOpacity = 0;
 
-  trackPingNoise: SoundInformation = {
-    audioFilename: "tracknoise.mp3",
-    playbackRateMin: 3,
-    playbackRateMax: 4,
-    volume: .5,
-    concurrentMaximum: 6,
-    replacePrevious: true,
-    timeSinceLast: 100
-  }
-
   trackPlacementNoise: SoundInformation = {
     audioFilename: "tracknoise.mp3",
     playbackRateMin: 2,
@@ -284,7 +274,7 @@ export class TimelineComponent implements OnInit {
 
     if (lastDisplacement && this.draggingSkill &&
       (lastDisplacement.x != this.dragDisplacement.x || lastDisplacement.y != this.dragDisplacement.y)) {
-      this.soundEffectPlayer.playSound(this.trackPingNoise);
+      this.soundEffectPlayer.playSound(this.soundEffectPlayer.trackPingNoise);
     }
 
     event.preventDefault();

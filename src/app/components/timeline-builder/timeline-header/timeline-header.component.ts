@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { SoundInformation } from 'src/app/interfaces/sound-information';
 import { SoundEffectPlayerService } from 'src/app/services/sound-effect-player.service';
 import { TimelineService } from 'src/app/services/timeline.service';
+import { TooltipService } from 'src/app/services/tooltip.service';
 import * as _ from 'underscore';
 
 @Component({
@@ -66,6 +67,10 @@ export class TimelineHeaderComponent implements OnInit {
     this.timelineService.clickProcess();
   }
 
+  duplicateGrid(): void{
+    this.timelineService.newGrid(true);
+  }
+
   newGrid(): void {
     this.timelineService.newGrid();
   }
@@ -95,10 +100,19 @@ export class TimelineHeaderComponent implements OnInit {
   buttonClick(): void {
     this.soundEffectPlayer.playSound(this.trackPlacementNoise);
   }
+  
+  mouseoverText(event: any, text: string) {
+    this.tooltipService.setTextTooltip(text, event.toElement ? event.toElement : event.target, 1);
+  }
+
+  mouseoutText() {
+    this.tooltipService.setTextTooltip("", undefined, 0);
+  }
 
   constructor(
     private timelineService: TimelineService,
-    private soundEffectPlayer: SoundEffectPlayerService
+    private soundEffectPlayer: SoundEffectPlayerService,
+    private tooltipService: TooltipService
   ) { }
 
   ngOnInit(): void {

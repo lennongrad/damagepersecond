@@ -19,11 +19,11 @@ export class StatsListComponent implements OnInit {
   }
 
   getStat(stat: BaseStatTypes): string{
-    return this.unitInstancesService.selectedCharacter.getStat(stat, false).toString();
+    return this.unitInstancesService.selectedCharacter.getStat(stat, true, false).toString();
   }
 
   getModifier(stat: BaseStatTypes): string{
-    var base = this.unitInstancesService.selectedCharacter.getStatModifier(stat, false);
+    var base = this.unitInstancesService.selectedCharacter.getStatModifier(stat, true, false);
     if(base > 0){
       return "+" + base.toString();
     }

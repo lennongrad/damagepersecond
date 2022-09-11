@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { EQUIPMENT, STOREITEMS } from 'src/app/data/item-list';
-import { Equipment, EquipmentTypeNames, Item } from 'src/app/interfaces/item-information';
+import { Equipment, EquipmentTypeNames, Item, ItemType } from 'src/app/interfaces/item-information';
 import { BeautifyService } from 'src/app/services/beautify.service';
 import { InventoryService } from 'src/app/services/inventory.service';
+import { SoundEffectPlayerService } from 'src/app/services/sound-effect-player.service';
+import { TooltipService } from 'src/app/services/tooltip.service';
 import * as _ from 'underscore';
 
 @Component({
@@ -11,9 +13,23 @@ import * as _ from 'underscore';
   styleUrls: ['./store.component.less']
 })
 export class StoreComponent implements OnInit {
+  sortBy: string = "cost";
+  ascending = true;
+
+  selectSort(sortType: string): void{
+    if(this.sortBy == sortType){
+      this.ascending = !this.ascending;
+    } else {
+      this.sortBy = sortType;
+    }
+  }
 
   getItems(): Array<Item>{
-    return _.sortBy(STOREITEMS, 'cost');
+    var baseList = _.sortBy(STOREITEMS, this.sortBy);
+    if(!this.ascending){
+      return baseList.reverse();
+    }
+    return baseList;
   }
 
   itemsOwned(item: Item): number{
@@ -36,20 +52,30 @@ export class StoreComponent implements OnInit {
     return "";
   }
 
+  getWeight(item: Item): number{
+    if(item.itemType != ItemType.equipment){
+      return 0;
+    }
+    return (item as Equipment).weight;
+  }
+
   mouseoverItem(event: any, item: Item): void{
-    return;
+    this.tooltipService.setItemTooltip(item, event.toElement ? event.toElement : event.target, 1);
   }
 
   mouseoutItem(): void{
-    return;
+    this.tooltipService.setItemTooltip(undefined, undefined, 0);
   }
 
   clickItem(item: Item): void{
     this.inventoryService.buyItem(item);
+    this.soundEffectPlayer.playSound(this.soundEffectPlayer.trackPingNoise);
   }
 
   constructor(private inventoryService: InventoryService,
-    private beautifyService: BeautifyService) { }
+    private beautifyService: BeautifyService,
+    private soundEffectPlayer: SoundEffectPlayerService,
+    private tooltipService: TooltipService) { }
 
   ngOnInit(): void {
   }

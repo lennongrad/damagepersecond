@@ -24,8 +24,8 @@ export class TextTooltipComponent implements OnInit {
 
       if(this.tooltipBox != undefined){
         var tooltipRect = this.tooltipBox.nativeElement.getBoundingClientRect();
-        if(this.leftOffset + tooltipRect.width > document.body.clientWidth){
-          this.leftOffset = document.body.clientWidth -  tooltipRect.width - 8;
+        if(this.leftOffset + tooltipRect.width + 75 > document.body.clientWidth){
+          this.leftOffset = elementRect.x - tooltipRect.width;
         }
       }
 

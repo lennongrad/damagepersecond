@@ -1,4 +1,5 @@
 import { AnimationDetails } from "./animation-information"
+import { Equipment } from "./item-information"
 import { SkillInformation as SkillInformation } from "./skill-information"
 import { StatArray } from "./stat-information"
 
@@ -41,5 +42,6 @@ export interface EnemyInformation extends UnitInformation{
 export interface CharacterSave {
     experience: number,
     learntFeatures: Set<string>,
-    statBonuses: StatArray
+    statBonuses: StatArray,
+    equippedItems: Array<Equipment>
 }

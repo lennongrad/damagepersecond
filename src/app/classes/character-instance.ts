@@ -4,9 +4,13 @@ import { UnitInstancesService } from "../services/unit-instances.service";
 import { Skill, SkillContext, SkillInformation, SkillSubtype, SkillTargetType } from "../interfaces/skill-information";
 import * as _ from 'underscore';
 import { BaseStatTypes } from "../interfaces/stat-information";
+import { Equipment } from "../interfaces/item-information";
+import { InventoryService } from "../services/inventory.service";
 
 export class CharacterInstance extends UnitInstance {
     permanentData!: CharacterSave;
+    
+    inventoryService: InventoryService;
 
     featureList: Array<CharacterFeature> = [];
 
@@ -31,9 +35,44 @@ export class CharacterInstance extends UnitInstance {
         return this.getStat(BaseStatTypes.endurance) * 2;
     }
 
-    getStat(stat: BaseStatTypes, includeStatuses: boolean = true): number {
+    getEquippedItems(): Array<Equipment> {
+        return this.permanentData.equippedItems;
+    }
+    isEquipped(equipment: Equipment): boolean {
+        return this.permanentData.equippedItems.includes(equipment);
+    }
+    canEquip(equipment: Equipment): boolean {
+        return (!this.isEquipped(equipment)
+            && ((equipment.weight + this.getEncumberance()) <= this.getCarryingCapacity())
+            && (this.inventoryService.getUnequippedEquipment(equipment) >= 1)
+            && _.countBy(this.getEquippedItems(), (e) => e.equipmentType)[equipment.equipmentType] == undefined);
+    }
+    equipEquipment(equipment: Equipment): void {
+        if (this.canEquip(equipment)) {
+            this.permanentData.equippedItems.push(equipment);
+            this.unitInstancesService.saveCharacterData(this, true);
+        }
+    }
+    unequipEquipment(equipment: Equipment): void {
+        if (this.isEquipped(equipment)) {
+            this.permanentData.equippedItems = _.without(this.permanentData.equippedItems, equipment);
+            this.unitInstancesService.saveCharacterData(this, true);
+        }
+    }
+    getEncumberance(): number {
+        return _.reduce(this.permanentData.equippedItems, (val: number, equipment: Equipment) => equipment.weight + val, 0);
+    }
+
+    getStat(stat: BaseStatTypes, includeEquipment: boolean = true, includeStatuses: boolean = true): number {
         var base = this.characterInformation.baseStats[stat];
         base += this.permanentData.statBonuses[stat];
+
+        if (includeEquipment) {
+            this.permanentData.equippedItems.forEach((equipment) => {
+                var bonus = equipment.statBonuses[stat];
+                base += bonus != undefined ? bonus : 0;
+            })
+        }
 
         if (includeStatuses) {
             this.forEachStatus((status) => {
@@ -47,8 +86,8 @@ export class CharacterInstance extends UnitInstance {
         return base;
     }
 
-    getStatModifier(stat: BaseStatTypes, includeStatuses: boolean = true): number{
-        var baseStat = this.getStat(stat, includeStatuses);
+    getStatModifier(stat: BaseStatTypes, includeEquipment: boolean = true, includeStatuses: boolean = true): number {
+        var baseStat = this.getStat(stat, includeEquipment, includeStatuses);
         return (baseStat - 5) / 5;
     }
 
@@ -65,7 +104,7 @@ export class CharacterInstance extends UnitInstance {
         }
         return totalDamage / length;
     }
-    getXPS(length: number): number{
+    getXPS(length: number): number {
         var totalXP = 0;
         if (this.finalXP.length > 0) {
             totalXP = _.reduce(this.finalXP, (memo, num) => memo + num) as number;
@@ -102,7 +141,7 @@ export class CharacterInstance extends UnitInstance {
         if (this.canAffordStat(stat)) {
             this.permanentData.experience -= this.getStatCost(stat);
             this.permanentData.statBonuses[stat] += 1;
-            this.unitInstancesService.saveData(this, true);
+            this.unitInstancesService.saveCharacterData(this, true);
         }
     }
 
@@ -155,25 +194,25 @@ export class CharacterInstance extends UnitInstance {
             this.permanentData.learntFeatures.add(this.getFeatureID(feature));
             this.addXP(-feature.expCost);
             this.updateFeatureBonuses();
-            this.unitInstancesService.saveData(this, true);
+            this.unitInstancesService.saveCharacterData(this, true);
         }
     }
 
     addXP(amount: number): void {
         this.permanentData.experience += amount;
         this.currentXPGained += amount;
-        this.unitInstancesService.saveData(this);
+        this.unitInstancesService.saveCharacterData(this);
     }
 
     loadData(): void {
-        var loadedData = this.unitInstancesService.loadData(this);
+        var loadedData = this.unitInstancesService.loadCharacterData(this);
         if (loadedData != undefined) {
             this.permanentData = loadedData;
         } else {
             this.permanentData = {
                 experience: 0, learntFeatures: new Set<string>(), statBonuses: {
                     CON: 0, POI: 0, END: 0, STR: 0, DEX: 0, INT: 0
-                }
+                }, equippedItems: []
             };
         }
         this.updateFeatureBonuses();
@@ -246,11 +285,11 @@ export class CharacterInstance extends UnitInstance {
     override dealDamage(skillContext: SkillContext, target: UnitInstance, baseDamage: number,
         directRate: number = 0, criticalRate: number = 0): number {
         var modifiedBaseDamage = baseDamage;
-        if(skillContext.skill.skillInfo.subtypes?.includes(SkillSubtype.physical)){
+        if (skillContext.skill.skillInfo.subtypes?.includes(SkillSubtype.physical)) {
             modifiedBaseDamage += this.getStatModifier(BaseStatTypes.strength);
-        }else if(skillContext.skill.skillInfo.subtypes?.includes(SkillSubtype.finesse)){
+        } else if (skillContext.skill.skillInfo.subtypes?.includes(SkillSubtype.finesse)) {
             modifiedBaseDamage += this.getStatModifier(BaseStatTypes.dexterity);
-        }else if(skillContext.skill.skillInfo.subtypes?.includes(SkillSubtype.magical)){
+        } else if (skillContext.skill.skillInfo.subtypes?.includes(SkillSubtype.magical)) {
             modifiedBaseDamage += this.getStatModifier(BaseStatTypes.intelligence);
         }
 
@@ -278,21 +317,23 @@ export class CharacterInstance extends UnitInstance {
     constructor(name: string,
         public characterInformation: CharacterInformation,
         unitInstancesService: UnitInstancesService,
+        inventoryService: InventoryService,
         genericFeatures: Array<CharacterFeature>) {
         super(name, characterInformation, unitInstancesService);
+        this.inventoryService = inventoryService;
 
         var smallerLength = Math.min(genericFeatures.length, characterInformation.characterFeatures.length);
-        for(var i = 0; i < smallerLength; i++){
+        for (var i = 0; i < smallerLength; i++) {
             this.featureList.push(characterInformation.characterFeatures[i]);
             this.featureList.push(genericFeatures[i]);
         }
         characterInformation.characterFeatures.forEach((feature, index) => {
-            if(index >= smallerLength){
+            if (index >= smallerLength) {
                 this.featureList.push(feature);
             }
         })
         genericFeatures.forEach((feature, index) => {
-            if(index >= smallerLength){
+            if (index >= smallerLength) {
                 this.featureList.push(feature);
             }
         })

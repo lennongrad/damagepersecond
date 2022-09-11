@@ -1,6 +1,34 @@
+
+<div id="header">
+    <div id="stats-display">
+        <h3>STATS</h3>
+        <div class="stat" *ngFor="let stat of statTypeArray" (mouseover)="mouseoverStat($event, stat)" (mouseout)="mouseoutStat()">
+            <b class="stat-name">{{stat}}</b>: 
+            <span class="stat-value">{{getStatValue(stat)}}</span> 
+            <!--<span class="stat-modifier" *ngIf="getStatModifier(stat) != ''"> ({{getStatModifier(stat)}})</span>-->
+        </div>
+    </div>
+    <div id="carry-display">
+        <h3>CAPACITY</h3>
+        <div id="capacity">
+            <span id="encumberance">{{getEncumberance()}}</span>/<span id="carrying-capacity">{{getCapacity()}} lbs.</span>
+        </div>
+        <div id="capacity-visual">
+            {{getCapacityVisual()}}
+        </div>
+    </div>
+</div>
+
+<h3 id="equipment-header">EQUIPMENT</h3>
 <table id="equipment-holder">
-    <tr class="equipment" *ngFor="let equipment of getEquipment(); let i = index;" (mouseover)="mouseoverEquipment($event, equipment)"
-        (mouseout)="mouseoutEquipment()" (click)="clickEquipment(equipment)">
+    <tr class="header">
+        <th (click)="selectSort('name')" colspan=2>Name</th>
+        <th (click)="selectSort('type')">Type</th>
+        <th (click)="selectSort('weight')">Wgt.</th>
+    </tr>
+    <tr class="equipment" *ngFor="let equipment of getEquipment(); let i = index;"
+        (mouseover)="mouseoverEquipment($event, equipment)" (mouseout)="mouseoutEquipment()"
+        (click)="clickEquipment(equipment)" [class.equipped]="isEquipped(equipment)">
         <td class="icon"><img src="assets/{{equipment.icon}}" /></td>
         <td class="name">{{equipment.name}}<span class="owned"> ({{equipmentOwned(equipment)}})</span></td>
         <td class="type">{{getTypes(equipment)}}</td>
