@@ -1,0 +1,21 @@
+<div id="filter-holder">
+    <div *ngFor="let type of itemTypes" (click)="clickFilter(type)" [class.filter-selected]="filteredTypes[type]">
+        {{typeNames[type]}}
+    </div>
+</div>
+
+<table id="item-holder">
+    <tr class="header">
+        <th (click)="selectSort('name')" id="name-header" colspan=2>Name</th>
+        <th (click)="selectSort('type')" id="type-header">Type</th>
+        <th (click)="selectSort('cost')" id="cost-header">Sell</th>
+    </tr>
+    <tr class="item" *ngFor="let item of getItems(); let i = index"
+        (mouseover)="mouseoverItem($event, item)" (mouseout)="mouseoutItem()"
+        (click)="clickItem(item)">
+        <td class="icon" width="18px"><img src="assets/{{item.icon}}" /></td>
+        <td class="name">{{item.name}}<span class="owned"> (x{{itemsOwned(item)}})</span></td>
+        <td class="type">{{getTypes(item)}}</td>
+        <td class="cost"><span>{{getItemCost(item)}} GP.</span></td>
+    </tr>
+</table>

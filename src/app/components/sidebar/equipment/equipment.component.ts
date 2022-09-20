@@ -80,6 +80,14 @@ export class EquipmentComponent implements OnInit {
     return this.getSelectedCharacter().getStat(stat).toString();
   }
 
+  getWeight(equipment: Equipment){
+    var baseString = "";
+    for (var i = 0; i < equipment.weight; i++) {
+      baseString += "●";
+    }
+    return baseString;
+  }
+
   getStatModifier(stat: BaseStatTypes): string{
     var modifier = this.getSelectedCharacter().getStatModifier(stat);
     if(modifier != 0 && [BaseStatTypes.strength,, BaseStatTypes.dexterity, BaseStatTypes.intelligence].includes(stat)){

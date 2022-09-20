@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import { TooltipService } from 'src/app/services/tooltip.service';
 
 @Component({
@@ -8,6 +8,7 @@ import { TooltipService } from 'src/app/services/tooltip.service';
 })
 export class TextTooltipComponent implements OnInit {
   @ViewChild('tooltipbox') tooltipBox!: ElementRef;
+  @Input() isMain: boolean = false;
 
   text?: string;
   element?: Element;
@@ -34,10 +35,12 @@ export class TextTooltipComponent implements OnInit {
   }
 
   constructor(private tooltipService: TooltipService) {
-    tooltipService.textTooltip = this;
    }
 
   ngOnInit(): void {
+    if(this.isMain){
+      this.tooltipService.textTooltip = this;
+    }
   }
 
 }

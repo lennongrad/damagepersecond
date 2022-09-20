@@ -16,58 +16,63 @@ export class StoreComponent implements OnInit {
   sortBy: string = "cost";
   ascending = true;
 
-  selectSort(sortType: string): void{
-    if(this.sortBy == sortType){
+  selectSort(sortType: string): void {
+    if (this.sortBy == sortType) {
       this.ascending = !this.ascending;
     } else {
       this.sortBy = sortType;
     }
   }
 
-  getItems(): Array<Item>{
+  getItems(): Array<Item> {
     var baseList = _.sortBy(STOREITEMS, this.sortBy);
-    if(!this.ascending){
+    if (!this.ascending) {
       return baseList.reverse();
     }
     return baseList;
   }
 
-  itemsOwned(item: Item): number{
+  itemsOwned(item: Item): number {
     return this.inventoryService.getItemCount(item);
   }
 
-  isItemAffordable(item: Item): boolean{
+  isItemAffordable(item: Item): boolean {
     return this.inventoryService.canAffordItem(item);
   }
 
-  getItemCost(item: Item): string{
+  getItemCost(item: Item): string {
     return this.beautifyService.beautify(this.inventoryService.getItemCost(item), true);
   }
 
-  getTypes(item: Item): string{
+  getTypes(item: Item): string {
     var equipment = item as Equipment;
-    if(equipment.equipmentType != undefined){
+    if (equipment.equipmentType != undefined) {
       return EquipmentTypeNames[equipment.equipmentType];
     }
     return "";
   }
 
-  getWeight(item: Item): number{
-    if(item.itemType != ItemType.equipment){
-      return 0;
+  getWeight(item: Item): string {
+    if (item.itemType != ItemType.equipment) {
+      return "";
     }
-    return (item as Equipment).weight;
+    var weight = (item as Equipment).weight;
+    var baseString = "";
+    for (var i = 0; i < weight; i++) {
+      baseString += "●";
+    }
+    return baseString;
   }
 
-  mouseoverItem(event: any, item: Item): void{
+  mouseoverItem(event: any, item: Item): void {
     this.tooltipService.setItemTooltip(item, event.toElement ? event.toElement.parentElement : event.target.parentElement, 1);
   }
 
-  mouseoutItem(): void{
+  mouseoutItem(): void {
     this.tooltipService.setItemTooltip(undefined, undefined, 0);
   }
 
-  clickItem(item: Item): void{
+  clickItem(item: Item): void {
     this.inventoryService.buyItem(item);
     this.soundEffectPlayer.playSound(this.soundEffectPlayer.trackPingNoise);
   }

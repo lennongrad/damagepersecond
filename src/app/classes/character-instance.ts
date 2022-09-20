@@ -130,7 +130,7 @@ export class CharacterInstance extends UnitInstance {
     }
 
     getStatCost(stat: BaseStatTypes): number {
-        return 40 * Math.pow(1.6, (this.permanentData.statBonuses[stat] + 1));
+        return 86 + 40 * Math.pow(1.6, (this.permanentData.statBonuses[stat] + 1));
     }
 
     canAffordStat(stat: BaseStatTypes): boolean {

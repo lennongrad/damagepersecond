@@ -1,0 +1,22 @@
+<div class="recipe-holder">
+    <div class="recipe" *ngFor="let recipe of getRecipes()" (click)="craftRecipe(recipe)">
+        <div class="crafted-item" (mouseover)="mouseoverItem($event, recipe.item)" (mouseout)="mouseoutItem()">
+            <img src="assets/{{recipe.item.icon}}" class="crafted-item-icon">
+            <div class="crafted-item-name">
+                <span class="name" [class.craftable]="isCraftable(recipe)">{{recipe.item.name}}</span>
+                <span class="count">({{beautify(getItemCount(recipe.item))}})</span>
+            </div>
+        </div>
+        <div class="materials">
+            <div class="material" *ngFor="let item of recipe.materials | keyvalue"
+                (mouseover)="mouseoverItem($event, getItem(item.key))" (mouseout)="mouseoutItem()">
+                <img class="item-icon" src="assets/{{getItem(item.key).icon}}">
+                <span class="item-required">
+                    <span class="name">{{getItem(item.key).name}}</span>
+                    x{{beautify(item.value)}}
+                    <span class="count">({{beautify(getItemCount(getItem(item.key)))}})</span>
+                </span>
+            </div>
+        </div>
+    </div>
+</div>

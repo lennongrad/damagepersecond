@@ -10,6 +10,7 @@ import { TooltipService } from 'src/app/services/tooltip.service';
 })
 export class SkillTooltipComponent implements OnInit {
   @ViewChild('tooltipbox') tooltipBox!: ElementRef;
+  @Input() isMain: boolean = false;
 
   hoveredSkill?: SkillInformation;
   element?: Element;
@@ -64,10 +65,12 @@ export class SkillTooltipComponent implements OnInit {
   }
 
   constructor(private tooltipService: TooltipService) { 
-    tooltipService.skillTooltip = this;
   }
 
   ngOnInit(): void {
+    if(this.isMain){
+      this.tooltipService.skillTooltip = this;
+    }
   }
 
 }

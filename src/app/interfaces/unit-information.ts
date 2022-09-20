@@ -6,7 +6,9 @@ import { StatArray } from "./stat-information"
 export interface EncounterInformation{
     id: string,
     name: string,
-    enemies: [EnemyInformation, EnemyInformation, EnemyInformation]
+    enemies: [EnemyInformation, EnemyInformation, EnemyInformation],
+    baseGold: number,
+    itemRates: {[id: string]: number}
 }
 
 export interface UnitInformation{

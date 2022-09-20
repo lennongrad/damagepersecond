@@ -1,3 +1,5 @@
+<app-item-tooltip #itemtooltip></app-item-tooltip>
+
 <div class="difficulty-holder">
     <div class="difficulty" *ngFor="let count of [1,2,3,4,5]" [class.is-active]="isActiveDifficulty(count)"
     (click)="clickDifficulty(count)">
@@ -5,8 +7,21 @@
     </div>
 </div>
 
-<div class="animation-holder" *ngFor="let encounter of encounterList | keyvalue"
-    (click)="clickEncounter(encounter.key)">
-    <app-animated-sprite *ngFor="let enemy of encounter.value.enemies; let i = index" [AnimationDetails]="enemy.animation"
-        [ngStyle]="getSpriteStyle(i)" [isDead]="false"></app-animated-sprite>
+<div class="encounter"  *ngFor="let encounter of encounterList | keyvalue">
+    <div class="animation-holder"
+        (click)="clickEncounter(encounter.key)">
+        <app-animated-sprite *ngFor="let enemy of encounter.value.enemies; let i = index" [AnimationDetails]="enemy.animation"
+            [ngStyle]="getSpriteStyle(i)" [isDead]="false"></app-animated-sprite>
+    </div>
+    <div class="details">
+        <h3>{{encounter.value.name}}</h3>
+        <div class="gold-value">{{encounter.value.baseGold}} GP.</div>
+        <div class="item-rates">
+            <div class="item-rate" *ngFor="let item of encounter.value.itemRates | keyvalue"
+            (mouseover)="mouseoverItem($event, getItem(item.key))" (mouseout)="mouseoutItem()">
+                <img class="item-icon" src="assets/{{getItem(item.key).icon}}">
+                <span class="item-percentage">{{item.value * 100}}%</span>
+            </div>
+        </div>
+    </div>
 </div>

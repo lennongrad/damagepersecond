@@ -1,6 +1,8 @@
-import { Component, ElementRef, HostListener, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, HostListener, Input, OnInit, ViewChild } from '@angular/core';
 import { Equipment, getItemType, Item, ItemType } from 'src/app/interfaces/item-information';
 import { BaseStatTypes, StatBonuses, StatNames } from 'src/app/interfaces/stat-information';
+import { BeautifyService } from 'src/app/services/beautify.service';
+import { InventoryService } from 'src/app/services/inventory.service';
 import { TooltipService } from 'src/app/services/tooltip.service';
 import * as _ from 'underscore';
 
@@ -11,6 +13,7 @@ import * as _ from 'underscore';
 })
 export class ItemTooltipComponent implements OnInit {
   @ViewChild('tooltipbox') tooltipBox!: ElementRef;
+  @Input() isMain: boolean = false;
 
   hoveredItem?: Item;
   element?: Element;
@@ -57,6 +60,13 @@ export class ItemTooltipComponent implements OnInit {
     return (this.hoveredItem as Equipment).weight;
   }
 
+  getSellCost(): string{
+    if(this.hoveredItem == undefined){
+      return "";
+    }
+    return this.beautifyService.beautify(this.inventoryService.getItemSellCost(this.hoveredItem), true, 4);
+  }
+
   update() {
     if (this.element != undefined && this.tooltipBox != undefined) {
       var elementRect = this.element.getBoundingClientRect();
@@ -73,11 +83,13 @@ export class ItemTooltipComponent implements OnInit {
     }
   }
 
-  constructor(private tooltipService: TooltipService) {
-    tooltipService.itemTooltip = this;
+  constructor(private tooltipService: TooltipService, private inventoryService: InventoryService, private beautifyService: BeautifyService) {
   }
 
   ngOnInit(): void {
+    if(this.isMain){
+      this.tooltipService.itemTooltip = this;
+    }
   }
 
 }

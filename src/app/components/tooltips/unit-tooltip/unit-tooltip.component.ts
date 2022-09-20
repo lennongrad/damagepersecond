@@ -15,6 +15,7 @@ import { TimelineService } from 'src/app/services/timeline.service';
 })
 export class UnitTooltipComponent implements OnInit {
   @ViewChild('tooltipbox') tooltipBox!: ElementRef;
+  @Input() isMain: boolean = false;
 
   @Input() hoveredUnit?: UnitInstance;
   @Input() element?: Element;
@@ -83,10 +84,12 @@ export class UnitTooltipComponent implements OnInit {
   }
 
   constructor(private tooltipService: TooltipService, beautifyService: BeautifyService, private timelineService: TimelineService) {
-    this.tooltipService.unitTooltip = this;
   }
 
   ngOnInit(): void {
+    if(this.isMain){
+      this.tooltipService.unitTooltip = this;
+    }
   }
 
 }

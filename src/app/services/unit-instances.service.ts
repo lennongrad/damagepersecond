@@ -116,7 +116,6 @@ export class UnitInstancesService {
         new EnemyInstance("C", this.selectedEncounter.enemies[2], this)
       ]
     }
-
     this.enemyInstances.forEach((enemy, index) => enemy.reconfigure(this.selectedEncounter.enemies[index], this.enemyDifficulty));
 
     this.saveService.saveData("encounter-name", this.selectedEncounter.id);

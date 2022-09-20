@@ -3,6 +3,9 @@
         <div class="weight" *ngIf="getWeight() != 0">
             {{getWeight()}} <span class="weight-name">lbs.</span>
         </div>
+        <div class="sell-cost" *ngIf="getSellCost() != ''">
+            {{getSellCost()}} <span class="cost-name">GP.</span>
+        </div>
         <div class="icon">
             <img src="assets/{{hoveredItem!.icon}}" />
         </div>
@@ -11,8 +14,8 @@
             <span class="type">{{getType()}}</span>
         </div>
     </div>
-    <div class="divider" *ngIf="getBonuses() != []"></div>
-    <div class="bonuses" *ngIf="getBonuses() != []">
+    <div class="divider" *ngIf="getBonuses().length > 0"></div>
+    <div class="bonuses" *ngIf="getBonuses().length > 0">
         <div class="bonus" *ngFor="let bonus of getBonuses()" 
         [class.negative-description]="bonus.negative"
         [class.positive-description]="!bonus.negative">

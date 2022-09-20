@@ -1,4 +1,6 @@
 <div id="main">
     <app-character-view *ngIf="getSelected() =='character'"></app-character-view>
     <app-store *ngIf="getSelected() =='store'"></app-store>
+    <app-item-list *ngIf="getSelected() == 'items'"></app-item-list>
+    <app-crafting-list *ngIf="getSelected() == 'crafting'"></app-crafting-list>
 </div>

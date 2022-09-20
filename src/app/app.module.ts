@@ -34,6 +34,8 @@ import { TextTooltipComponent } from './components/tooltips/text-tooltip/text-to
 import { EquipmentComponent } from './components/sidebar/equipment/equipment.component';
 import { StoreComponent } from './components/sidebar/store/store.component';
 import { ItemTooltipComponent } from './components/tooltips/item-tooltip/item-tooltip.component';
+import { ItemListComponent } from './components/sidebar/item-list/item-list.component';
+import { CraftingListComponent } from './components/sidebar/crafting-list/crafting-list.component';
 
 @NgModule({
   declarations: [
@@ -60,7 +62,9 @@ import { ItemTooltipComponent } from './components/tooltips/item-tooltip/item-to
     TextTooltipComponent,
     EquipmentComponent,
     StoreComponent,
-    ItemTooltipComponent
+    ItemTooltipComponent,
+    ItemListComponent,
+    CraftingListComponent
   ],
   imports: [
     BrowserModule,

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { EQUIPMENT, ITEMS } from '../data/item-list';
-import { Equipment, Item, ItemType } from '../interfaces/item-information';
+import { CraftingRecipe, Equipment, Item, ItemType } from '../interfaces/item-information';
 import { SaveService } from './save.service';
 import { UnitInstancesService } from './unit-instances.service';
 import * as _ from 'underscore';
@@ -36,7 +36,11 @@ export class InventoryService {
   }
 
   getItemCost(item: Item): number {
-    return item.cost;
+    return item.cost ? item.cost : 0;
+  }
+
+  getItemSellCost(item: Item): number{
+    return item.sellValue ? item.sellValue : (item.cost ? (item.cost * .1) : 0);
   }
 
   getOwnedItemList(): Array<Item> {
@@ -57,8 +61,25 @@ export class InventoryService {
     return base;
   }
 
+  isCraftable(recipe: CraftingRecipe): boolean{
+    var canAfford = true;
+    Object.keys(recipe.materials).forEach((materialID) => {
+      if(this.getItemCount(ITEMS[materialID]) < recipe.materials[materialID]){
+        canAfford = false;
+      }
+    })
+    return canAfford;
+  }
+
   canAffordItem(item: Item): boolean {
     return this.gold >= this.getItemCost(item);
+  }
+
+  sellItem(item: Item): void{
+    if(this.getItemCount(item) > 0){
+      this.ownedItems.set(item.id, this.ownedItems.get(item.id)! - 1);
+      this.addGold(this.getItemSellCost(item));
+    }
   }
 
   buyItem(item: Item): void {
@@ -70,6 +91,19 @@ export class InventoryService {
       this.ownedItems.set(item.id, this.ownedItems.get(item.id)! + 1);
       this.saveData();
     }
+  }
+
+  craftRecipe(recipe: CraftingRecipe): void{
+    if(!this.isCraftable(recipe)){
+      return;
+    }
+
+    Object.keys(recipe.materials).forEach((materialID) => {
+      this.ownedItems.set(materialID, this.ownedItems.get(materialID)! - recipe.materials[materialID]);
+    })
+    this.ownedItems.set(recipe.item.id, this.ownedItems.get(recipe.item.id)! + 1);
+
+    this.saveData();
   }
 
   getGPS(length: number): number {

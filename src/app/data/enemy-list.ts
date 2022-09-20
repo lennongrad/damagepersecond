@@ -55,10 +55,20 @@ export const ENEMIES: { [id: string]: EnemyInformation } = {
 export const ENCOUNTERS: {[id: string]: EncounterInformation} = {
     "training":
     {
-        id: "training", name: "Training", enemies: [ENEMIES["dummy"], ENEMIES["dummy"], ENEMIES["dummy"]]
+        id: "training", name: "Training", enemies: [ENEMIES["dummy"], ENEMIES["dummy"], ENEMIES["dummy"]],
+        baseGold: 0, itemRates: {}
     },
     "soldiers":
     {
-        id: "soldiers", name: "Soldiers", enemies: [ENEMIES["soldier"], ENEMIES["soldier"], ENEMIES["soldier"]]
+        id: "soldiers", name: "Soldiers", enemies: [ENEMIES["soldier"], ENEMIES["soldier"], ENEMIES["soldier"]],
+        baseGold: 60, itemRates: {}
+    },
+    "beasts":
+    {
+        id: "beasts", name: "Beasts", enemies: [ENEMIES["soldier"], ENEMIES["soldier"], ENEMIES["soldier"]], 
+        baseGold: 10, itemRates: {
+            "claw": .2, "bone": .1, "skull": .01, "fangs": .05, "tooth": .05, "scale": .05, 
+            "eye": .01, "eggs": .1, "wing": .05, "feather": .15, "venom": .005
+        }
     }
 }

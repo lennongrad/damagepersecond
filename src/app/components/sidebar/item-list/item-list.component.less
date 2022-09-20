@@ -20,9 +20,33 @@
     }
 }
 
+#filter-holder{
+    display: flex;
+    font-size: 14px;
+    text-align: center;
+
+    div{
+        flex-grow: 1;
+        padding: 8px;
+        background-color: #132426;
+        cursor: pointer;
+
+        &:hover{
+            filter: brightness(1.2);
+        }
+
+        &.filter-selected{
+            background-color: #142932;
+            font-weight: bold;
+        }
+    }
+}
+
 #item-holder{
     width: 100%;
     border-spacing: 0;
+    border-top: 6px solid transparent;
+    border-image: url(~src/assets/frame.png) 30 round;
 }
 
 tr.header{
@@ -36,6 +60,15 @@ tr.header{
             filter: brightness(.8);
         }
     }
+}
+
+#type-header{
+    width: 30%;
+}
+
+#cost-header{
+    width: 70px;
+    text-align: right;
 }
 
 .item{
@@ -77,16 +110,6 @@ tr.header{
 .type{
     text-align: center;
     font-size: 12px;
-}
-
-.weight{
-    font-size: 10px;
-    padding-right: 10px;
-    text-align: center;
-}
-
-.cost-header{
-    text-align: right;
 }
 
 .cost{

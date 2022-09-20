@@ -1,11 +1,17 @@
 <div id="bar">
     <div class="bar-section" id="left-section">
         <div class="value-display" (click)="selectTab('store')">
-            <img src="assets/metal-disc.png"/>
+            <img src="assets/metal-disc.png" />
             <div id="gold-amount-container">
                 <div id="gold-amount">{{getGold()}}</div>
                 <div id="gold-ps">{{getGoldPerSecond()}}/s</div>
             </div>
+        </div>
+        <div class="dialog-button" (click)="selectTab('items')">
+            <img src="assets/knapsack.png" />
+        </div>
+        <div class="dialog-button" (click)="selectTab('crafting')">
+            <img src="assets/anvil-impact.png" />
         </div>
     </div>
     <div class="bar-section" id="middle-section">
@@ -13,7 +19,7 @@
     </div>
     <div class="bar-section" id="right-section">
         <div id="settings" class="dialog-button" (click)="openSettings()">
-            <img src="assets/cog.png"/>
+            <img src="assets/cog.png" />
         </div>
     </div>
 </div>

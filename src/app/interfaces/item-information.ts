@@ -7,12 +7,14 @@ export interface Item {
     icon: string,
     description?: string,
     flavor?: string,
-    cost: number
+    cost?: number,
+    sellValue?: number
 }
 
 export enum ItemType {
     equipment = "EQUIPMENT",
-    consumable = "CONSUMABLE"
+    consumable = "CONSUMABLE",
+    material = "MATERIAL"
 }
 
 export enum EquipmentType {
@@ -26,7 +28,8 @@ export enum EquipmentType {
 
 export const ItemTypeNames: { [type: string]: string } = {
     "EQUIPMENT": "Equipment",
-    "CONSUMABLE": "Consumable"
+    "CONSUMABLE": "Consumable",
+    "MATERIAL": "Material"
 }
 
 export const EquipmentTypeNames: { [type: string]: string } = {
@@ -44,6 +47,9 @@ export interface Equipment extends Item {
     equipmentType: EquipmentType
 }
 
+export interface Consumable extends Item {}
+export interface Material extends Item {}
+
 export function getItemType(item: Item): string {
     var baseString: string = ItemTypeNames[item.itemType];
 
@@ -53,4 +59,9 @@ export function getItemType(item: Item): string {
     }
 
     return baseString;
+}
+
+export interface CraftingRecipe {
+    item: Item,
+    materials: {[id: string]: number}
 }
