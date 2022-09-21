@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, HostListener } from '@angular/core';
 import { EQUIPMENT, STOREITEMS } from 'src/app/data/item-list';
 import { Equipment, EquipmentTypeNames, Item, ItemType } from 'src/app/interfaces/item-information';
 import { BeautifyService } from 'src/app/services/beautify.service';
@@ -15,6 +15,12 @@ import * as _ from 'underscore';
 export class StoreComponent implements OnInit {
   sortBy: string = "cost";
   ascending = true;
+
+  pressedKeys: { [keycode: string]: boolean } = {};
+  @HostListener('window:keydown', ['$event'])
+  onKeyUp(event: KeyboardEvent) { this.pressedKeys[event.key] = true; }
+  @HostListener('document:keyup', ['$event'])
+  onKeyDown(event: KeyboardEvent) { this.pressedKeys[event.key] = false; }
 
   selectSort(sortType: string): void {
     if (this.sortBy == sortType) {
@@ -41,7 +47,7 @@ export class StoreComponent implements OnInit {
   }
 
   getItemCost(item: Item): string {
-    return this.beautifyService.beautify(this.inventoryService.getItemCost(item), true);
+    return this.beautifyService.beautify(this.inventoryService.getItemCost(item) *  this.getItemAmount(), true);
   }
 
   getTypes(item: Item): string {
@@ -64,6 +70,15 @@ export class StoreComponent implements OnInit {
     return baseString;
   }
 
+  getItemAmount(): number{
+    if(this.pressedKeys["Shift"]){
+      return 100;
+    } else if(this.pressedKeys["Control"]){
+      return 10;
+    }
+    return 1;
+  }
+
   mouseoverItem(event: any, item: Item): void {
     this.tooltipService.setItemTooltip(item, event.toElement ? event.toElement.parentElement : event.target.parentElement, 1);
   }
@@ -73,7 +88,7 @@ export class StoreComponent implements OnInit {
   }
 
   clickItem(item: Item): void {
-    this.inventoryService.buyItem(item);
+    this.inventoryService.buyItem(item, this.getItemAmount());
     this.soundEffectPlayer.playSound(this.soundEffectPlayer.trackPingNoise);
   }
 

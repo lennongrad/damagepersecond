@@ -67,8 +67,8 @@ export const ENCOUNTERS: {[id: string]: EncounterInformation} = {
     {
         id: "beasts", name: "Beasts", enemies: [ENEMIES["soldier"], ENEMIES["soldier"], ENEMIES["soldier"]], 
         baseGold: 10, itemRates: {
-            "claw": .2, "bone": .1, "skull": .01, "fangs": .05, "tooth": .05, "scale": .05, 
-            "eye": .01, "eggs": .1, "wing": .05, "feather": .15, "venom": .005
+            "claw": .2, "bone": .1, "skull": .001, "fangs": .05, "tooth": .05, "scale": .025, 
+            "eye": .01, "eggs": .1, "wing": .05, "feather": .15, "venom": .0005
         }
     }
 }

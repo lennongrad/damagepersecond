@@ -20,11 +20,16 @@ export class InventoryService {
   addGold(amount: number): void {
     this.gold += amount;
 
-    if(this.goldEarned == undefined){
+    if (this.goldEarned == undefined) {
       this.goldEarned = 0;
     }
     this.goldEarned += amount;
 
+    this.saveData();
+  }
+
+  loseGold(amount: number): void {
+    this.gold = Math.max(0, this.gold - amount);
     this.saveData();
   }
 
@@ -39,7 +44,7 @@ export class InventoryService {
     return item.cost ? item.cost : 0;
   }
 
-  getItemSellCost(item: Item): number{
+  getItemSellCost(item: Item): number {
     return item.sellValue ? item.sellValue : (item.cost ? (item.cost * .1) : 0);
   }
 
@@ -61,10 +66,10 @@ export class InventoryService {
     return base;
   }
 
-  isCraftable(recipe: CraftingRecipe): boolean{
+  isCraftable(recipe: CraftingRecipe): boolean {
     var canAfford = true;
     Object.keys(recipe.materials).forEach((materialID) => {
-      if(this.getItemCount(ITEMS[materialID]) < recipe.materials[materialID]){
+      if (this.getItemCount(ITEMS[materialID]) < recipe.materials[materialID]) {
         canAfford = false;
       }
     })
@@ -75,33 +80,47 @@ export class InventoryService {
     return this.gold >= this.getItemCost(item);
   }
 
-  sellItem(item: Item): void{
-    if(this.getItemCount(item) > 0){
-      this.ownedItems.set(item.id, this.ownedItems.get(item.id)! - 1);
-      this.addGold(this.getItemSellCost(item));
+  addItem(item: Item, count: number = 1): void {
+    if (!this.ownedItems.has(item.id)) {
+      this.ownedItems.set(item.id, 0);
     }
+    this.ownedItems.set(item.id, this.ownedItems.get(item.id)! + count);
+    this.saveData();
   }
 
-  buyItem(item: Item): void {
-    if (this.canAffordItem(item)) {
-      this.gold -= this.getItemCost(item);
-      if (!this.ownedItems.has(item.id)) {
-        this.ownedItems.set(item.id, 0);
+  loseItem(item: Item, count: number = 1): void {
+    this.ownedItems.set(item.id, this.ownedItems.get(item.id)! - count);
+    this.saveData();
+  }
+
+  sellItem(item: Item, count: number): void {
+    for (var i = 0; i < count; i++) {
+      if (this.getItemCount(item) > 0) {
+        this.loseItem(item);
+        this.addGold(this.getItemSellCost(item));
       }
-      this.ownedItems.set(item.id, this.ownedItems.get(item.id)! + 1);
-      this.saveData();
     }
   }
 
-  craftRecipe(recipe: CraftingRecipe): void{
-    if(!this.isCraftable(recipe)){
+  buyItem(item: Item, count: number): void {
+    for (var i = 0; i < count; i++) {
+      if (this.canAffordItem(item)) {
+        var cost = this.getItemCost(item);
+        this.addItem(item);
+        this.loseGold(cost);
+      }
+    }
+  }
+
+  craftRecipe(recipe: CraftingRecipe): void {
+    if (!this.isCraftable(recipe)) {
       return;
     }
 
     Object.keys(recipe.materials).forEach((materialID) => {
-      this.ownedItems.set(materialID, this.ownedItems.get(materialID)! - recipe.materials[materialID]);
+      this.loseItem(ITEMS[materialID], recipe.materials[materialID]);
     })
-    this.ownedItems.set(recipe.item.id, this.ownedItems.get(recipe.item.id)! + 1);
+    this.loseItem(recipe.item, 1);
 
     this.saveData();
   }
@@ -111,20 +130,20 @@ export class InventoryService {
     if (this.goldEarnedTotals.length > 0) {
       totalGold = _.reduce(this.goldEarnedTotals, (memo, num) => memo + num) as number;
       totalGold /= this.goldEarnedTotals.length;
-    } else if(this.goldEarned != undefined) {
+    } else if (this.goldEarned != undefined) {
       totalGold = this.goldEarned;
     }
     return totalGold / length;
   }
 
-  resetTime(): void{
-    if(this.goldEarned != undefined){
+  resetTime(): void {
+    if (this.goldEarned != undefined) {
       this.goldEarnedTotals.push(this.goldEarned);
     }
     this.goldEarned = 0;
   }
 
-  completeReset(): void{
+  completeReset(): void {
     this.goldEarnedTotals = [];
   }
 

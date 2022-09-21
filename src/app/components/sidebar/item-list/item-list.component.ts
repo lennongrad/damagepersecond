@@ -1,7 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, HostListener } from '@angular/core';
 import { ITEMS } from 'src/app/data/item-list';
 import { Equipment, EquipmentTypeNames, Item, ItemType, ItemTypeNames } from 'src/app/interfaces/item-information';
+import { BeautifyService } from 'src/app/services/beautify.service';
 import { InventoryService } from 'src/app/services/inventory.service';
+import { SaveService } from 'src/app/services/save.service';
 import { SoundEffectPlayerService } from 'src/app/services/sound-effect-player.service';
 import { TooltipService } from 'src/app/services/tooltip.service';
 import * as _ from 'underscore';
@@ -15,12 +17,18 @@ export class ItemListComponent implements OnInit {
   itemTypes = [ItemType.equipment, ItemType.consumable, ItemType.material]
   typeNames = ItemTypeNames;
 
-  filteredTypes: {[type: string]: boolean} = {
+  pressedKeys: { [keycode: string]: boolean } = {};
+  @HostListener('window:keydown', ['$event'])
+  onKeyUp(event: KeyboardEvent) { this.pressedKeys[event.key] = true; }
+  @HostListener('document:keyup', ['$event'])
+  onKeyDown(event: KeyboardEvent) { this.pressedKeys[event.key] = false; }
+
+  filteredTypes: { [type: string]: boolean } = {
     "EQUIPMENT": false,
     "CONSUMABLE": true,
     "MATERIAL": true
   }
-  
+
   sortBy: string = "cost";
   ascending = true;
 
@@ -32,8 +40,9 @@ export class ItemListComponent implements OnInit {
     }
   }
 
-  clickFilter(type: ItemType): void{
+  clickFilter(type: ItemType): void {
     this.filteredTypes[type] = !this.filteredTypes[type];
+    this.saveService.saveData("filtered-types", JSON.stringify(this.filteredTypes));
   }
 
   getItems(): Array<Item> {
@@ -79,17 +88,33 @@ export class ItemListComponent implements OnInit {
   }
 
   clickItem(item: Item): void {
-    this.inventoryService.sellItem(item);
+    this.inventoryService.sellItem(item, this.getItemAmount());
     this.soundEffectPlayer.playSound(this.soundEffectPlayer.trackPingNoise);
   }
 
-  getItemCost(item: Item): number{
-    return this.inventoryService.getItemSellCost(item);
+  getItemAmount(): number {
+    if (this.pressedKeys["Shift"]) {
+      return 100;
+    } else if (this.pressedKeys["Control"]) {
+      return 10;
+    }
+    return 1;
+  }
+
+  getItemCost(item: Item): string {
+    var amountMultiplier = Math.min(this.getItemAmount(), this.inventoryService.getItemCount(item));
+    return this.beautifyService.beautify(this.inventoryService.getItemSellCost(item) * amountMultiplier, true);
   }
 
   constructor(private tooltipService: TooltipService,
     private inventoryService: InventoryService,
-    private soundEffectPlayer: SoundEffectPlayerService) { }
+    private soundEffectPlayer: SoundEffectPlayerService,
+    private beautifyService: BeautifyService,
+    private saveService: SaveService) {
+    try {
+      this.filteredTypes = JSON.parse(saveService.getData("filtered-types"))
+    } catch { }
+  }
 
   ngOnInit(): void {
   }

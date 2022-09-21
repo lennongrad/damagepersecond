@@ -103,17 +103,17 @@ export const EQUIPMENT: { [id: string]: Equipment } = {
 
 export const CONSUMABLES: { [id: string]: Consumable } = {}
 export const MATERIALS: { [id: string]: Material } = {
-    "claw": { id: "claw", name: "Claw", icon: "items/loot/1334.png", sellValue: 50, itemType: ItemType.material },
-    "bone": { id: "bone", name: "Bone", icon: "items/loot/1335.png", sellValue: 100, itemType: ItemType.material },
-    "skull": { id: "skull", name: "Skull", icon: "items/loot/1332.png", sellValue: 400, itemType: ItemType.material },
-    "fangs": { id: "fangs", name: "Fang", icon: "items/loot/1337.png", sellValue: 100, itemType: ItemType.material },
-    "tooth": { id: "tooth", name: "Tooth", icon: "items/loot/1338.png", sellValue: 150, itemType: ItemType.material },
-    "scale": { id: "scale", name: "Scale", icon: "items/loot/1339.png", sellValue: 150, itemType: ItemType.material },
-    "eye": { id: "eye", name: "Eye", icon: "items/loot/1340.png", sellValue: 300, itemType: ItemType.material },
-    "eggs": { id: "eggs", name: "Eggs", icon: "items/loot/1345.png", sellValue: 50, itemType: ItemType.material },
-    "wing": { id: "wing", name: "Wing", icon: "items/loot/1350.png", sellValue: 150, itemType: ItemType.material },
-    "feather": { id: "feather", name: "Feather", icon: "items/loot/1354.png", sellValue: 25, itemType: ItemType.material },
-    "venom": { id: "venom", name: "Venom", icon: "items/loot/1349.png", sellValue: 1000, itemType: ItemType.material },
+    "claw": { id: "claw", name: "Claw", icon: "items/loot/1334.png", sellValue: 5, itemType: ItemType.material },
+    "bone": { id: "bone", name: "Bone", icon: "items/loot/1335.png", sellValue: 10, itemType: ItemType.material },
+    "skull": { id: "skull", name: "Skull", icon: "items/loot/1332.png", sellValue: 40, itemType: ItemType.material },
+    "fangs": { id: "fangs", name: "Fang", icon: "items/loot/1337.png", sellValue: 10, itemType: ItemType.material },
+    "tooth": { id: "tooth", name: "Tooth", icon: "items/loot/1338.png", sellValue: 15, itemType: ItemType.material },
+    "scale": { id: "scale", name: "Scale", icon: "items/loot/1339.png", sellValue: 15, itemType: ItemType.material },
+    "eye": { id: "eye", name: "Eye", icon: "items/loot/1340.png", sellValue: 30, itemType: ItemType.material },
+    "eggs": { id: "eggs", name: "Eggs", icon: "items/loot/1345.png", sellValue: 5, itemType: ItemType.material },
+    "wing": { id: "wing", name: "Wing", icon: "items/loot/1350.png", sellValue: 15, itemType: ItemType.material },
+    "feather": { id: "feather", name: "Feather", icon: "items/loot/1354.png", sellValue: 5, itemType: ItemType.material },
+    "venom": { id: "venom", name: "Venom", icon: "items/loot/1349.png", sellValue: 100, itemType: ItemType.material },
 }
 
 export const ITEMS: { [id: string]: Item } = {};

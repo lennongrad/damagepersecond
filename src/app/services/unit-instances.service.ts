@@ -10,7 +10,7 @@ import { EncounterInformation } from '../interfaces/unit-information';
 import * as _ from 'underscore';
 import { Subject } from 'rxjs';
 import { InventoryService } from './inventory.service';
-import { EQUIPMENT } from '../data/item-list';
+import { EQUIPMENT, ITEMS } from '../data/item-list';
 
 @Injectable({
   providedIn: 'root'
@@ -96,6 +96,14 @@ export class UnitInstancesService {
       character.addXP(amount);
     })
     this.inventoryService.addGold(amount);
+
+    Object.keys(this.selectedEncounter.itemRates).forEach((id) => {
+      var probabilityAttempt = Math.random();
+      probabilityAttempt = Math.pow(probabilityAttempt, 1.2 - (.2 * this.enemyDifficulty));
+      if((1 - probabilityAttempt) < this.selectedEncounter.itemRates[id]){
+        this.inventoryService.addItem(ITEMS[id])
+      }
+    })
   }
 
   loadEncounter(name?: string, difficulty?: number): void {

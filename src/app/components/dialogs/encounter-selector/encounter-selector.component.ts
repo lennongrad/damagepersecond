@@ -19,6 +19,8 @@ export class EncounterSelectorComponent implements OnInit {
   encounterList = ENCOUNTERS;
   @ViewChild("itemtooltip") itemTooltip!: ItemTooltipComponent;
 
+  itemRateArrays = new Map<EncounterInformation, Array<[Item, number]>>();
+
   horizontalSpriteDistance = 40;
 
   getSpriteStyle(index: number): any {
@@ -32,8 +34,8 @@ export class EncounterSelectorComponent implements OnInit {
 
   getStars(count: number): string {
     var baseString = "";
-    for(var i = 0; i < 5; i++){
-      if(i < count){
+    for (var i = 0; i < 5; i++) {
+      if (i < count) {
         baseString += "✭";
       } else {
         baseString += "☆";
@@ -47,16 +49,21 @@ export class EncounterSelectorComponent implements OnInit {
     this.close();
   }
 
-  isActiveDifficulty(difficulty: number): boolean{
+  isActiveDifficulty(difficulty: number): boolean {
     return difficulty == this.unitInstancesService.enemyDifficulty;
   }
 
-  clickDifficulty(difficulty: number): void{
+  clickDifficulty(difficulty: number): void {
     this.unitInstancesService.loadEncounter(undefined, difficulty);
   }
 
-  getItem(id: string): Item{
+  getItem(id: string): Item {
     return ITEMS[id];
+  }
+
+  getItemRates(encounter: EncounterInformation): Array<[Item, number]> {
+    var arr = this.itemRateArrays.get(encounter);
+    return arr ? arr : [];
   }
 
   mouseoverItem(event: any, hoveredItem: Item): void {
@@ -77,6 +84,15 @@ export class EncounterSelectorComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    Object.keys(this.encounterList).forEach((encounterID) => {
+      var baseArray = new Array<[Item, number]>();
+  
+      Object.keys(this.encounterList[encounterID].itemRates).forEach((id) => {
+        baseArray.push([ITEMS[id], this.encounterList[encounterID].itemRates[id]])
+      })
+  
+      this.itemRateArrays.set(this.encounterList[encounterID], _.sortBy(baseArray, (tuple) => -tuple[1]));
+    })
   }
 
   close(): void {

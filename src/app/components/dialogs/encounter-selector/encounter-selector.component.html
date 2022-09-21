@@ -7,20 +7,24 @@
     </div>
 </div>
 
-<div class="encounter"  *ngFor="let encounter of encounterList | keyvalue">
-    <div class="animation-holder"
-        (click)="clickEncounter(encounter.key)">
-        <app-animated-sprite *ngFor="let enemy of encounter.value.enemies; let i = index" [AnimationDetails]="enemy.animation"
-            [ngStyle]="getSpriteStyle(i)" [isDead]="false"></app-animated-sprite>
-    </div>
-    <div class="details">
-        <h3>{{encounter.value.name}}</h3>
-        <div class="gold-value">{{encounter.value.baseGold}} GP.</div>
-        <div class="item-rates">
-            <div class="item-rate" *ngFor="let item of encounter.value.itemRates | keyvalue"
-            (mouseover)="mouseoverItem($event, getItem(item.key))" (mouseout)="mouseoutItem()">
-                <img class="item-icon" src="assets/{{getItem(item.key).icon}}">
-                <span class="item-percentage">{{item.value * 100}}%</span>
+<div id="encounter-holder">
+    <div class="encounter"  *ngFor="let encounter of encounterList | keyvalue">
+        <div class="animation-holder-wrapper">
+            <div class="animation-holder"
+                (click)="clickEncounter(encounter.key)">
+                <app-animated-sprite *ngFor="let enemy of encounter.value.enemies; let i = index" [AnimationDetails]="enemy.animation"
+                    [ngStyle]="getSpriteStyle(i)" [isDead]="false"></app-animated-sprite>
+            </div>
+        </div>
+        <div class="details">
+            <h3>{{encounter.value.name}}</h3>
+            <div class="gold-value">{{encounter.value.baseGold}} GP.</div>
+            <div class="item-rates">
+                <div class="item-rate" *ngFor="let itemTuple of getItemRates(encounter.value)"
+                (mouseover)="mouseoverItem($event, itemTuple[0])" (mouseout)="mouseoutItem()">
+                    <img class="item-icon" src="assets/{{itemTuple[0].icon}}">
+                    <span class="item-percentage">{{itemTuple[1] * 100}}%</span>
+                </div>
             </div>
         </div>
     </div>
