@@ -1,16 +1,19 @@
 <div id="bar">
     <div class="bar-section" id="left-section">
-        <div class="value-display" (click)="selectTab('store')">
+        <div class="value-display" (click)="selectTab('store')" 
+        (mouseover)="mouseoverText($event, 'Store')" (mouseout)="mouseoutText()">
             <img src="assets/metal-disc.png" />
             <div id="gold-amount-container">
                 <div id="gold-amount">{{getGold()}}</div>
                 <div id="gold-ps">{{getGoldPerSecond()}}/s</div>
             </div>
         </div>
-        <div class="dialog-button" (click)="selectTab('items')">
+        <div class="dialog-button" (click)="selectTab('items')"
+        (mouseover)="mouseoverText($event, 'Inventory')" (mouseout)="mouseoutText()">
             <img src="assets/knapsack.png" />
         </div>
-        <div class="dialog-button" (click)="selectTab('crafting')">
+        <div class="dialog-button" (click)="selectTab('crafting')"
+        (mouseover)="mouseoverText($event, 'Crafting')" (mouseout)="mouseoutText()">
             <img src="assets/anvil-impact.png" />
         </div>
     </div>
@@ -18,7 +21,8 @@
         <div id="title">DAMAGE•PER•SECOND</div>
     </div>
     <div class="bar-section" id="right-section">
-        <div id="settings" class="dialog-button" (click)="openSettings()">
+        <div id="settings" class="dialog-button" (click)="openSettings()"
+        (mouseover)="mouseoverText($event, 'Settings')" (mouseout)="mouseoutText()">
             <img src="assets/cog.png" />
         </div>
     </div>

@@ -80,6 +80,14 @@ export class InventoryService {
     return this.gold >= this.getItemCost(item);
   }
 
+  canSellItem(item: Item): boolean{
+    if(item.itemType != ItemType.equipment){
+      return this.getItemCount(item) > 0;
+    }
+    var equipment = item as Equipment;
+    return this.getUnequippedEquipment(equipment) > 0;
+  }
+
   addItem(item: Item, count: number = 1): void {
     if (!this.ownedItems.has(item.id)) {
       this.ownedItems.set(item.id, 0);
@@ -95,7 +103,7 @@ export class InventoryService {
 
   sellItem(item: Item, count: number): void {
     for (var i = 0; i < count; i++) {
-      if (this.getItemCount(item) > 0) {
+      if (this.canSellItem(item)) {
         this.loseItem(item);
         this.addGold(this.getItemSellCost(item));
       }

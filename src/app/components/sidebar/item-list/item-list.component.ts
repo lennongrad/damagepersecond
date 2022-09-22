@@ -90,6 +90,10 @@ export class ItemListComponent implements OnInit {
   clickItem(item: Item): void {
     this.inventoryService.sellItem(item, this.getItemAmount());
     this.soundEffectPlayer.playSound(this.soundEffectPlayer.trackPingNoise);
+    
+    if(this.inventoryService.getItemCount(item) == 0){
+      this.mouseoutItem();
+    }
   }
 
   getItemAmount(): number {

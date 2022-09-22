@@ -3,6 +3,7 @@ import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { BeautifyService } from 'src/app/services/beautify.service';
 import { InventoryService } from 'src/app/services/inventory.service';
 import { TimelineService } from 'src/app/services/timeline.service';
+import { TooltipService } from 'src/app/services/tooltip.service';
 import { UnitInstancesService } from 'src/app/services/unit-instances.service';
 import { SettingsDialogComponent } from '../dialogs/settings-dialog/settings-dialog.component';
 
@@ -36,11 +37,20 @@ export class TopbarComponent implements OnInit {
     return this.beautifyService.beautify(amount / this.timelineService.getTimeScale(), true);
   }
 
+  mouseoverText(event: any, text: string): void {
+    this.tooltipService.setTextTooltip(text, event.toElement ? event.toElement : event.target, 1);
+  }
+
+  mouseoutText(): void {
+    this.tooltipService.setTextTooltip("", undefined, 0);
+  }
+
   constructor(private dialogService: MatDialog,
     private inventoryService: InventoryService,
     private unitInstancesService: UnitInstancesService,
     private beautifyService: BeautifyService,
-    private timelineService: TimelineService) { }
+    private timelineService: TimelineService,
+    private tooltipService: TooltipService) { }
 
   ngOnInit(): void {
   }
