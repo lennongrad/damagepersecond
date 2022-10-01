@@ -103,7 +103,7 @@ export class InventoryService {
 
   sellItem(item: Item, count: number): void {
     for (var i = 0; i < count; i++) {
-      if (this.canSellItem(item)) {
+      if (this.canSellItem(item )) {
         this.loseItem(item);
         this.addGold(this.getItemSellCost(item));
       }
